@@ -5,11 +5,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@import 'tailwindcss';
-@import 'tw-animate-css';
-
-@custom-variant dark (&:is(.dark *));
-
 :root {
   /* SproutVR Brand Colors */
   --brand-navy: #0f2c5b;
