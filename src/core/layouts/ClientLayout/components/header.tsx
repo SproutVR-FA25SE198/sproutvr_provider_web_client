@@ -6,7 +6,7 @@ import configs from '@/core/configs';
 
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -14,11 +14,11 @@ export default function Header() {
   return (
     <header className='fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='flex items-center justify-between h-16 md:h-20'>
+        <div className='flex items-center justify-between h-14'>
           {/* Logo */}
           <Link to='/' className='flex items-center space-x-2'>
             <div className='relative w-30'>
-              <img src={images.logo} alt='SproutVR' className='mx-auto w-15' />
+              <img src={images.logo} alt='SproutVR' className='mx-auto w-12' />
             </div>
           </Link>
 
@@ -42,7 +42,7 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className='md:hidden py-4 border-t border-border animate-fade-in-up'>
             <nav className='flex flex-col gap-4'>
-              <NavLinks mobile onClick={() => setMobileMenuOpen(false)} />
+              <NavLinks /*mobile onClick={() => setMobileMenuOpen(false)}*/ />
 
               <div className='flex flex-col gap-2 pt-2'>
                 <ActionButtons mobile isAuthenticated={false} onClick={() => setMobileMenuOpen(false)} />
@@ -55,7 +55,7 @@ export default function Header() {
   );
 }
 
-function NavLinks({ mobile = false, onClick }: { mobile?: boolean; onClick?: () => void }) {
+function NavLinks(/*{ mobile = false, onClick }: { mobile?: boolean; onClick?: () => void }*/) {
   const links = [
     { href: '', label: 'Về SproutVR' },
     { href: configs.routes.catalog, label: 'Catalog' },
@@ -70,7 +70,7 @@ function NavLinks({ mobile = false, onClick }: { mobile?: boolean; onClick?: () 
         <Link
           key={link.href}
           to={link.href}
-          onClick={onClick}
+          // onClick={onClick}
           className={`text-sm font-medium text-foreground hover:text-secondary transition-colors`}
         >
           {link.label}
@@ -89,7 +89,7 @@ function ActionButtons({
   isAuthenticated?: boolean;
   onClick: () => void;
 }) {
-  const url = useLocation().pathname;
+  // const url = useLocation().pathname;
   //   const handleLogout = () => {
   //     onClick();
   //     removeAccessToken();
