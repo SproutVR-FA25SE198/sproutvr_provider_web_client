@@ -1,3 +1,5 @@
+import images from '@/assets/imgs';
+
 import { Award, DollarSign, Heart, type LucideIcon, TrendingUp } from 'lucide-react';
 
 export interface Benefit {
@@ -69,7 +71,7 @@ export const clientBenefitsData: ClientBenefitsData = {
     author: {
       name: 'TS. Nguyễn Thu Hà',
       title: 'Hiệu Trưởng, Trường THPT ABC',
-      image: '/professional-school-principal-headshot.jpg',
+      image: `${images.landingFeatures}`,
     },
   },
 };

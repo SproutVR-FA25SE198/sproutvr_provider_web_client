@@ -39,12 +39,6 @@ export const keyFeaturesData: KeyFeaturesData = {
       description:
         'Kích thích đồng thời thị giác, thính giác và vận động, giúp học sinh tiếp thu và ghi nhớ kiến thức hiệu quả hơn.',
     },
-    // {
-    //   icon: BarChart3,
-    //   title: 'Phân Tích Theo Thời Gian Thực',
-    //   description:
-    //     'Theo dõi tiến độ học sinh, mức độ tham gia và kết quả học tập thông qua bảng điều khiển thông minh.',
-    // },
     {
       icon: Layers,
       title: 'Thiết Kế Bài Giảng Tùy Biến',

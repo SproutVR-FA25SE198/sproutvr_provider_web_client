@@ -1,4 +1,5 @@
 import { Facebook, Linkedin, Twitter, Youtube } from 'lucide-react';
+import images from '@/assets/imgs';
 
 export default function Footer() {
   return (
@@ -7,11 +8,8 @@ export default function Footer() {
         <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12'>
           {/* Thương hiệu */}
           <div>
-            <div className='flex items-center gap-2 mb-4'>
-              <div className='w-10 h-10 bg-secondary rounded-lg flex items-center justify-center'>
-                <span className='text-2xl font-bold text-secondary-foreground'>S</span>
-              </div>
-              <span className='text-2xl font-bold'>SproutVR</span>
+            <div className='w-30 h-30 rounded-lg flex items-center justify-center '>
+              <img src={images.logoWhite} alt='SproutVR' />
             </div>
             <p className='text-white/80 mb-6 leading-relaxed'>
               Giải pháp học tập thực tế ảo toàn diện giúp học sinh Việt Nam khám phá kiến thức một cách sinh động và hấp
