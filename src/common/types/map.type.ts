@@ -1,4 +1,6 @@
-export type Map = {
+import { SubjectWithMaster } from './subject.type';
+
+export interface Map {
   id: string;
   mapCode: string;
   price: number;
@@ -7,4 +9,8 @@ export type Map = {
   imageUrl: string;
   status: string;
   subjectId: string;
-};
+}
+
+export interface MapWithSubject extends Omit<Map, 'subjectId'> {
+  subject: SubjectWithMaster;
+}

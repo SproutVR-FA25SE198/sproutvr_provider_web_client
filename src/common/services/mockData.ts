@@ -1,0 +1,141 @@
+import images from '@/assets/imgs';
+
+import { MapWithSubject, MasterSubject, SubjectWithMaster } from '../types';
+
+export const masterSubjects = [
+  {
+    id: 'ms001',
+    name: 'Khoa học Tự nhiên',
+    description: 'Khám phá thế giới xung quanh qua các bài học VR sinh động và trực quan.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+  },
+  {
+    id: 'ms002',
+    name: 'Toán học',
+    description: 'Biến những công thức khô khan thành trải nghiệm học tập tương tác đầy hứng thú.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+  },
+  {
+    id: 'ms003',
+    name: 'Lịch sử & Địa lý',
+    description: 'Du hành thời gian và không gian, chứng kiến lịch sử và địa lý bằng trải nghiệm thực tế ảo.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+  },
+] as MasterSubject[];
+
+export const subjectsWithMasters = [
+  {
+    id: 'sub001',
+    name: 'Sinh học tế bào',
+    description: 'Khám phá cấu trúc tế bào và cơ chế hoạt động của sự sống.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    masterSubject: masterSubjects[0],
+  },
+  {
+    id: 'sub002',
+    name: 'Hóa học cơ bản',
+    description: 'Thực hiện thí nghiệm an toàn và sinh động ngay trong thế giới ảo.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    masterSubject: masterSubjects[0],
+  },
+  {
+    id: 'sub003',
+    name: 'Đại số cơ bản',
+    description: 'Khám phá phương trình và hàm số thông qua các bài toán trực quan trong không gian 3D.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    masterSubject: masterSubjects[1],
+  },
+  {
+    id: 'sub004',
+    name: 'Hình học không gian',
+    description: 'Xoay, cắt, ghép các khối hình 3D để hiểu rõ bản chất của hình học.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    masterSubject: masterSubjects[1],
+  },
+  {
+    id: 'sub005',
+    name: 'Lịch sử Việt Nam',
+    description: 'Trải nghiệm những thời khắc quan trọng của dân tộc qua thực tế ảo sống động.',
+    imageUrl: '/images/subjects/vietnam-history.jpg',
+    status: 'active',
+    masterSubject: masterSubjects[2],
+  },
+  {
+    id: 'sub006',
+    name: 'Địa lý tự nhiên Việt Nam',
+    description: 'Khám phá cảnh quan, khí hậu và hệ sinh thái đặc trưng của Việt Nam.',
+    imageUrl: '/images/subjects/geography.jpg',
+    status: 'active',
+    masterSubject: masterSubjects[2],
+  },
+] as SubjectWithMaster[];
+
+export const mapsWithSubjects = [
+  {
+    id: 'map001',
+    mapCode: 'BIO-CELL-01',
+    price: 199000,
+    name: 'Khám phá tế bào',
+    description: 'Quan sát cấu trúc tế bào trong môi trường VR sống động, nơi từng bào quan đều chuyển động chân thực.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    subject: subjectsWithMasters[0],
+  },
+  {
+    id: 'map002',
+    mapCode: 'CHEM-LAB-01',
+    price: 229000,
+    name: 'Phòng thí nghiệm ảo',
+    description: 'Pha chế, phản ứng và quan sát hiện tượng hóa học trong môi trường an toàn và mô phỏng chính xác.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    subject: subjectsWithMasters[1],
+  },
+  {
+    id: 'map003',
+    mapCode: 'ALG-EQ-01',
+    price: 179000,
+    name: 'Phương trình và Hàm số',
+    description: 'Tương tác với đồ thị 3D, quan sát sự thay đổi của hàm số theo từng biến số trong không gian.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    subject: subjectsWithMasters[2],
+  },
+  {
+    id: 'map004',
+    mapCode: 'GEO-3D-01',
+    price: 199000,
+    name: 'Khám phá hình khối 3D',
+    description: 'Tạo, chia và ghép các hình học không gian bằng thao tác tay trong VR.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    subject: subjectsWithMasters[3],
+  },
+  {
+    id: 'map005',
+    mapCode: 'HIST-VN-01',
+    price: 249000,
+    name: 'Chiến thắng Điện Biên Phủ',
+    description: 'Trở về năm 1954 và chứng kiến trận chiến lịch sử của dân tộc Việt Nam trong không gian thực tế ảo.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    subject: subjectsWithMasters[4],
+  },
+  {
+    id: 'map006',
+    mapCode: 'GEO-VN-02',
+    price: 189000,
+    name: 'Khám phá miền Trung Việt Nam',
+    description: 'Bay qua các dãy núi, con sông và bờ biển đặc trưng của miền Trung trong VR 360°.',
+    imageUrl: `${images.landingHero}`,
+    status: 'active',
+    subject: subjectsWithMasters[5],
+  },
+] as MapWithSubject[];

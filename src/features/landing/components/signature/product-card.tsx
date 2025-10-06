@@ -2,18 +2,17 @@
 
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
+import { MapWithSubject } from '@/common/types';
 
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
-import type { FeaturedMap } from '../../data/signature';
-
-interface ProductCardProps extends FeaturedMap {
+interface ProductCardProps extends MapWithSubject {
   index: number;
   isInView: boolean;
 }
 
-export function ProductCard({ name, description, imageUrl, badge, index, isInView }: ProductCardProps) {
+export function ProductCard({ name, description, imageUrl, subject, index, isInView }: ProductCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -43,7 +42,7 @@ export function ProductCard({ name, description, imageUrl, badge, index, isInVie
             transition={{ duration: 0.5, delay: index * 0.15 + 0.3, type: 'spring', stiffness: 200 }}
             whileHover={{ scale: 1.1 }}
           >
-            {badge}
+            {subject.masterSubject.name}
           </motion.div>
         </div>
         <div className='p-6'>

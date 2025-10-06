@@ -18,39 +18,34 @@ export default function Footer() {
               dẫn hơn.
             </p>
             <div className='flex gap-3'>
-              {' '}
               <a
                 href='#'
                 className='w-10 h-10 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-colors'
                 aria-label='Facebook'
               >
-                {' '}
-                <Facebook className='w-5 h-5' />{' '}
-              </a>{' '}
+                <Facebook className='w-5 h-5' />
+              </a>
               <a
                 href='#'
                 className='w-10 h-10 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-colors'
                 aria-label='Twitter'
               >
-                {' '}
-                <Twitter className='w-5 h-5' />{' '}
-              </a>{' '}
+                <Twitter className='w-5 h-5' />
+              </a>
               <a
                 href='#'
                 className='w-10 h-10 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-colors'
                 aria-label='LinkedIn'
               >
-                {' '}
-                <Linkedin className='w-5 h-5' />{' '}
-              </a>{' '}
+                <Linkedin className='w-5 h-5' />
+              </a>
               <a
                 href='#'
                 className='w-10 h-10 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-colors'
                 aria-label='YouTube'
               >
-                {' '}
-                <Youtube className='w-5 h-5' />{' '}
-              </a>{' '}
+                <Youtube className='w-5 h-5' />
+              </a>
             </div>
           </div>
 
