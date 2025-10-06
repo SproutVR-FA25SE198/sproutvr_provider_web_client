@@ -1,5 +1,6 @@
-import { Facebook, Linkedin, Twitter, Youtube } from 'lucide-react';
 import images from '@/assets/imgs';
+
+import { Facebook, Linkedin, Twitter, Youtube } from 'lucide-react';
 
 export default function Footer() {
   return (

@@ -8,9 +8,6 @@ import { createBrowserRouter } from 'react-router-dom';
 const clientLayoutLazy = async () => ({
   Component: (await import('@/core/layouts/ClientLayout')).default,
 });
-// const mainLayoutLazy = async () => ({
-//   Component: (await import('@/core/layouts/MainLayout')).default,
-// });
 
 const router = createBrowserRouter([
   // Guest routes
@@ -21,6 +18,12 @@ const router = createBrowserRouter([
         path: configs.routes.home,
         lazy: async () => ({
           Component: (await import('@/features/landing/pages/Home')).default,
+        }),
+      },
+      {
+        path: configs.routes.catalog,
+        lazy: async () => ({
+          Component: (await import('@/features/catalog/pages/Catalog')).default,
         }),
       },
     ],
