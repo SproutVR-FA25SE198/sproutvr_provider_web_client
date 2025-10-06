@@ -33,7 +33,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
             </Badge>
           </div>
         </Link>
-        <CardHeader className='flex-1'>
+        <CardHeader className='flex-1 -mb-2'>
           <div className='flex items-start justify-between gap-2 mb-2'>
             <CardTitle className='text-xl'>
               <Link to={`/catalog/${map.id}`} className='hover:text-secondary transition-colors'>
@@ -44,7 +44,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
           <CardDescription>{map.description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className='flex items-center justify-between mb-3'>
+          <div className='flex items-center justify-between'>
             <Badge variant='default'>{map.subject.name}</Badge>
             <span className='text-lg font-bold text-secondary'>{map.price.toLocaleString('vi-VN')} VND</span>
           </div>

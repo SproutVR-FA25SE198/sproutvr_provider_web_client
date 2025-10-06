@@ -69,16 +69,16 @@ export default function CatalogPage() {
 
   return (
     <div className='min-h-screen bg-background'>
-      <main className='pt-24 pb-16'>
+      <main className='pt-22 pb-12'>
         <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
           {/* Page Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className='text-center mb-12'
+            className='text-center mb-8'
           >
-            <h1 className='text-4xl md:text-5xl font-bold text-primary mb-4 text-balance'>Catalog Sản Phẩm VR</h1>
+            <h1 className='text-4xl md:text-4xl font-bold text-primary mb-4 text-balance'>Catalog Sản Phẩm VR</h1>
             <p className='text-lg text-muted-foreground max-w-2xl mx-auto text-pretty'>
               Khám phá bộ sưu tập bài học VR tương tác cho mọi môn học
             </p>
