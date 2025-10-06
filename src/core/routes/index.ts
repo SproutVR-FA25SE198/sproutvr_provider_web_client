@@ -5,19 +5,25 @@ import { createBrowserRouter } from 'react-router-dom';
 // const authGuardLazy = async () => ({
 //   Component: (await import('@/core/guards/AuthGuard')).default,
 // });
+const clientLayoutLazy = async () => ({
+  Component: (await import('@/core/layouts/ClientLayout')).default,
+});
+// const mainLayoutLazy = async () => ({
+//   Component: (await import('@/core/layouts/MainLayout')).default,
+// });
 
 const router = createBrowserRouter([
-  // Authenticated routes
+  // Guest routes
   {
-    // lazy: authGuardLazy,
-    // children: [
-    //   {
-    //     lazy: mainLayoutLazy,
-    //     children: [
-    //
-    //     ],
-    //   },
-    // ],
+    lazy: clientLayoutLazy,
+    children: [
+      {
+        path: configs.routes.home,
+        lazy: async () => ({
+          Component: (await import('@/features/landing/pages/Home')).default,
+        }),
+      },
+    ],
   },
 
   // Error routes

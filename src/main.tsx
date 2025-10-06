@@ -1,11 +1,14 @@
+import routes from '@/core/routes';
+
 import { StrictMode } from 'react';
+import { CookiesProvider } from 'react-cookie';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { CookiesProvider } from 'react-cookie';
-import routes from '@/core/routes';
+
+import './index.css';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
