@@ -23,7 +23,7 @@ export default function BasketPage() {
   const total = subtotal + tax;
 
   return (
-    <div className='bg-background max-h-screen flex flex-col mt-18'>
+    <div className='bg-background max-h-screen flex flex-col'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
