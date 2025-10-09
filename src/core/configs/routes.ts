@@ -4,7 +4,7 @@ const routes = {
   register: '/register',
   profile: '/profile',
   catalog: '/catalog',
-  mapDetail: '/catalog/:id',
+  mapDetails: '/catalog/:id',
   checkout: '/checkout',
   logout: '/logout',
   notFound: '*',

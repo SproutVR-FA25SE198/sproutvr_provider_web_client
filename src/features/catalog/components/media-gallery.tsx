@@ -1,0 +1,45 @@
+'use client';
+
+import { cn } from '@/common/utils';
+
+import { useState } from 'react';
+
+interface MediaGalleryProps {
+  images: string[];
+}
+
+export function MediaGallery({ images }: MediaGalleryProps) {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  return (
+    <div className='space-y-4'>
+      {/* Main preview */}
+      <div className='relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-lg'>
+        <img
+          src={images[selectedIndex] || '/placeholder.svg'}
+          alt='Product preview'
+          //   fill
+          className='object-cover transition-opacity duration-300'
+          //   priority
+        />
+      </div>
+
+      {/* Thumbnails */}
+      <div className='grid grid-cols-4 gap-3'>
+        {images.map((image, index) => (
+          <button
+            key={index}
+            onClick={() => setSelectedIndex(index)}
+            className={cn(
+              'relative aspect-[4/3] rounded-lg overflow-hidden bg-muted transition-all duration-200',
+              'hover:ring-2 hover:ring-primary hover:scale-105',
+              selectedIndex === index ? 'ring-2 ring-primary scale-105 shadow-md' : 'opacity-70',
+            )}
+          >
+            <img src={image || '/placeholder.svg'} alt={`Thumbnail ${index + 1}`} className='object-cover' />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}

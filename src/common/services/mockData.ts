@@ -1,6 +1,6 @@
 import images from '@/assets/imgs';
 
-import { MapWithSubject, MasterSubject, SubjectWithMaster } from '../types';
+import { MapMetadata, MapWithSubject, MasterSubject, SubjectWithMaster } from '../types';
 
 export const masterSubjects = [
   {
@@ -139,3 +139,58 @@ export const mapsWithSubjects = [
     subject: subjectsWithMasters[5],
   },
 ] as MapWithSubject[];
+
+export const mockMapMetadata: MapMetadata = {
+  mapId: 'map-001',
+  mapCode: 'SCI-8-CELLVR',
+  description: 'Quan sát cấu trúc tế bào trong môi trường VR sống động, nơi từng bào quan đều chuyển động chân thực.',
+  imageUrl: `${images.landingHero}`,
+  activityTypes: ['Khám phá', 'Thí nghiệm', 'Tương tác'],
+  taskLocations: 3,
+  taskLocationImage: `${images.landingHero}`,
+  totalTaskObjects: 6,
+  taskObjects: [
+    {
+      id: 'obj-001',
+      mapId: 'map-001',
+      name: 'Nhân tế bào',
+      imageUrl: `${images.landingHero}`,
+      locationId: 'loc-001',
+    },
+    {
+      id: 'obj-002',
+      mapId: 'map-001',
+      imageUrl: `${images.landingHero}`,
+      name: 'Màng tế bào',
+      locationId: 'loc-002',
+    },
+    {
+      id: 'obj-003',
+      mapId: 'map-001',
+      name: 'Ty thể',
+      imageUrl: `${images.landingHero}`,
+      locationId: 'loc-003',
+    },
+    {
+      id: 'obj-004',
+      mapId: 'map-001',
+      name: 'Ribosome',
+      locationId: 'loc-001',
+      imageUrl: `${images.landingHero}`,
+    },
+    {
+      id: 'obj-005',
+      mapId: 'map-001',
+      name: 'Lưới nội chất',
+      locationId: 'loc-002',
+      imageUrl: `${images.landingHero}`,
+    },
+    {
+      id: 'obj-006',
+      mapId: 'map-001',
+      imageUrl: `${images.landingHero}`,
+      name: 'Lysosome',
+      locationId: 'loc-003',
+    },
+  ],
+};
