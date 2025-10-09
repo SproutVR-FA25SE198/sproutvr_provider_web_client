@@ -16,7 +16,7 @@ export function KeyFeatures() {
   const imageVisible = useInView(imageRef, { once: true, amount: 0.3 });
 
   return (
-    <section id='features' ref={sectionRef} className='py-20 md:py-24 bg-background relative overflow-hidden'>
+    <section id='features' ref={sectionRef} className='bg-background relative overflow-hidden'>
       <motion.div
         className='absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-accent to-transparent opacity-50'
         initial={{ x: 100, opacity: 0 }}
