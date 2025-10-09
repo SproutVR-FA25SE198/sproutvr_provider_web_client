@@ -8,7 +8,7 @@ import MapCard from './map-card';
 interface MapListProps {
   mapList: MapWithSubject[];
   currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentPage: (page: number) => void;
   totalPages: number;
 }
 
@@ -28,7 +28,7 @@ const MapList = ({ mapList, currentPage, setCurrentPage, totalPages }: MapListPr
           <Button
             variant='outline'
             size='icon'
-            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
           >
             <ChevronLeft className='w-4 h-4' />
@@ -49,7 +49,7 @@ const MapList = ({ mapList, currentPage, setCurrentPage, totalPages }: MapListPr
           <Button
             variant='outline'
             size='icon'
-            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
           >
             <ChevronRight className='w-4 h-4' />
