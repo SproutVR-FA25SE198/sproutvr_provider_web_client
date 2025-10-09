@@ -101,7 +101,7 @@ function ActionButtons({
     <>
       {isAuthenticated ? (
         <>
-          <Link to={configs.routes.profile}>
+          <Link to={configs.routes.personal}>
             <Button
               variant='ghost'
               size={mobile ? 'default' : 'icon'}

@@ -1,6 +1,6 @@
 import images from '@/assets/imgs';
 
-import { MapMetadata, MapWithSubject, MasterSubject, SubjectWithMaster } from '../types';
+import { MapMetadata, MapWithSubject, MasterSubject, Order, Organization, SubjectWithMaster } from '../types';
 
 export const masterSubjects = [
   {
@@ -194,3 +194,74 @@ export const mockMapMetadata: MapMetadata = {
     },
   ],
 };
+
+export const mockOrganizations: Organization[] = [
+  {
+    id: 'user-001',
+    name: 'Trường THPT Lê Hồng Phong',
+    email: 'contact@lehongphong.edu.vn',
+    role: 'organization',
+    orgId: 'org-001',
+    phone: '028-3910-1234',
+    address: '235 Nguyễn Văn Cừ, Quận 5, TP. Hồ Chí Minh',
+    macAddress: '00-14-22-01-23-45',
+    activationKey: 'FPT-23092025-LEHP',
+  },
+  {
+    id: 'user-002',
+    name: 'Trường THPT Chuyên Hà Nội - Amsterdam',
+    email: 'info@hn-ams.edu.vn',
+    role: 'organization',
+    orgId: 'org-002',
+    phone: '024-3829-5678',
+    address: 'Hoàng Minh Giám, Cầu Giấy, Hà Nội',
+    macAddress: '00-16-4D-2B-55-9C',
+    activationKey: 'HNA-24092025-AMSD',
+  },
+  {
+    id: 'user-003',
+    name: 'Trường THCS Nguyễn Du',
+    email: 'nguyendu@edu.vn',
+    role: 'organization',
+    orgId: 'org-003',
+    phone: '028-3876-4321',
+    address: '12 Trần Hưng Đạo, Quận 1, TP. Hồ Chí Minh',
+    macAddress: '00-26-B9-3E-8C-22',
+    activationKey: 'ND-25092025-TTND',
+  },
+];
+
+export const mockOrders: Order[] = [
+  {
+    id: 'order-001',
+    organizationId: 'org-001',
+    createdAt: '2025-09-21T10:45:00Z',
+    items: 3,
+    totalMoney: 1500000,
+    status: 'Completed',
+  },
+  {
+    id: 'order-002',
+    organizationId: 'org-002',
+    createdAt: '2025-09-23T14:10:00Z',
+    items: 5,
+    totalMoney: 2750000,
+    status: 'Pending',
+  },
+  {
+    id: 'order-003',
+    organizationId: 'org-003',
+    createdAt: '2025-09-25T08:20:00Z',
+    items: 2,
+    totalMoney: 950000,
+    status: 'Failed',
+  },
+  {
+    id: 'order-004',
+    organizationId: 'org-001',
+    createdAt: '2025-09-30T16:40:00Z',
+    items: 1,
+    totalMoney: 500000,
+    status: 'Completed',
+  },
+];
