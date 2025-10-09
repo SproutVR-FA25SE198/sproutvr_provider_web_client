@@ -13,7 +13,7 @@ import { HeroStat } from './hero-stat';
 
 export function Hero() {
   return (
-    <section className='relative pt-24 pb-24 overflow-hidden bg-gradient-to-br from-primary via-primary to-[#0f2c5b]'>
+    <section className='relative pb-24 overflow-hidden bg-gradient-to-br from-primary via-primary to-[#0f2c5b]'>
       <div className='absolute inset-0 opacity-10'>
         <motion.div
           className='absolute top-20 left-10 w-72 h-72 bg-secondary rounded-full blur-3xl'
@@ -55,7 +55,7 @@ export function Hero() {
         />
       </div>
 
-      <SectionContainer className='relative z-10'>
+      <SectionContainer className='pt-8 relative z-10'>
         <div className='grid lg:grid-cols-2 gap-12 items-center'>
           {/* Left Content */}
           <div className='text-center lg:text-left'>

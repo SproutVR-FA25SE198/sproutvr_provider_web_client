@@ -19,7 +19,7 @@ export function NextStep() {
   const stepsInView = useInView(stepsRef, { once: true, amount: 0.3 });
 
   return (
-    <section id='get-started' ref={ref} className='py-20 md:py-24 bg-background'>
+    <section id='get-started' ref={ref} className='bg-background'>
       <SectionContainer>
         <SectionHeader
           heading={nextStepData.heading}

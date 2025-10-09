@@ -14,7 +14,7 @@ export function SignatureProducts() {
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section id='products' ref={ref} className='py-20 md:py-24 bg-accent'>
+    <section id='products' ref={ref} className='bg-accent'>
       <SectionContainer>
         <SectionHeader
           heading={signatureProductsData.heading}

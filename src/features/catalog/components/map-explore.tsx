@@ -22,10 +22,10 @@ export function MapExplore({ masterSubject, maps }: MapExploreProps) {
 
       <div
         ref={scrollRef}
-        className='flex gap-24 overflow-x-auto scrollbar-hide scroll-smooth pb-4'
+        className='flex gap-24 overflow-x-auto mx-auto scrollbar-hide scroll-smooth pb-4'
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <MapList mapList={maps.slice(0, 3)} currentPage={1} setCurrentPage={() => {}} totalPages={1} />
+        <MapList mapList={maps.slice(0, 4)} currentPage={1} setCurrentPage={() => {}} totalPages={1} itemsPerRow={4} />
       </div>
     </div>
   );

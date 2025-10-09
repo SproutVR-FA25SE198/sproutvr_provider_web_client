@@ -2,6 +2,7 @@ import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { MapWithSubject } from '@/common/types';
+import { truncateText } from '@/common/utils/truncateText';
 
 import { motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
@@ -20,7 +21,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
     >
-      <Card className='overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col'>
+      <Card className='overflow-hidden hover:shadow-lg transition-shadow md:h-100 flex flex-col'>
         <Link to={`/catalog/${map.id}`}>
           <div className=' relative aspect-video overflow-hidden'>
             <img
@@ -33,23 +34,25 @@ const MapCard = ({ map, index }: MapCardProps) => {
             </Badge>
           </div>
         </Link>
-        <CardHeader className='flex-1 -mb-2'>
+        <CardHeader className='flex-1 -mb-2 py-4'>
           <div className='flex items-start justify-between gap-2 mb-2'>
             <CardTitle className='text-xl'>
               <Link to={`/catalog/${map.id}`} className='hover:text-secondary transition-colors'>
-                {map.name}
+                {truncateText(map.name, 22)}
               </Link>
             </CardTitle>
           </div>
-          <CardDescription>{map.description}</CardDescription>
+          <CardDescription>{truncateText(map.description, 50)}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className='flex items-center justify-between'>
-            <Badge variant='default'>{map.subject.name}</Badge>
+        <CardContent className='py-0 flex-1'>
+          <div className='flex items-center h-15 justify-between'>
+            <Badge variant='default' className='px-2 md:w-25'>
+              {map.subject.name}
+            </Badge>
             <span className='text-lg font-bold text-secondary'>{map.price.toLocaleString('vi-VN')} VND</span>
           </div>
         </CardContent>
-        <CardFooter className='gap-2'>
+        <CardFooter className='gap-2 pt-0'>
           <Button className='flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground' asChild>
             <Link to={`/catalog/${map.id}`}>Xem Chi Tiết</Link>
           </Button>

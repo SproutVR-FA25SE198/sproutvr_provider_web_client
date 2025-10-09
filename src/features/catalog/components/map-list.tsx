@@ -8,15 +8,16 @@ import MapCard from './map-card';
 interface MapListProps {
   mapList: MapWithSubject[];
   currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentPage: (page: number) => void;
   totalPages: number;
+  itemsPerRow?: number;
 }
 
-const MapList = ({ mapList, currentPage, setCurrentPage, totalPages }: MapListProps) => {
+const MapList = ({ mapList, currentPage, setCurrentPage, totalPages, itemsPerRow = 3 }: MapListProps) => {
   return (
     <>
       {/* Product Grid */}
-      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8'>
+      <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-${itemsPerRow} gap-6 mb-8`}>
         {mapList.map((map, index) => (
           <MapCard key={map.id} map={map} index={index} />
         ))}
@@ -28,7 +29,7 @@ const MapList = ({ mapList, currentPage, setCurrentPage, totalPages }: MapListPr
           <Button
             variant='outline'
             size='icon'
-            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
           >
             <ChevronLeft className='w-4 h-4' />
@@ -49,7 +50,7 @@ const MapList = ({ mapList, currentPage, setCurrentPage, totalPages }: MapListPr
           <Button
             variant='outline'
             size='icon'
-            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
           >
             <ChevronRight className='w-4 h-4' />

@@ -16,7 +16,7 @@ export function Benefits() {
   const testimonialVisible = useInView(testimonialRef, { once: true, amount: 0.3 });
 
   return (
-    <section id='benefits' className='py-20 md:py-24 bg-primary text-white relative overflow-hidden'>
+    <section id='benefits' className='bg-primary text-white relative overflow-hidden'>
       {/* Background Pattern */}
       <div className='absolute inset-0 opacity-5'>
         <div

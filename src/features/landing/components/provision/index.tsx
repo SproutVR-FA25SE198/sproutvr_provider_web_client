@@ -14,7 +14,7 @@ export function Provision() {
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   return (
-    <section ref={ref} className='py-20 md:py-24 bg-background'>
+    <section ref={ref} className='bg-background'>
       <SectionContainer>
         <SectionHeader
           heading={ProvisionData.heading}
