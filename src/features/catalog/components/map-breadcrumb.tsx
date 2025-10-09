@@ -9,7 +9,7 @@ interface MapBreadcrumbProps {
 
 const MapBreadcrumb = ({ masterSubject, subject, mapName }: MapBreadcrumbProps) => {
   return (
-    <nav className='flex items-center gap-2 text-sm text-muted-foreground mt-12'>
+    <nav className='flex items-center gap-2 text-sm text-muted-foreground'>
       <Link to='/catalog' className='hover:text-foreground transition-colors'>
         Catalog
       </Link>

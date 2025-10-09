@@ -27,7 +27,7 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
   };
 
   return (
-    <div className='border-t border-border pt-12 mb-16'>
+    <div className='border-t border-border pt-8 mb-16'>
       <h2 className='text-2xl font-bold text-foreground mb-8'>Resources</h2>
 
       <div className='grid lg:grid-cols-2 gap-8 mb-12'>
