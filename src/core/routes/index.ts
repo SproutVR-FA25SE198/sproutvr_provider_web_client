@@ -44,6 +44,12 @@ const router = createBrowserRouter([
           Component: (await import('@/features/orders/pages/Basket')).default,
         }),
       },
+      {
+        path: configs.routes.personal,
+        lazy: async () => ({
+          Component: (await import('@/features/personal/pages/Personal')).default,
+        }),
+      },
     ],
   },
 

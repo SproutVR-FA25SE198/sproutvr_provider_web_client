@@ -2,7 +2,7 @@ const routes = {
   home: '/',
   login: '/login',
   register: '/register',
-  profile: '/profile',
+  personal: '/personal/:tab?',
   catalog: '/catalog',
   basket: '/basket',
   mapDetails: '/catalog/:id',
