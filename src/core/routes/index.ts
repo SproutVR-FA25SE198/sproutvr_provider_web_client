@@ -26,6 +26,12 @@ const router = createBrowserRouter([
           Component: (await import('@/features/catalog/pages/Catalog')).default,
         }),
       },
+      {
+        path: configs.routes.mapDetails,
+        lazy: async () => ({
+          Component: (await import('@/features/catalog/pages/MapDetails')).default,
+        }),
+      },
     ],
   },
 
