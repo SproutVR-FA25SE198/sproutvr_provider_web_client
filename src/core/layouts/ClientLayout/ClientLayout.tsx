@@ -7,7 +7,7 @@ const ClientLayout = () => {
   return (
     <>
       <Header />
-      <main className='min-h-[calc(100vh-80px)]'>
+      <main className='mt-12 min-h-[calc(100vh-80px)]'>
         <Outlet />
       </main>
       <Footer />
