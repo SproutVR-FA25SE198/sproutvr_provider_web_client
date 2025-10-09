@@ -34,6 +34,18 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // Auth routes
+  {
+    lazy: clientLayoutLazy, // authGuardLazy,
+    children: [
+      {
+        path: configs.routes.basket,
+        lazy: async () => ({
+          Component: (await import('@/features/orders/pages/Basket')).default,
+        }),
+      },
+    ],
+  },
 
   // Error routes
   {
