@@ -59,7 +59,7 @@ export default function PersonalPage() {
                   <TabsTrigger
                     onClick={() => setTab(PERSONAL_TABS.profile)}
                     value={PERSONAL_TABS.profile}
-                    className='w-full justify-start gap-3 data-[state=active]:bg-secondary'
+                    className='w-full justify-start gap-3 data-[state=active]:bg-secondary data-[state=active]:text-white'
                   >
                     <User className='w-5 h-5' />
                     <span>Profile</span>
@@ -67,7 +67,7 @@ export default function PersonalPage() {
                   <TabsTrigger
                     onClick={() => setTab(PERSONAL_TABS.library)}
                     value={PERSONAL_TABS.library}
-                    className='w-full justify-start gap-3 data-[state=active]:bg-secondary'
+                    className='w-full justify-start gap-3 data-[state=active]:bg-secondary data-[state=active]:text-white'
                   >
                     <Library className='w-5 h-5' />
                     <span>Library</span>
@@ -75,7 +75,7 @@ export default function PersonalPage() {
                   <TabsTrigger
                     onClick={() => setTab(PERSONAL_TABS.orders)}
                     value={PERSONAL_TABS.orders}
-                    className='w-full justify-start gap-3 data-[state=active]:bg-secondary'
+                    className='w-full justify-start gap-3 data-[state=active]:bg-secondary data-[state=active]:text-white'
                   >
                     <History className='w-5 h-5' />
                     <span>Payment History</span>

@@ -1,6 +1,7 @@
 import images from '@/assets/imgs';
 
 import { GetMapByIdResponse, MapWithSubject, MasterSubject, Order, Organization, SubjectWithMaster } from '../types';
+import { MapMetadata, MapWithSubject, MasterSubject, Order, Organization, SubjectWithMaster } from '../types';
 
 export const masterSubjects = [
   {

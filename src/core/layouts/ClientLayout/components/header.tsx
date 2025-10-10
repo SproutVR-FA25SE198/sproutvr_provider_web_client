@@ -4,7 +4,7 @@ import images from '@/assets/imgs';
 import { Button } from '@/common/components/ui/button';
 import configs from '@/core/configs';
 
-import { Menu, X } from 'lucide-react';
+import { LogOut, Menu, ShoppingBasket, User, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -29,7 +29,7 @@ export default function Header() {
 
           {/* CTA Buttons */}
           <div className='hidden md:flex items-center gap-0'>
-            <ActionButtons isAuthenticated={false} onClick={() => {}} />
+            <ActionButtons isAuthenticated={true} onClick={() => {}} />
           </div>
 
           {/* Mobile Menu Button */}
@@ -45,7 +45,7 @@ export default function Header() {
               <NavLinks /*mobile onClick={() => setMobileMenuOpen(false)}*/ />
 
               <div className='flex flex-col gap-2 pt-2'>
-                <ActionButtons mobile isAuthenticated={false} onClick={() => setMobileMenuOpen(false)} />
+                <ActionButtons mobile isAuthenticated={true} onClick={() => setMobileMenuOpen(false)} />
               </div>
             </nav>
           </div>
@@ -101,15 +101,26 @@ function ActionButtons({
     <>
       {isAuthenticated ? (
         <>
-          <Link to={configs.routes.personal}>
+          <Link to={configs.routes.personal.replace(':tab?', 'profile')}>
             <Button
               variant='ghost'
               size={mobile ? 'default' : 'icon'}
               className='text-primary hover:bg-secondary/90 text-secondary-foreground'
               onClick={onClick}
             >
-              Tài khoản
+              <User className='w-5 h-5 text-primary' />
               {mobile && <span className='ml-2'>Tài khoản</span>}
+            </Button>
+          </Link>
+          <Link to={configs.routes.basket}>
+            <Button
+              variant='ghost'
+              size={mobile ? 'default' : 'icon'}
+              className='text-primary hover:bg-secondary/90 text-secondary-foreground'
+              onClick={onClick}
+            >
+              <ShoppingBasket className='w-5 h-5 text-primary' />
+              {mobile && <span className='ml-2'>Giỏ hàng</span>}
             </Button>
           </Link>
           <Button
@@ -118,7 +129,7 @@ function ActionButtons({
             className='text-primary hover:bg-secondary/90 text-secondary-foreground'
             // onClick={handleLogout}
           >
-            Đăng xuất
+            <LogOut className='w-5 h-5 text-primary' />
             {mobile && <span className='ml-2'>Đăng xuất</span>}
           </Button>
         </>
