@@ -1,29 +1,31 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTrigger } from '@/common/components/ui/dialog';
-import { MapMetadata } from '@/common/types';
-import { cn } from '@/common/utils';
+import { GetMapByIdResponse } from '@/common/types';
+import { ActivityType, cn } from '@/common/utils';
 
 import { Box, ChevronLeft, ChevronRight, MapPin, ZoomIn } from 'lucide-react';
 import { useState } from 'react';
 
 interface MapResourcesProps {
-  mapMetadata: MapMetadata;
+  mapMetadata: GetMapByIdResponse;
 }
 
 export function MapResources({ mapMetadata }: MapResourcesProps) {
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0);
   const objectsPerPage = 4;
-  const totalPages = Math.ceil(mapMetadata.taskObjects.length / objectsPerPage);
+  const totalPages = Math.ceil(mapMetadata.mapObjects.length / objectsPerPage);
+  const totalObjects = mapMetadata.mapObjects.length;
+  const totalLocations = mapMetadata.taskLocations.length;
 
-  const visibleObjects = mapMetadata.taskObjects.slice(currentObjectIndex, currentObjectIndex + objectsPerPage);
+  const visibleObjects = mapMetadata.mapObjects.slice(currentObjectIndex, currentObjectIndex + objectsPerPage);
 
   const handlePrevious = () => {
     setCurrentObjectIndex((prev) => Math.max(0, prev - objectsPerPage));
   };
 
   const handleNext = () => {
-    setCurrentObjectIndex((prev) => Math.min(mapMetadata.taskObjects.length - objectsPerPage, prev + objectsPerPage));
+    setCurrentObjectIndex((prev) => Math.min(mapMetadata.mapObjects.length - objectsPerPage, prev + objectsPerPage));
   };
 
   return (
@@ -36,13 +38,13 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
           <h3 className='text-lg font-semibold text-foreground mb-4 flex items-center gap-2'>
             <MapPin className='w-5 h-5 text-primary' />
             Task location
-            <span className='text-muted-foreground'>({mapMetadata.taskLocations})</span>
+            <span className='text-muted-foreground'>({totalLocations})</span>
           </h3>
           <Dialog>
             <DialogTrigger asChild>
               <div className='relative aspect-video rounded-xl overflow-hidden bg-accent border border-border cursor-pointer group'>
                 <img
-                  src={mapMetadata.taskLocationImage || '/placeholder.svg'}
+                  src={mapMetadata.taskLocations[0].imageUrl || '/placeholder.svg'}
                   alt='Task location'
                   className='object-cover transition-transform duration-300 group-hover:scale-105'
                 />
@@ -54,7 +56,7 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
             <DialogContent className='max-w-4xl'>
               <div className='relative aspect-video w-full'>
                 <img
-                  src={mapMetadata.taskLocationImage || '/placeholder.svg'}
+                  src={mapMetadata.taskLocations[0].imageUrl || '/placeholder.svg'}
                   alt='Task location'
                   className='object-contain'
                 />
@@ -67,7 +69,7 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
         <div>
           <h3 className='text-lg font-semibold text-foreground mb-4'>Activity types</h3>
           <ul className='space-y-3'>
-            {mapMetadata.activityTypes.map((type, index) => (
+            {Object.values(ActivityType).map((type, index) => (
               <li key={index} className='flex items-start gap-3 p-4 rounded-lg bg-accent/50 border border-border'>
                 <div className='w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0' />
                 <span className='text-foreground'>{type}</span>
@@ -82,7 +84,7 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
         <h3 className='text-lg font-semibold text-foreground mb-4 flex items-center gap-2'>
           <Box className='w-5 h-5 text-secondary' />
           Map objects
-          <span className='text-muted-foreground'>({mapMetadata.totalTaskObjects})</span>
+          <span className='text-muted-foreground'>({totalObjects})</span>
         </h3>
         <div className='relative'>
           {/* Navigation Buttons */}
@@ -102,7 +104,7 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
 
           <button
             onClick={handleNext}
-            disabled={currentObjectIndex >= mapMetadata.taskObjects.length - objectsPerPage}
+            disabled={currentObjectIndex >= totalObjects - objectsPerPage}
             className={cn(
               'absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10',
               'w-10 h-10 rounded-full bg-background border-2 border-border',

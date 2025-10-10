@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Checkbox } from '@/common/components/ui/checkbox';
 import { Input } from '@/common/components/ui/input';
@@ -15,6 +16,11 @@ import { useState } from 'react';
 import MapList from '../components/map-list';
 
 const subjects = [{ id: 'all', name: 'Tất cả' }, ...defaultSubject];
+
+//===========TO-DO:
+//-- modify usePagination
+//-- modify the subject filter
+//-- integrate with backend
 
 export default function CatalogPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +69,7 @@ export default function CatalogPage() {
   const { currentPage, totalPages, currentData, setPage } = usePagination(filteredProducts, 3);
 
   return (
-    <div className='pt-6 bg-background'>
+    <div className='pt-6 min-h-screen bg-background'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
         {/* Page Header */}
         <motion.div
@@ -89,7 +95,16 @@ export default function CatalogPage() {
             <div className='sticky top-24 '>
               <Card>
                 <CardHeader>
-                  <CardTitle className='text-lg'>Danh mục</CardTitle>
+                  <div className='grid grid-cols-2 items-center'>
+                    <CardTitle className='text-lg'>Danh mục</CardTitle>
+                    <Button
+                      variant='default'
+                      className='p-0 text-xs px-2 h-7 hover:cursor-pointer justify-self-end'
+                      // onClick={() => handleCategoryToggle(['all'])}
+                    >
+                      Tìm kiếm
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className='space-y-3'>
                   {subjects.map((subject) => (
@@ -145,7 +160,13 @@ export default function CatalogPage() {
               </select>
             </motion.div>
 
-            <MapList mapList={currentData} currentPage={currentPage} setCurrentPage={setPage} totalPages={totalPages} />
+            <MapList
+              mapList={currentData}
+              currentPage={currentPage}
+              setCurrentPage={setPage}
+              itemsPerRow={3}
+              totalPages={totalPages}
+            />
           </div>
         </div>
       </div>

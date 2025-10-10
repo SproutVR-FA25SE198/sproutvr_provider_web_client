@@ -1,7 +1,7 @@
 import images from '@/assets/imgs';
 
 import {
-  MapMetadata,
+  GetMapByIdResponse,
   MapWithSubject,
   MasterSubject,
   Order,
@@ -148,59 +148,84 @@ export const mapsWithSubjects = [
   },
 ] as MapWithSubject[];
 
-export const mockMapMetadata: MapMetadata = {
-  mapId: 'map-001',
-  mapCode: 'SCI-8-CELLVR',
-  description: 'Quan sát cấu trúc tế bào trong môi trường VR sống động, nơi từng bào quan đều chuyển động chân thực.',
-  imageUrl: `${images.landingHero}`,
-  activityTypes: ['Khám phá', 'Thí nghiệm', 'Tương tác'],
-  taskLocations: 3,
-  taskLocationImage: `${images.landingHero}`,
-  totalTaskObjects: 6,
-  taskObjects: [
+export const mockMapMetadata: GetMapByIdResponse = {
+  id: 'map001',
+  mapCode: 'SCIENCE_LAB_VR',
+  price: 1200000,
+  name: 'Phòng Thí Nghiệm Khoa Học Ảo',
+  description:
+    'Khám phá thế giới vật lý và hóa học trong môi trường 3D tương tác, giúp học sinh hiểu sâu hơn về các hiện tượng tự nhiên.',
+  imageUrl: '/images/maps/science-lab-vr.jpg',
+  status: 'active',
+  subject: {
+    id: 'subject001',
+    name: 'Vật Lý Cơ Bản',
+    description: 'Môn học giúp học sinh làm quen với các khái niệm cơ bản về vật lý thông qua trải nghiệm thực tế ảo.',
+    imageUrl: '/images/subjects/basic-physics.jpg',
+    status: 'active',
+    masterSubject: {
+      id: 'master001',
+      name: 'Khoa Học Tự Nhiên',
+      description: 'Nhóm môn học giúp học sinh khám phá các hiện tượng tự nhiên qua mô phỏng thực tế ảo.',
+      imageUrl: '/images/masters/natural-science.jpg',
+      status: 'active',
+    },
+  },
+  mapObjects: [
     {
-      id: 'obj-001',
-      mapId: 'map-001',
-      name: 'Nhân tế bào',
-      imageUrl: `${images.landingHero}`,
-      locationId: 'loc-001',
+      id: 'obj001',
+      mapId: 'map001',
+      name: 'Ống Nghiệm',
+      imageUrl: '/images/objects/test-tube.png',
+      objectCode: 'OBJ_TEST_TUBE',
     },
     {
-      id: 'obj-002',
-      mapId: 'map-001',
-      imageUrl: `${images.landingHero}`,
-      name: 'Màng tế bào',
-      locationId: 'loc-002',
+      id: 'obj002',
+      mapId: 'map001',
+      name: 'Cân Điện Tử',
+      imageUrl: '/images/objects/digital-scale.png',
+      objectCode: 'OBJ_SCALE',
     },
     {
-      id: 'obj-003',
-      mapId: 'map-001',
-      name: 'Ty thể',
-      imageUrl: `${images.landingHero}`,
-      locationId: 'loc-003',
+      id: 'obj003',
+      mapId: 'map001',
+      name: 'Bếp Cồn',
+      imageUrl: '/images/objects/burner.png',
+      objectCode: 'OBJ_BURNER',
     },
     {
-      id: 'obj-004',
-      mapId: 'map-001',
-      name: 'Ribosome',
-      locationId: 'loc-001',
-      imageUrl: `${images.landingHero}`,
-    },
-    {
-      id: 'obj-005',
-      mapId: 'map-001',
-      name: 'Lưới nội chất',
-      locationId: 'loc-002',
-      imageUrl: `${images.landingHero}`,
-    },
-    {
-      id: 'obj-006',
-      mapId: 'map-001',
-      imageUrl: `${images.landingHero}`,
-      name: 'Lysosome',
-      locationId: 'loc-003',
+      id: 'obj004',
+      mapId: 'map001',
+      name: 'Ống Đong',
+      imageUrl: '/images/objects/measuring-cylinder.png',
+      objectCode: 'OBJ_CYLINDER',
     },
   ],
+  taskLocations: [
+    {
+      id: 'loc001',
+      mapId: 'map001',
+      name: 'Khu Chuẩn Bị Thí Nghiệm',
+      imageUrl: '/images/locations/preparation-area.jpg',
+      locationCode: 'LOC_PREP',
+    },
+    {
+      id: 'loc002',
+      mapId: 'map001',
+      name: 'Khu Đun Nóng',
+      imageUrl: '/images/locations/heating-area.jpg',
+      locationCode: 'LOC_HEAT',
+    },
+    {
+      id: 'loc003',
+      mapId: 'map001',
+      name: 'Khu Pha Chế Dung Dịch',
+      imageUrl: '/images/locations/mixing-area.jpg',
+      locationCode: 'LOC_MIX',
+    },
+  ],
+  createdAt: '2025-03-12T10:45:00Z',
+  updatedAt: '2025-09-28T14:22:00Z',
 };
 
 export const mockOrganizations: Organization[] = [

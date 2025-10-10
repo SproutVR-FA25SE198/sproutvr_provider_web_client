@@ -3,3 +3,8 @@ export enum Role {
   GUEST = 'GUEST',
   USER = 'ORGANIZATION',
 }
+
+export enum ActivityType {
+  QUIZ = 'QUIZ',
+  ACTION = 'ACTION',
+}
