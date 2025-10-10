@@ -1,5 +1,6 @@
+import { Pagination } from './response.type';
 import { SubjectWithMaster } from './subject.type';
-import { TaskObject } from './task.type';
+import { TaskLocation, TaskObject } from './task.type';
 
 export interface Map {
   id: string;
@@ -26,4 +27,13 @@ export interface MapMetadata {
   taskLocationImage: string;
   totalTaskObjects: number;
   taskObjects: TaskObject[];
+}
+
+export interface GetMapsResponse extends Pagination<MapWithSubject> {}
+
+export interface GetMapByIdResponse extends MapWithSubject {
+  mapObjects: TaskObject[];
+  taskLocations: TaskLocation[];
+  createdAt: string;
+  updatedAt: string;
 }

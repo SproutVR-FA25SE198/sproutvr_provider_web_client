@@ -27,3 +27,15 @@ export function usePagination<T>(data: T[], itemsPerPage: number = 3) {
     prevPage,
   };
 }
+
+// import { useState, useCallback } from 'react';
+
+// export function usePagination(initialPage = 1) {
+//   const [pageIndex, setPageIndex] = useState(initialPage);
+
+//   const nextPage = useCallback(() => setPageIndex((p) => p + 1), []);
+//   const prevPage = useCallback(() => setPageIndex((p) => Math.max(1, p - 1)), []);
+//   const goToPage = useCallback((p: number) => setPageIndex(p), []);
+
+//   return { pageIndex, nextPage, prevPage, goToPage, setPageIndex };
+// }
