@@ -96,7 +96,7 @@ export default function BasketPage() {
                   size='lg'
                   disabled={cartItems.length === 0}
                 >
-                  Thanh toán
+                  <Link to='/checkout'>Tiến hành thanh toán</Link>
                 </Button>
 
                 <Button variant='ghost' className='w-full mt-3' asChild>
