@@ -5,19 +5,64 @@ import { createBrowserRouter } from 'react-router-dom';
 // const authGuardLazy = async () => ({
 //   Component: (await import('@/core/guards/AuthGuard')).default,
 // });
+const clientLayoutLazy = async () => ({
+  Component: (await import('@/core/layouts/ClientLayout')).default,
+});
 
 const router = createBrowserRouter([
-  // Authenticated routes
+  // Guest routes
   {
-    // lazy: authGuardLazy,
-    // children: [
-    //   {
-    //     lazy: mainLayoutLazy,
-    //     children: [
-    //
-    //     ],
-    //   },
-    // ],
+    lazy: clientLayoutLazy,
+    children: [
+      {
+        path: configs.routes.home,
+        lazy: async () => ({
+          Component: (await import('@/features/landing/pages/Home')).default,
+        }),
+      },
+      {
+        path: configs.routes.catalog,
+        lazy: async () => ({
+          Component: (await import('@/features/catalog/pages/Catalog')).default,
+        }),
+      },
+      {
+        path: configs.routes.mapDetails,
+        lazy: async () => ({
+          Component: (await import('@/features/catalog/pages/MapDetails')).default,
+        }),
+      },
+    ],
+  },
+  // Auth routes
+  {
+    lazy: clientLayoutLazy, // authGuardLazy,
+    children: [
+      {
+        path: configs.routes.basket,
+        lazy: async () => ({
+          Component: (await import('@/features/orders/pages/Basket')).default,
+        }),
+      },
+      {
+        path: configs.routes.personal,
+        lazy: async () => ({
+          Component: (await import('@/features/personal/pages/Personal')).default,
+        }),
+      },
+    ],
+  },
+  // Checkout routes
+  {
+    lazy: clientLayoutLazy, // checkoutLazy,
+    children: [
+      {
+        path: configs.routes.checkout,
+        lazy: async () => ({
+          Component: (await import('@/features/orders/pages/Checkout')).default,
+        }),
+      },
+    ],
   },
 
   // Error routes
