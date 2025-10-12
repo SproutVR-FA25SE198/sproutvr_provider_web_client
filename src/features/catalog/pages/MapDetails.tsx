@@ -1,5 +1,8 @@
+import Loading from '@/common/components/loading';
 import useScrollTop from '@/common/hooks/useScrollTop';
 import { mapsWithSubjects, mockMapMetadata as mapMetadata } from '@/common/services/mockData';
+
+import { useParams } from 'react-router-dom';
 
 import MapBreadcrumb from '../components/map-breadcrumb';
 import { MapExplore } from '../components/map-explore';
@@ -9,8 +12,15 @@ import { MediaGallery } from '../components/media-gallery';
 
 export default function MapDetails() {
   useScrollTop();
-  // const { mapId } = useParams<{ mapId: string }>();
+  const { id } = useParams<{ id: string }>();
+  console.log('MapDetails mapId:', id);
   const map = mapsWithSubjects[0];
+  const isLoading = false;
+
+  // const { map, isLoading, error } = useGetMapDetails({ mapId: '1' });
+  // if (map === undefined || isLoading) map = mapsWithSubjects[0];
+
+  if (isLoading) return <Loading isLoading={isLoading} />;
   return (
     <>
       <div className='container mx-auto px-4 py-4 max-w-7xl'>

@@ -13,6 +13,7 @@ const useGetMaps = (params: GetAllMapsRequest) => {
       params.sortBy,
     ],
     queryFn: () => getAllMaps(params),
+    select: (data) => data.data,
     refetchOnWindowFocus: false,
     staleTime: GET_MAPS_STALE_TIME,
   });
