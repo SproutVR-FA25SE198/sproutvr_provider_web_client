@@ -7,14 +7,6 @@ export const GET_MAPS_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes
 
 const BASE_URL = '/catalogs/maps';
 
-export interface GetAllMapsRequest {
-  pageIndex: number;
-  pageSize: number;
-  searchKeyword: string;
-  subjectIds: string[];
-  sortBy: string;
-}
-
 export interface GetMapByIdRequest {
   mapId: string;
 }

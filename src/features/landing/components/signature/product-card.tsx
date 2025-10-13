@@ -3,16 +3,19 @@
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import { MapWithSubject } from '@/common/types';
+import configs from '@/core/configs';
 
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProductCardProps extends MapWithSubject {
   index: number;
   isInView: boolean;
 }
 
-export function ProductCard({ name, description, imageUrl, subject, index, isInView }: ProductCardProps) {
+export function ProductCard({ id, name, description, imageUrl, subject, index, isInView }: ProductCardProps) {
+  const navigate = useNavigate();
   return (
     <motion.div
       initial={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -49,7 +52,11 @@ export function ProductCard({ name, description, imageUrl, subject, index, isInV
           <h3 className='text-2xl font-bold text-foreground mb-3'>{name}</h3>
           <p className='text-muted-foreground mb-6 leading-relaxed'>{description}</p>
           <motion.div whileHover={{ x: 5 }} transition={{ type: 'spring', stiffness: 300 }}>
-            <Button variant='ghost' className='group/btn text-secondary hover:text-secondary py-0 px-4 relative'>
+            <Button
+              variant='ghost'
+              onClick={() => navigate(configs.routes.mapDetails.replace(':id', id))}
+              className='group/btn text-secondary hover:text-secondary py-0 px-4 relative hover:cursor-pointer'
+            >
               <motion.span
                 className='absolute -inset-2 bg-secondary/10 rounded-lg opacity-0 group-hover/btn:opacity-100 transition-opacity'
                 layoutId={`button-bg-${index}`}

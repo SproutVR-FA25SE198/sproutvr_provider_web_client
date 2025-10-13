@@ -1,5 +1,9 @@
-import { GET_ALL_MAPS_QUERY_KEY, GET_MAPS_STALE_TIME, getAllMaps } from '@/common/services/map.service';
-import { GetAllMapsRequest } from '@/features/catalog/services/map.service';
+import {
+  GET_ALL_MAPS_QUERY_KEY,
+  GET_MAPS_STALE_TIME,
+  getAllMaps,
+  GetAllMapsRequest,
+} from '@/common/services/map.service';
 
 import { useQuery } from '@tanstack/react-query';
 
