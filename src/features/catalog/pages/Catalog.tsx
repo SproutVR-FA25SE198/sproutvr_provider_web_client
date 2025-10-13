@@ -5,8 +5,10 @@ import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Checkbox } from '@/common/components/ui/checkbox';
 import { Input } from '@/common/components/ui/input';
+import useGetMaps from '@/common/hooks/useGetMaps';
 import { usePaginationNew } from '@/common/hooks/usePagination';
 import useScrollTop from '@/common/hooks/useScrollTop';
+import { GetAllMapsRequest } from '@/common/services/map.service';
 import { mapsWithSubjects, subjectsWithMasters as defaultSubject } from '@/common/services/mockData';
 import configs from '@/core/configs';
 
@@ -17,8 +19,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import MapList from '../components/map-list';
-import useGetMaps from '../hooks/useGetMaps';
-import { GetAllMapsRequest } from '../services/map.service';
 
 const subjects = [{ id: 'all', name: 'Tất cả' }, ...defaultSubject];
 
@@ -74,8 +74,6 @@ export default function CatalogPage() {
     }),
     [submittedParams, pageIndex],
   );
-
-  console.log('CatalogPage queryParams:', queryParams);
 
   // ------------------ API Call ------------------
   const { data, isLoading, isError } = useGetMaps(queryParams as GetAllMapsRequest);
