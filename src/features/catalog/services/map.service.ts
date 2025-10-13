@@ -1,4 +1,4 @@
-import { GetMapByIdResponse, GetMapsResponse } from '@/common/types';
+import { GetMapByIdResponse } from '@/common/types';
 import http from '@/common/utils/http';
 
 export const GET_ALL_MAPS_QUERY_KEY = 'GET_ALL_MAPS_QUERY_KEY';
@@ -22,7 +22,7 @@ export interface GetMapByIdRequest {
 
 //Get all map
 export const getAllMaps = ({ pageIndex, pageSize, searchKeyword, subjectIds, sortBy }: GetAllMapsRequest) => {
-  return http.get<GetMapsResponse>(`${BASE_URL}`, {
+  const result = http.get(`${BASE_URL}`, {
     params: {
       pageIndex,
       pageSize,
@@ -31,6 +31,7 @@ export const getAllMaps = ({ pageIndex, pageSize, searchKeyword, subjectIds, sor
       sortBy,
     },
   });
+  return result;
 };
 
 //Get map by id

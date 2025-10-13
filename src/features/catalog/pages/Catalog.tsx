@@ -1,33 +1,46 @@
 'use client';
 
+import Loading from '@/common/components/loading';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Checkbox } from '@/common/components/ui/checkbox';
 import { Input } from '@/common/components/ui/input';
-import { usePagination } from '@/common/hooks/usePagination';
+import { usePaginationNew } from '@/common/hooks/usePagination';
 import useScrollTop from '@/common/hooks/useScrollTop';
-import { mapsWithSubjects as maps, subjectsWithMasters as defaultSubject } from '@/common/services/mockData';
-import { normalizeText } from '@/common/utils/normalizeText';
+import { mapsWithSubjects, subjectsWithMasters as defaultSubject } from '@/common/services/mockData';
+import configs from '@/core/configs';
 
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import MapList from '../components/map-list';
+import useGetMaps from '../hooks/useGetMaps';
+import { GetAllMapsRequest } from '../services/map.service';
 
 const subjects = [{ id: 'all', name: 'Tất cả' }, ...defaultSubject];
 
-//===========TO-DO:
-//-- modify usePagination
-//-- modify the subject filter
-//-- integrate with backend
-
 export default function CatalogPage() {
+  useScrollTop();
+
+  // ------------------ Local UI States ------------------
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSubject, setFilterSubject] = useState<string[]>(['all']);
   const [sortBy, setSortBy] = useState('name');
-  useScrollTop();
 
+  // Pagination state (for backend)
+  const { pageIndex, setPageIndex } = usePaginationNew(1);
+
+  // This state stores when to actually trigger API
+  const [submittedParams, setSubmittedParams] = useState({
+    search: '',
+    subjects: [] as string[],
+    sort: 'name',
+  });
+
+  // ------------------ Handlers ------------------
   const handleCategoryToggle = (subjectId: string) => {
     if (subjectId === 'all') {
       setFilterSubject(['all']);
@@ -35,39 +48,53 @@ export default function CatalogPage() {
       const newSubjects = filterSubject.includes(subjectId)
         ? filterSubject.filter((id) => id !== subjectId)
         : [...filterSubject.filter((id) => id !== 'all'), subjectId];
-
       setFilterSubject(newSubjects.length === 0 ? ['all'] : newSubjects);
     }
-    setPage(1);
   };
 
-  let filteredProducts = maps.filter((map) => {
-    const normalizedQuery = normalizeText(searchQuery.toLowerCase());
-    const matchesSearch =
-      normalizeText(map.name.toLowerCase()).includes(normalizedQuery) ||
-      normalizeText(map.description.toLowerCase()).includes(normalizedQuery) ||
-      normalizeText(map.subject.name.toLowerCase()).includes(normalizedQuery);
+  const handleSearchSubmit = () => {
+    // Save filters into submitted state
+    setSubmittedParams({
+      search: searchQuery.trim(),
+      subjects: filterSubject.includes('all') ? [] : filterSubject,
+      sort: sortBy,
+    });
+    // Reset to first page
+    setPageIndex(1);
+  };
 
-    const matchesCategory = filterSubject.includes('all') || filterSubject.includes(map.subject.id);
+  // ------------------ Build Query Params ------------------
+  const queryParams = useMemo(
+    () => ({
+      searchKeyword: submittedParams.search || '',
+      subjectIds: submittedParams.subjects,
+      sortBy: submittedParams.sort,
+      pageIndex,
+      pageSize: 3,
+    }),
+    [submittedParams, pageIndex],
+  );
 
-    return matchesSearch && matchesCategory;
-  });
+  console.log('CatalogPage queryParams:', queryParams);
 
-  // Sort maps
-  filteredProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case 'name':
-        return a.name.localeCompare(b.name);
-      case 'price-low':
-        return a.price - b.price;
-      case 'price-high':
-        return b.price - a.price;
-      default:
-        return 0;
+  // ------------------ API Call ------------------
+  const { data, isLoading, isError } = useGetMaps(queryParams as GetAllMapsRequest);
+  console.log(data);
+  const maps = data?.data ?? mapsWithSubjects.slice(0, 3); // Fallback to mock data
+  const totalCount = data?.count ?? 0;
+  const totalPages = Math.ceil(totalCount / (data?.pageSize ?? 3));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại sau.');
+      const timer = setTimeout(() => navigate(configs.routes.home), 3000);
+      return () => clearTimeout(timer);
     }
-  });
-  const { currentPage, totalPages, currentData, setPage } = usePagination(filteredProducts, 3);
+  }, [isError, navigate]);
 
+  if (isLoading || isError)
+    return <Loading isLoading={isLoading || isError} message={isError ? 'Bạn sẽ được đưa về trang chủ...' : ''} />;
   return (
     <div className='pt-6 min-h-screen bg-background'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
@@ -100,9 +127,9 @@ export default function CatalogPage() {
                     <Button
                       variant='default'
                       className='p-0 text-xs px-2 h-7 hover:cursor-pointer justify-self-end'
-                      // onClick={() => handleCategoryToggle(['all'])}
+                      onClick={handleSearchSubmit}
                     >
-                      Tìm kiếm
+                      Lọc
                     </Button>
                   </div>
                 </CardHeader>
@@ -137,17 +164,23 @@ export default function CatalogPage() {
               className='mb-6 flex flex-col sm:flex-row gap-4'
             >
               <div className='flex-1 relative'>
-                <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground' />
                 <Input
                   type='text'
                   placeholder='Tìm kiếm sản phẩm...'
-                  className='pl-10'
+                  className='pl-5'
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
-                    setPage(1);
+                    setPageIndex(1);
                   }}
                 />
+                <Button
+                  variant='ghost'
+                  className='absolute right-1 top-1/2 -translate-y-1/2 rounded-md hover:bg-transparent hover:text-secondary hover:cursor-pointer'
+                  onClick={handleSearchSubmit}
+                >
+                  <Search />
+                </Button>
               </div>
               <select
                 className='px-4 py-2 border border-input rounded-md bg-background text-sm'
@@ -161,9 +194,9 @@ export default function CatalogPage() {
             </motion.div>
 
             <MapList
-              mapList={currentData}
-              currentPage={currentPage}
-              setCurrentPage={setPage}
+              mapList={maps}
+              currentPage={pageIndex}
+              setCurrentPage={setPageIndex}
               itemsPerRow={3}
               totalPages={totalPages}
             />

@@ -1,12 +1,12 @@
 'use client';
 
 import { Button } from '@/common/components/ui/button';
-import { MapWithSubject } from '@/common/types';
+import { MapDetails, MapWithSubject } from '@/common/types';
 
 import { ShoppingCart } from 'lucide-react';
 
 interface MapInfoProps {
-  map: MapWithSubject;
+  map: MapWithSubject | MapDetails;
 }
 
 export function MapInfo({ map }: MapInfoProps) {

@@ -37,3 +37,7 @@ export interface GetMapByIdResponse extends MapWithSubject {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface MapDetails extends Omit<GetMapByIdResponse, 'imageUrl'> {
+  imageUrl: string[];
+}

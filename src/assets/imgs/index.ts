@@ -1,3 +1,4 @@
+import empty from './empty.jpg';
 import landingFeatures from './landing_features.jpg';
 import landingHero from './landing_hero.jpg';
 import logo from './SproutVR_Logo.png';
@@ -8,6 +9,7 @@ const images = {
   landingFeatures,
   logo,
   logoWhite,
+  empty,
 };
 
 export default images;
