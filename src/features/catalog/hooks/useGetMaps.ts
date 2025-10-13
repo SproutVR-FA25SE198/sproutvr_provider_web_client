@@ -3,7 +3,7 @@ import { GET_ALL_MAPS_QUERY_KEY, GET_MAPS_STALE_TIME, getAllMaps, GetAllMapsRequ
 import { useQuery } from '@tanstack/react-query';
 
 const useGetMaps = (params: GetAllMapsRequest) => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: [
       GET_ALL_MAPS_QUERY_KEY,
       params.pageIndex,
@@ -14,11 +14,12 @@ const useGetMaps = (params: GetAllMapsRequest) => {
     ],
     queryFn: () => getAllMaps(params),
     select: (data) => data.data,
+    retry: 3,
     refetchOnWindowFocus: false,
     staleTime: GET_MAPS_STALE_TIME,
   });
 
-  return { data, isLoading, error };
+  return { data, isLoading, isError };
 };
 
 export default useGetMaps;

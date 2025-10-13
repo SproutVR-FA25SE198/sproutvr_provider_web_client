@@ -8,10 +8,13 @@ import { Input } from '@/common/components/ui/input';
 import { usePaginationNew } from '@/common/hooks/usePagination';
 import useScrollTop from '@/common/hooks/useScrollTop';
 import { mapsWithSubjects, subjectsWithMasters as defaultSubject } from '@/common/services/mockData';
+import configs from '@/core/configs';
 
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import MapList from '../components/map-list';
 import useGetMaps from '../hooks/useGetMaps';
@@ -75,12 +78,23 @@ export default function CatalogPage() {
   console.log('CatalogPage queryParams:', queryParams);
 
   // ------------------ API Call ------------------
-  const { data, isLoading } = useGetMaps(queryParams as GetAllMapsRequest);
+  const { data, isLoading, isError } = useGetMaps(queryParams as GetAllMapsRequest);
+  console.log(data);
   const maps = data?.data ?? mapsWithSubjects.slice(0, 3); // Fallback to mock data
   const totalCount = data?.count ?? 0;
   const totalPages = Math.ceil(totalCount / (data?.pageSize ?? 3));
+  const navigate = useNavigate();
 
-  if (isLoading) return <Loading isLoading={isLoading} />;
+  useEffect(() => {
+    if (isError) {
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại sau.');
+      const timer = setTimeout(() => navigate(configs.routes.home), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isError, navigate]);
+
+  if (isLoading || isError)
+    return <Loading isLoading={isLoading || isError} message={isError ? 'Bạn sẽ được đưa về trang chủ...' : ''} />;
   return (
     <div className='pt-6 min-h-screen bg-background'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>

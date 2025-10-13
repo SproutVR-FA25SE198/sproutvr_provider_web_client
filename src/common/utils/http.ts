@@ -21,7 +21,7 @@ class Http {
     this.accessToken = getAccessToken();
     this.refreshToken = getRefreshToken();
     this.instance = axios.create({
-      baseURL: import.meta.env.BASE_URL,
+      baseURL: import.meta.env.VITE_BASE_URL,
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',

@@ -1,26 +1,36 @@
 import Loading from '@/common/components/loading';
 import useScrollTop from '@/common/hooks/useScrollTop';
 import { mapsWithSubjects, mockMapMetadata as mapMetadata } from '@/common/services/mockData';
+import configs from '@/core/configs';
 
-import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import MapBreadcrumb from '../components/map-breadcrumb';
 import { MapExplore } from '../components/map-explore';
 import { MapInfo } from '../components/map-info';
 import { MapResources } from '../components/map-resources';
 import { MediaGallery } from '../components/media-gallery';
+import useGetMapDetails from '../hooks/useGetMapDetails';
 
 export default function MapDetails() {
   useScrollTop();
   const { id } = useParams<{ id: string }>();
-  console.log('MapDetails mapId:', id);
-  const map = mapsWithSubjects[0];
-  const isLoading = false;
+  const navigate = useNavigate();
 
-  // const { map, isLoading, error } = useGetMapDetails({ mapId: '1' });
-  // if (map === undefined || isLoading) map = mapsWithSubjects[0];
+  const { data: map, isLoading, isError } = useGetMapDetails({ mapId: id as string });
 
-  if (isLoading) return <Loading isLoading={isLoading} />;
+  useEffect(() => {
+    if (isError) {
+      toast.error('Có lỗi xảy ra. Chúng tôi sẽ đưa bạn về trang danh mục.');
+      const timer = setTimeout(() => navigate(configs.routes.catalog), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isError, navigate]);
+
+  if (isLoading || isError)
+    return <Loading isLoading={isLoading || isError} message={isError ? 'Bạn sẽ được đưa về trang catalog...' : ''} />;
   return (
     <>
       <div className='container mx-auto px-4 py-4 max-w-7xl'>

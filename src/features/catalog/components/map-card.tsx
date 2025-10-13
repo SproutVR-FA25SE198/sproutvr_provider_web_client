@@ -1,3 +1,4 @@
+import images from '@/assets/imgs';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/common/components/ui/card';
@@ -25,7 +26,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
         <Link to={`/catalog/${map.id}`}>
           <div className=' relative aspect-video overflow-hidden'>
             <img
-              src={map.imageUrl || '/placeholder.svg'}
+              src={map.imageUrl || images.empty}
               alt={map.name}
               className='w-full h-full object-cover hover:scale-105 transition-transform duration-300'
             />
@@ -34,7 +35,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
             </Badge>
           </div>
         </Link>
-        <CardHeader className='flex-1 -mb-2 py-4'>
+        <CardHeader className='flex-1 -mb-5 h-25 py-4'>
           <div className='flex items-start justify-between gap-2 mb-2'>
             <CardTitle className='text-xl'>
               <Link to={`/catalog/${map.id}`} className='hover:text-secondary transition-colors'>
@@ -42,11 +43,11 @@ const MapCard = ({ map, index }: MapCardProps) => {
               </Link>
             </CardTitle>
           </div>
-          <CardDescription>{truncateText(map.description, 50)}</CardDescription>
+          <CardDescription>{truncateText(map.description, 65)}</CardDescription>
         </CardHeader>
         <CardContent className='py-0 flex-1'>
           <div className='flex items-center h-15 justify-between'>
-            <Badge variant='default' className='px-2 md:w-25'>
+            <Badge variant='default' className='px-2 md:max-w-25'>
               {map.subject.name}
             </Badge>
             <span className='text-lg font-bold text-secondary'>{map.price.toLocaleString('vi-VN')} VND</span>
