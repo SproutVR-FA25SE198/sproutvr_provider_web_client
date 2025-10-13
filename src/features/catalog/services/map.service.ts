@@ -1,7 +1,6 @@
 import { GetMapByIdResponse } from '@/common/types';
 import http from '@/common/utils/http';
 
-export const GET_ALL_MAPS_QUERY_KEY = 'GET_ALL_MAPS_QUERY_KEY';
 export const GET_MAP_BY_ID_QUERY_KEY = 'GET_MAP_BY_ID_QUERY_KEY';
 export const GET_MAPS_STALE_TIME = 30 * 1000; // 30 seconds
 export const GET_MAPS_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes
@@ -19,20 +18,6 @@ export interface GetAllMapsRequest {
 export interface GetMapByIdRequest {
   mapId: string;
 }
-
-//Get all map
-export const getAllMaps = ({ pageIndex, pageSize, searchKeyword, subjectIds, sortBy }: GetAllMapsRequest) => {
-  const result = http.get(`${BASE_URL}`, {
-    params: {
-      pageIndex,
-      pageSize,
-      searchKeyword,
-      subjectIds,
-      sortBy,
-    },
-  });
-  return result;
-};
 
 //Get map by id
 export const getMapById = (mapId: string) => {

@@ -1,8 +1,9 @@
-import { GET_ALL_MAPS_QUERY_KEY, GET_MAPS_STALE_TIME, getAllMaps, GetAllMapsRequest } from '../services/map.service';
+import { GET_ALL_MAPS_QUERY_KEY, GET_MAPS_STALE_TIME, getAllMaps } from '@/common/services/map.service';
+import { GetAllMapsRequest } from '@/features/catalog/services/map.service';
 
 import { useQuery } from '@tanstack/react-query';
 
-const useGetMaps = (params: GetAllMapsRequest) => {
+export const useGetMaps = (params: GetAllMapsRequest) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: [
       GET_ALL_MAPS_QUERY_KEY,
