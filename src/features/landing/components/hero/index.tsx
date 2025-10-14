@@ -78,7 +78,13 @@ export function Hero() {
               className='flex flex-col sm:flex-row gap-4 justify-center lg:justify-start'
             >
               {heroData.buttons.map((button, index) => (
-                <LandingButton key={index} text={button.text} variant={button.variant} icon={button.icon} />
+                <LandingButton
+                  href={button.href}
+                  key={index}
+                  text={button.text}
+                  variant={button.variant}
+                  icon={button.icon}
+                />
               ))}
             </motion.div>
 
