@@ -1,4 +1,5 @@
 import images from '@/assets/imgs';
+import configs from '@/core/configs';
 
 import { ArrowRight, Play } from 'lucide-react';
 
@@ -11,6 +12,7 @@ export interface HeroButton {
   text: string;
   variant: 'primary' | 'secondary';
   icon: typeof ArrowRight | typeof Play;
+  href?: string;
 }
 
 export interface HeroData {
@@ -49,11 +51,13 @@ export const heroData: HeroData = {
     {
       text: 'Đăng kí hợp tác ngay',
       variant: 'primary',
+      href: '#register',
       icon: ArrowRight,
     },
     {
       text: 'Xem catalog sản phẩm',
       variant: 'secondary',
+      href: `${configs.routes.catalog}`,
       icon: Play,
     },
   ],

@@ -1,3 +1,4 @@
+import ScrollToTopButton from '@/common/components/scroll-to-top';
 import useScrollTop from '@/common/hooks/useScrollTop';
 
 import { Benefits } from '../components/benefits';
@@ -17,6 +18,7 @@ const Home = () => {
       <KeyFeatures />
       <Benefits />
       <NextStep />
+      <ScrollToTopButton />
     </>
   );
 };
