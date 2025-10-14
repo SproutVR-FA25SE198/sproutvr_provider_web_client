@@ -7,29 +7,42 @@ import { Label } from '@/common/components/ui/label';
 
 import { motion } from 'framer-motion';
 import { BookOpen, Eye, EyeClosed, GraduationCap, TrendingUp, Users } from 'lucide-react';
-import type React from 'react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import { LoginFormData, loginSchema } from '../components/schema';
+
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function LoginPage() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Login submitted:', formData);
-    // Handle login
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onBlur',
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      console.log('Validated login:', data);
+      // await authService.login(data);
+      toast.success('Đăng nhập thành công!');
+    } catch (err) {
+      toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
+    }
   };
 
   return (
     <div className='min-h-screen bg-background'>
-      {/* <main className='pt-24 pb-16'> */}
-      <div className='container mx-auto pt-14  px-4 sm:px-6 lg:px-8'>
+      <div className='container mx-auto pt-14 px-4 sm:px-6 lg:px-8'>
         <div className='grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto'>
-          {/* Left Side - Benefits */}
+          {/* Left side info */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -37,56 +50,47 @@ export default function LoginPage() {
             className='space-y-8'
           >
             <div>
-              <h1 className='text-4xl md:text-5xl font-bold text-primary mb-4 text-balance'>Chào Mừng Trở Lại</h1>
-              <p className='text-lg text-muted-foreground text-pretty'>
-                Đăng nhập để tiếp tục hành trình giáo dục VR của bạn
-              </p>
+              <h1 className='text-4xl md:text-5xl font-bold text-primary mb-4'>Chào Mừng Trở Lại</h1>
+              <p className='text-lg text-muted-foreground'>Đăng nhập để tiếp tục hành trình giáo dục VR của bạn</p>
             </div>
 
             <div className='space-y-6'>
-              <div className='flex gap-4'>
-                <div className='flex-shrink-0 w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center'>
-                  <GraduationCap className='w-6 h-6 text-secondary' />
+              {[
+                {
+                  icon: GraduationCap,
+                  title: 'Trải Nghiệm Học Tập Tương Tác',
+                  desc: 'Khám phá hàng trăm bài học VR được thiết kế chuyên nghiệp',
+                },
+                {
+                  icon: BookOpen,
+                  title: 'Thư Viện Nội Dung Phong Phú',
+                  desc: 'Truy cập catalog đầy đủ với nội dung cập nhật liên tục',
+                },
+                {
+                  icon: Users,
+                  title: 'Quản Lý Lớp Học Dễ Dàng',
+                  desc: 'Theo dõi tiến độ học tập và quản lý học sinh hiệu quả',
+                },
+                {
+                  icon: TrendingUp,
+                  title: 'Báo Cáo Chi Tiết',
+                  desc: 'Phân tích dữ liệu học tập và đánh giá kết quả',
+                },
+              ].map((item, i) => (
+                <div key={i} className='flex gap-4'>
+                  <div className='flex-shrink-0 w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center'>
+                    <item.icon className='w-6 h-6 text-secondary' />
+                  </div>
+                  <div>
+                    <h3 className='font-semibold text-lg mb-2'>{item.title}</h3>
+                    <p className='text-muted-foreground'>{item.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className='font-semibold text-lg mb-2'>Trải Nghiệm Học Tập Tương Tác</h3>
-                  <p className='text-muted-foreground'>Khám phá hàng trăm bài học VR được thiết kế chuyên nghiệp</p>
-                </div>
-              </div>
-
-              <div className='flex gap-4'>
-                <div className='flex-shrink-0 w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center'>
-                  <BookOpen className='w-6 h-6 text-secondary' />
-                </div>
-                <div>
-                  <h3 className='font-semibold text-lg mb-2'>Thư Viện Nội Dung Phong Phú</h3>
-                  <p className='text-muted-foreground'>Truy cập catalog đầy đủ với nội dung cập nhật liên tục</p>
-                </div>
-              </div>
-
-              <div className='flex gap-4'>
-                <div className='flex-shrink-0 w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center'>
-                  <Users className='w-6 h-6 text-secondary' />
-                </div>
-                <div>
-                  <h3 className='font-semibold text-lg mb-2'>Quản Lý Lớp Học Dễ Dàng</h3>
-                  <p className='text-muted-foreground'>Theo dõi tiến độ học tập và quản lý học sinh hiệu quả</p>
-                </div>
-              </div>
-
-              <div className='flex gap-4'>
-                <div className='flex-shrink-0 w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center'>
-                  <TrendingUp className='w-6 h-6 text-secondary' />
-                </div>
-                <div>
-                  <h3 className='font-semibold text-lg mb-2'>Báo Cáo Chi Tiết</h3>
-                  <p className='text-muted-foreground'>Phân tích dữ liệu học tập và đánh giá kết quả</p>
-                </div>
-              </div>
+              ))}
             </div>
           </motion.div>
 
-          {/* Right Side - Login Form */}
+          {/* Right side login form */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -98,34 +102,35 @@ export default function LoginPage() {
                 <CardDescription>Nhập thông tin đăng nhập của bạn để tiếp tục</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className='space-y-4'>
-                  <div className='space-y-2'>
+                <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+                  {/* Email */}
+                  <div>
                     <Label htmlFor='email'>Email</Label>
                     <Input
                       id='email'
                       type='email'
                       placeholder='contact@school.edu.vn'
-                      value={formData.email}
-                      onChange={(e: any) => setFormData({ ...formData, email: e.target.value })}
-                      required
+                      {...register('email')}
+                      className='mt-1.5'
                     />
+                    {errors.email && <p className='text-sm text-destructive mt-1'>{errors.email.message}</p>}
                   </div>
 
-                  <div className='space-y-2'>
+                  {/* Password */}
+                  <div>
                     <div className='flex items-center justify-between'>
                       <Label htmlFor='password'>Mật Khẩu</Label>
                       <Link to='/forgot-password' className='text-sm text-secondary hover:underline'>
                         Quên mật khẩu?
                       </Link>
                     </div>
-                    <div className='relative'>
+                    <div className='relative mt-1.5'>
                       <Input
                         id='password'
-                        placeholder='•••••••••'
                         type={showPassword ? 'text' : 'password'}
-                        value={formData.password}
-                        onChange={(e: any) => setFormData({ ...formData, password: e.target.value })}
-                        required
+                        placeholder='••••••••'
+                        autoComplete='off'
+                        {...register('password')}
                       />
                       {showPassword ? (
                         <Eye
@@ -139,14 +144,16 @@ export default function LoginPage() {
                         />
                       )}
                     </div>
+                    {errors.password && <p className='text-sm text-destructive mt-1'>{errors.password.message}</p>}
                   </div>
 
                   <Button
                     type='submit'
                     className='w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground'
                     size='lg'
+                    disabled={isSubmitting}
                   >
-                    Đăng Nhập
+                    {isSubmitting ? 'Đang đăng nhập...' : 'Đăng Nhập'}
                   </Button>
                 </form>
               </CardContent>
@@ -154,7 +161,6 @@ export default function LoginPage() {
           </motion.div>
         </div>
       </div>
-      {/* </main> */}
     </div>
   );
 }

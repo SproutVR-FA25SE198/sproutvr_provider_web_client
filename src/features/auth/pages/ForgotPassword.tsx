@@ -9,18 +9,39 @@ import { Label } from '@/common/components/ui/label';
 
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, Mail } from 'lucide-react';
-import type React from 'react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import { ForgotPasswordFormData, forgotPasswordSchema } from '../components/schema';
+
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [email, setEmail] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Password reset requested for:', email);
-    setIsSubmitted(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    mode: 'onBlur',
+  });
+
+  const onSubmit = async (data: ForgotPasswordFormData) => {
+    try {
+      console.log('Password reset requested for:', data.email);
+      setEmail(data.email);
+      setIsSubmitted(true);
+      toast.success('Mã xác thực đã được gửi đến email của bạn!');
+      reset();
+    } catch (err) {
+      toast.error('Gửi yêu cầu thất bại. Vui lòng thử lại.');
+    }
   };
 
   return (
@@ -43,30 +64,33 @@ export default function ForgotPasswordPage() {
                 </div>
                 <CardTitle className='text-2xl'>Quên Mật Khẩu?</CardTitle>
                 <CardDescription>
-                  {isSubmitted ? 'Kiểm tra email của bạn' : 'Nhập email để nhận liên kết đặt lại mật khẩu'}
+                  {isSubmitted ? 'Kiểm tra email của bạn' : 'Nhập email để nhận liên kết hoặc mã xác thực'}
                 </CardDescription>
               </CardHeader>
+
               <CardContent>
                 {!isSubmitted ? (
-                  <form onSubmit={handleSubmit} className='space-y-4'>
+                  <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
                     <div className='space-y-2'>
                       <Label htmlFor='email'>Email</Label>
                       <Input
                         id='email'
                         type='email'
                         placeholder='contact@school.edu.vn'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                        autoComplete='off'
+                        {...register('email')}
+                        className='mt-1.5'
                       />
+                      {errors.email && <p className='text-sm text-destructive mt-1'>{errors.email.message}</p>}
                     </div>
 
                     <Button
                       type='submit'
                       className='w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground'
                       size='lg'
+                      disabled={isSubmitting}
                     >
-                      Gửi OTP
+                      {isSubmitting ? 'Đang gửi...' : 'Gửi OTP'}
                     </Button>
                   </form>
                 ) : (
@@ -83,8 +107,16 @@ export default function ForgotPasswordPage() {
                         Mã xác thực sẽ có hiệu lực trong 5 phút.
                       </AlertDescription>
                     </Alert>
+
                     <div className='mt-6 mx-auto w-max'>
-                      <InputOTP maxLength={6} onComplete={(code) => console.log('OTP Entered:', code)} autoFocus>
+                      <InputOTP
+                        maxLength={6}
+                        onComplete={(code) => {
+                          console.log('OTP Entered:', code);
+                          toast.info(`Mã OTP đã nhập: ${code}`);
+                        }}
+                        autoFocus
+                      >
                         <InputOTPGroup className='text-secondary font-bold'>
                           <InputOTPSlot index={0} />
                           <InputOTPSlot index={1} />
