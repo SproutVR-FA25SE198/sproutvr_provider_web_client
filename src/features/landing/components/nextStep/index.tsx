@@ -38,7 +38,6 @@ export function NextStep() {
             <RegisterForm
               title={nextStepData.form.title}
               subtitle={nextStepData.form.subtitle}
-              fields={nextStepData.form.fields}
               submitText={nextStepData.form.submitText}
               disclaimer={nextStepData.form.disclaimer}
             />
