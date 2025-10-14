@@ -5,6 +5,7 @@ import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Checkbox } from '@/common/components/ui/checkbox';
 import { Input } from '@/common/components/ui/input';
+import { useExternalCheck } from '@/common/hooks/useExternalCheck';
 import useGetMaps from '@/common/hooks/useGetMaps';
 import { usePaginationNew } from '@/common/hooks/usePagination';
 import useScrollTop from '@/common/hooks/useScrollTop';
@@ -82,17 +83,20 @@ export default function CatalogPage() {
   const totalCount = data?.count ?? 0;
   const totalPages = Math.ceil(totalCount / (data?.pageSize ?? 3));
   const navigate = useNavigate();
+  const isExternal = useExternalCheck();
 
   useEffect(() => {
     if (isError) {
       toast.error('Có lỗi xảy ra. Vui lòng thử lại sau.');
-      const timer = setTimeout(() => navigate(configs.routes.home), 3000);
+      const timer = setTimeout(() => {
+        if (isExternal) navigate(configs.routes.home);
+        else navigate(-1);
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [isError, navigate]);
+  }, [isError, isExternal, navigate]);
 
-  if (isLoading || isError)
-    return <Loading isLoading={isLoading || isError} message={isError ? 'Bạn sẽ được đưa về trang chủ...' : ''} />;
+  if (isLoading || isError) return <Loading isLoading={isLoading || isError} message={isError ? 'Quay lại...' : ''} />;
   return (
     <div className='pt-6 min-h-screen bg-background'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
