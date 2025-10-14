@@ -152,6 +152,10 @@
     scrollbar-color: var(--primary) transparent;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: 'Montserrat', system-ui, sans-serif;
