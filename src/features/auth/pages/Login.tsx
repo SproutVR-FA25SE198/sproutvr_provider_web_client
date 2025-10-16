@@ -4,6 +4,8 @@ import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
+import { Spinner } from '@/common/components/ui/spinner';
+import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 
 import { motion } from 'framer-motion';
 import { BookOpen, Eye, EyeClosed, GraduationCap, TrendingUp, Users } from 'lucide-react';
@@ -12,12 +14,25 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import { loginThunk } from '../authThunks';
 import { LoginFormData, loginSchema } from '../components/schema';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
+  const { isLoading, error } = useAppSelector((state) => state.auth);
+
+  const onSubmit = async (data: LoginFormData) => {
+    const result = await dispatch(loginThunk(data));
+
+    if (loginThunk.fulfilled.match(result)) {
+      toast.success('Đăng nhập thành công!');
+    } else {
+      toast.error(result.payload as string);
+    }
+  };
 
   const {
     register,
@@ -27,16 +42,6 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
     mode: 'onBlur',
   });
-
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-      console.log('Validated login:', data);
-      // await authService.login(data);
-      toast.success('Đăng nhập thành công!');
-    } catch (err) {
-      toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
-    }
-  };
 
   return (
     <div className='min-h-screen bg-background'>
@@ -146,14 +151,23 @@ export default function LoginPage() {
                     </div>
                     {errors.password && <p className='text-sm text-destructive mt-1'>{errors.password.message}</p>}
                   </div>
+                  {error && <p className='text-red-500'>{error}</p>}
 
                   <Button
                     type='submit'
                     className='w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground'
                     size='lg'
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isLoading}
                   >
-                    {isSubmitting ? 'Đang đăng nhập...' : 'Đăng Nhập'}
+                    {isSubmitting || isLoading ? (
+                      <>
+                        <div className='flex items-center gap-2'>
+                          <Spinner className='h-5 w-5 text-white' />
+                        </div>
+                      </>
+                    ) : (
+                      'Đăng Nhập'
+                    )}
                   </Button>
                 </form>
               </CardContent>

@@ -1,6 +1,6 @@
 const cookies = {
-  accessToken: 'access_token',
-  refreshToken: 'refresh_token',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
 };
 
 export default cookies;
