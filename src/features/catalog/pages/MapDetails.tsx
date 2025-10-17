@@ -1,4 +1,5 @@
 import Loading from '@/common/components/loading';
+import { useExternalCheck } from '@/common/hooks/useExternalCheck';
 import useScrollTop from '@/common/hooks/useScrollTop';
 import { mapsWithSubjects, mockMapMetadata as mapMetadata } from '@/common/services/mockData';
 import configs from '@/core/configs';
@@ -18,19 +19,22 @@ export default function MapDetails() {
   useScrollTop();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const isExternal = useExternalCheck();
 
   const { data: map, isLoading, isError } = useGetMapDetails({ mapId: id as string });
 
   useEffect(() => {
     if (isError) {
-      toast.error('Có lỗi xảy ra. Chúng tôi sẽ đưa bạn về trang danh mục.');
-      const timer = setTimeout(() => navigate(configs.routes.catalog), 3000);
+      toast.error('Có lỗi xảy ra. Chúng tôi sẽ đưa bạn quay về.');
+      const timer = setTimeout(() => {
+        if (isExternal) navigate(configs.routes.home);
+        else navigate(-1);
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [isError, navigate]);
+  }, [isError, isExternal, navigate]);
 
-  if (isLoading || isError)
-    return <Loading isLoading={isLoading || isError} message={isError ? 'Bạn sẽ được đưa về trang catalog...' : ''} />;
+  if (isLoading || isError) return <Loading isLoading={isLoading || isError} message={isError ? 'Quay lại...' : ''} />;
   return (
     <>
       <div className='container mx-auto px-4 py-4 max-w-7xl'>
