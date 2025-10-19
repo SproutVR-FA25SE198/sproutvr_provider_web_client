@@ -45,16 +45,21 @@ const router = createBrowserRouter([
     lazy: guestGuardLazy,
     children: [
       {
-        path: configs.routes.login,
-        lazy: async () => ({
-          Component: (await import('@/features/auth/pages/Login')).default,
-        }),
-      },
-      {
-        path: configs.routes.forgotPassword,
-        lazy: async () => ({
-          Component: (await import('@/features/auth/pages/ForgotPassword')).default,
-        }),
+        lazy: clientLayoutLazy,
+        children: [
+          {
+            path: configs.routes.login,
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/Login')).default,
+            }),
+          },
+          {
+            path: configs.routes.forgotPassword,
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/ForgotPassword')).default,
+            }),
+          },
+        ],
       },
     ],
   },
@@ -64,16 +69,21 @@ const router = createBrowserRouter([
     lazy: authGuardLazy,
     children: [
       {
-        path: configs.routes.basket,
-        lazy: async () => ({
-          Component: (await import('@/features/orders/pages/Basket')).default,
-        }),
-      },
-      {
-        path: configs.routes.personal,
-        lazy: async () => ({
-          Component: (await import('@/features/personal/pages/Personal')).default,
-        }),
+        lazy: clientLayoutLazy,
+        children: [
+          {
+            path: configs.routes.basket,
+            lazy: async () => ({
+              Component: (await import('@/features/orders/pages/Basket')).default,
+            }),
+          },
+          {
+            path: configs.routes.personal,
+            lazy: async () => ({
+              Component: (await import('@/features/personal/pages/Personal')).default,
+            }),
+          },
+        ],
       },
     ],
   },

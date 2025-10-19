@@ -31,7 +31,6 @@ const authSlice = createSlice({
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = true;
-        console.log('Login fulfilled. User:', action);
         state.user = action.payload as User;
       })
       .addCase(loginThunk.rejected, (state, action) => {
