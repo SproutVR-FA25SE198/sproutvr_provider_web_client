@@ -2,15 +2,20 @@ import configs from '@/core/configs';
 
 import { createBrowserRouter } from 'react-router-dom';
 
-// const authGuardLazy = async () => ({
-//   Component: (await import('@/core/guards/AuthGuard')).default,
-// });
+const authGuardLazy = async () => ({
+  Component: (await import('@/core/guards/AuthGuard')).default,
+});
+
+const guestGuardLazy = async () => ({
+  Component: (await import('@/core/guards/GuestGuard')).default,
+});
+
 const clientLayoutLazy = async () => ({
   Component: (await import('@/core/layouts/ClientLayout')).default,
 });
 
 const router = createBrowserRouter([
-  // Guest routes
+  // Common routes
   {
     lazy: clientLayoutLazy,
     children: [
@@ -34,9 +39,29 @@ const router = createBrowserRouter([
       },
     ],
   },
+
+  // Guest routes
+  {
+    lazy: guestGuardLazy,
+    children: [
+      {
+        path: configs.routes.login,
+        lazy: async () => ({
+          Component: (await import('@/features/auth/pages/Login')).default,
+        }),
+      },
+      {
+        path: configs.routes.forgotPassword,
+        lazy: async () => ({
+          Component: (await import('@/features/auth/pages/ForgotPassword')).default,
+        }),
+      },
+    ],
+  },
+
   // Auth routes
   {
-    lazy: clientLayoutLazy, // authGuardLazy,
+    lazy: authGuardLazy,
     children: [
       {
         path: configs.routes.basket,
@@ -52,6 +77,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+
   // Checkout routes
   {
     lazy: clientLayoutLazy, // checkoutLazy,
