@@ -5,6 +5,7 @@ import { Button } from '@/common/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/common/components/ui/dialog';
 import { Separator } from '@/common/components/ui/separator';
 import { mockOrderDetails } from '@/common/services/mockData';
+import { OrderStatus } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 
 import { Download, ExternalLink } from 'lucide-react';
@@ -16,7 +17,7 @@ interface OrderDetailsModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const order = mockOrderDetails;
+const order = mockOrderDetails[0];
 
 export function OrderDetailsModal({ open, onOpenChange }: OrderDetailsModalProps) {
   // if (!orderId) return null;
@@ -40,7 +41,7 @@ export function OrderDetailsModal({ open, onOpenChange }: OrderDetailsModalProps
             </div>
             <div>
               <p className='text-sm text-muted-foreground mb-1'>Trạng thái</p>
-              <Badge variant='secondary'>Hoàn thành</Badge>
+              <Badge variant='secondary'>{OrderStatus[order.status as keyof typeof OrderStatus]}</Badge>
             </div>
             <div>
               <p className='text-sm text-muted-foreground mb-1'>Tổng tiền</p>
@@ -62,16 +63,16 @@ export function OrderDetailsModal({ open, onOpenChange }: OrderDetailsModalProps
             <div className='space-y-3 h-100  max-h-[30vh] overflow-y-auto'>
               {order.orderItems.map((item) => (
                 //onclick: to map details page
-                <div key={item.id} className='flex gap-4 p-3 border rounded-lg'>
+                <div key={item.mapId} className='flex gap-4 p-3 border rounded-lg'>
                   <img
                     src={item.imageUrl || '/placeholder.svg'}
-                    alt={item.name}
+                    alt={item.mapName}
                     className='w-20 h-20 object-cover rounded-md'
                   />
                   <div className='flex-1'>
-                    <h4 className='font-semibold mb-1'>{item.name}</h4>
+                    <h4 className='font-semibold mb-1'>{item.mapName}</h4>
                     <Badge variant='secondary' className='mb-2'>
-                      {item.subject.name}
+                      {item.subjectName}
                     </Badge>
                     <div className='flex items-center justify-between'>
                       <span className='font-semibold text-secondary'>{item.price.toLocaleString('vi-VN')} VND</span>

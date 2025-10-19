@@ -13,7 +13,6 @@ interface ProfileTabProps {
 }
 
 const ProfileTab = ({ organization }: ProfileTabProps) => {
-  console.log('ProfileTab organization:', organization);
   const [showMacAddress, setShowMacAddress] = useState(false);
   const [showInstruction, setShowInstruction] = useState(false);
   const [showActivationKey, setShowActivationKey] = useState(false);

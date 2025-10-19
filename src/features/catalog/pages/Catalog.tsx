@@ -78,7 +78,6 @@ export default function CatalogPage() {
 
   // ------------------ API Call ------------------
   const { data, isLoading, isError } = useGetMaps(queryParams as GetAllMapsRequest);
-  console.log(data);
   const maps = data?.data ?? mapsWithSubjects.slice(0, 3); // Fallback to mock data
   const totalCount = data?.count ?? 0;
   const totalPages = Math.ceil(totalCount / (data?.pageSize ?? 3));

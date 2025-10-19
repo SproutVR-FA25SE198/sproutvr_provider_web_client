@@ -4,7 +4,8 @@ import Loading from '@/common/components/loading';
 import { Card, CardContent } from '@/common/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/common/components/ui/tabs';
 import { useExternalCheck } from '@/common/hooks/useExternalCheck';
-import { mapsWithSubjects, mockOrders } from '@/common/services/mockData';
+import { mapsWithSubjects } from '@/common/services/mockData';
+import { GetOrdersResponse } from '@/common/types';
 import configs from '@/core/configs';
 
 import { History, Library, User } from 'lucide-react';
@@ -15,6 +16,7 @@ import { toast } from 'react-toastify';
 import LibraryTab from '../components/library-tab';
 import OrdersTab from '../components/orders-tab';
 import ProfileTab from '../components/profile-tab';
+import useGetOrders from '../hooks/useGetOrders';
 import useGetProfile from '../hooks/useGetProfile';
 
 const PERSONAL_TABS = { profile: 'profile', library: 'library', orders: 'orders' };
@@ -24,7 +26,11 @@ export default function PersonalPage() {
   const isExternal = useExternalCheck();
   const navigate = useNavigate();
 
-  const { data: organization, isLoading, isError } = useGetProfile();
+  const { data: organization, isLoading: isLoadingProfile, isError: isErrorProfile } = useGetProfile();
+  const { data: orders, isLoading: isLoadingOrders, isError: isErrorOrders } = useGetOrders();
+
+  const isLoading = isLoadingProfile || isLoadingOrders;
+  const isError = isErrorProfile || isErrorOrders;
 
   useEffect(() => {
     if (isError) {
@@ -120,7 +126,7 @@ export default function PersonalPage() {
             </TabsContent>
             {/* Orders Tab Content */}
             <TabsContent value={PERSONAL_TABS.orders} className='mt-0 mb-14 md:mt-0'>
-              <OrdersTab orderHistory={mockOrders} />
+              <OrdersTab orderHistory={orders || ({} as GetOrdersResponse)} />
             </TabsContent>
           </div>
         </Tabs>
