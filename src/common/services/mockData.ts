@@ -1,14 +1,6 @@
 import images from '@/assets/imgs';
 
-import {
-  GetMapByIdResponse,
-  MapWithSubject,
-  MasterSubject,
-  Order,
-  OrderDetails,
-  Organization,
-  SubjectWithMaster,
-} from '../types';
+import { GetMapByIdResponse, MapWithSubject, MasterSubject, Order, OrderDetails, SubjectWithMaster } from '../types';
 
 export const masterSubjects = [
   {
@@ -228,41 +220,41 @@ export const mockMapMetadata: GetMapByIdResponse = {
   updatedAt: '2025-09-28T14:22:00Z',
 };
 
-export const mockOrganizations: Organization[] = [
-  {
-    id: 'user-001',
-    name: 'Trường THPT Lê Hồng Phong',
-    email: 'contact@lehongphong.edu.vn',
-    role: 'organization',
-    orgId: 'org-001',
-    phone: '028-3910-1234',
-    address: '235 Nguyễn Văn Cừ, Quận 5, TP. Hồ Chí Minh',
-    macAddress: '00-14-22-01-23-45',
-    activationKey: 'FPT-23092025-LEHP',
-  },
-  {
-    id: 'user-002',
-    name: 'Trường THPT Chuyên Hà Nội - Amsterdam',
-    email: 'info@hn-ams.edu.vn',
-    role: 'organization',
-    orgId: 'org-002',
-    phone: '024-3829-5678',
-    address: 'Hoàng Minh Giám, Cầu Giấy, Hà Nội',
-    macAddress: '00-16-4D-2B-55-9C',
-    activationKey: 'HNA-24092025-AMSD',
-  },
-  {
-    id: 'user-003',
-    name: 'Trường THCS Nguyễn Du',
-    email: 'nguyendu@edu.vn',
-    role: 'organization',
-    orgId: 'org-003',
-    phone: '028-3876-4321',
-    address: '12 Trần Hưng Đạo, Quận 1, TP. Hồ Chí Minh',
-    macAddress: '00-26-B9-3E-8C-22',
-    activationKey: 'ND-25092025-TTND',
-  },
-];
+// export const mockOrganizations: Organization[] = [
+//   {
+//     id: 'user-001',
+//     name: 'Trường THPT Lê Hồng Phong',
+//     email: 'contact@lehongphong.edu.vn',
+//     role: 'organization',
+//     orgId: 'org-001',
+//     phoneNumber: '028-3910-1234',
+//     address: '235 Nguyễn Văn Cừ, Quận 5, TP. Hồ Chí Minh',
+//     macAddress: '00-14-22-01-23-45',
+//     activationKey: 'FPT-23092025-LEHP',
+//   },
+//   {
+//     id: 'user-002',
+//     name: 'Trường THPT Chuyên Hà Nội - Amsterdam',
+//     email: 'info@hn-ams.edu.vn',
+//     role: 'organization',
+//     orgId: 'org-002',
+//     phoneNumber: '024-3829-5678',
+//     address: 'Hoàng Minh Giám, Cầu Giấy, Hà Nội',
+//     macAddress: '00-16-4D-2B-55-9C',
+//     activationKey: 'HNA-24092025-AMSD',
+//   },
+//   {
+//     id: 'user-003',
+//     name: 'Trường THCS Nguyễn Du',
+//     email: 'nguyendu@edu.vn',
+//     role: 'organization',
+//     orgId: 'org-003',
+//     phoneNumber: '028-3876-4321',
+//     address: '12 Trần Hưng Đạo, Quận 1, TP. Hồ Chí Minh',
+//     macAddress: '00-26-B9-3E-8C-22',
+//     activationKey: 'ND-25092025-TTND',
+//   },
+// ];
 
 export const mockOrders: Order[] = [
   {

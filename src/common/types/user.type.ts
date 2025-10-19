@@ -7,8 +7,10 @@ export interface User {
 
 export interface Organization extends User {
   orgId: string;
-  phone: string;
+  userName: string;
+  phoneNumber: string;
   address: string;
   macAddress: string;
   activationKey: string;
+  bundleGoogleDriveUrl: null;
 }

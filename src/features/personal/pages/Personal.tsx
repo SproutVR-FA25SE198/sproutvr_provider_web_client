@@ -1,26 +1,50 @@
 'use client';
 
+import Loading from '@/common/components/loading';
 import { Card, CardContent } from '@/common/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/common/components/ui/tabs';
-import { mapsWithSubjects, mockOrders, mockOrganizations } from '@/common/services/mockData';
+import { useExternalCheck } from '@/common/hooks/useExternalCheck';
+import { mapsWithSubjects, mockOrders } from '@/common/services/mockData';
+import configs from '@/core/configs';
 
 import { History, Library, User } from 'lucide-react';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import LibraryTab from '../components/library-tab';
 import OrdersTab from '../components/orders-tab';
 import ProfileTab from '../components/profile-tab';
+import useGetProfile from '../hooks/useGetProfile';
 
 const PERSONAL_TABS = { profile: 'profile', library: 'library', orders: 'orders' };
 
 export default function PersonalPage() {
   const [activeTab, setActiveTab] = useState(useParams().tab || PERSONAL_TABS.profile);
+  const isExternal = useExternalCheck();
+  const navigate = useNavigate();
+
+  const { data: organization, isLoading, isError } = useGetProfile();
+
+  useEffect(() => {
+    if (isError) {
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại sau.');
+      const timer = setTimeout(() => {
+        if (isExternal) navigate(configs.routes.home);
+        else navigate(-1);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isError, isExternal, navigate]);
 
   const setTab = (tab: string) => {
     setActiveTab(tab);
     window.history.replaceState(null, '', `/personal/${tab}`);
   };
+
+  if (isLoading) {
+    return <Loading isLoading />;
+  }
 
   return (
     <div className=' bg-background flex flex-col overflow-hidden mt-14'>
@@ -88,7 +112,7 @@ export default function PersonalPage() {
           <div className='flex-1 h-full overflow-auto mx-auto'>
             {/* Profile Tab Content */}
             <TabsContent value={PERSONAL_TABS.profile} className='mt-0 mb-14 md:mt-0'>
-              <ProfileTab organization={mockOrganizations[0]} />
+              <ProfileTab organization={organization} />
             </TabsContent>
             {/* Library Tab Content */}
             <TabsContent value={PERSONAL_TABS.library} className='mt-0 mb-14 md:mt-0'>

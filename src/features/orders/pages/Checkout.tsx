@@ -7,7 +7,8 @@ import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
 import { Separator } from '@/common/components/ui/separator';
 import useScrollTop from '@/common/hooks/useScrollTop';
-import { mapsWithSubjects, mockOrganizations } from '@/common/services/mockData';
+import { mapsWithSubjects } from '@/common/services/mockData';
+import { Organization } from '@/common/types';
 import { PAYMENT_METHODS } from '@/common/utils';
 
 import { motion } from 'framer-motion';
@@ -19,13 +20,16 @@ const cartItems = mapsWithSubjects.slice(0, 3);
 
 export default function CheckoutPage() {
   //   const navigate = useNavigate();
+
+  const organization = {} as Organization;
+
   const [selectedPayment, setSelectedPayment] = useState(PAYMENT_METHODS.BANK);
   const [formData, setFormData] = useState({
-    organizationName: mockOrganizations[0].name,
+    organizationName: organization.name,
     representativeName: '',
-    email: mockOrganizations[0].email,
-    phone: mockOrganizations[0].phone,
-    billingAddress: mockOrganizations[0].address,
+    email: organization.email,
+    phoneNumber: organization.phoneNumber,
+    address: organization.address,
   });
 
   useScrollTop();
@@ -36,7 +40,7 @@ export default function CheckoutPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('[v0] Checkout submitted:', { formData, selectedPayment, total });
+    console.log('Checkout submitted:', { formData, selectedPayment, total });
     // Redirect to payment status page
     // navigate.;
   };
@@ -113,8 +117,8 @@ export default function CheckoutPage() {
                           type='tel'
                           readOnly
                           placeholder='0123 456 789'
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          value={formData.phoneNumber}
+                          onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                           required
                         />
                       </div>
@@ -126,8 +130,8 @@ export default function CheckoutPage() {
                         id='billingAddress'
                         readOnly
                         placeholder='123 Đường ABC, Quận XYZ, TP. HCM'
-                        value={formData.billingAddress}
-                        onChange={(e) => setFormData({ ...formData, billingAddress: e.target.value })}
+                        value={formData.address}
+                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                         required
                       />
                     </div>
