@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { isAuthenticated } = useAppSelector((state) => state.auth.auth);
+  const isAuthenticated = useAppSelector((state) => state.auth.auth.isAuthenticated);
 
   return (
     <header className='fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border'>
@@ -97,7 +97,6 @@ function ActionButtons({
   const handleLogout = () => {
     onClick();
     dispatch(logoutThunk());
-    window.location.reload();
   };
 
   return (
