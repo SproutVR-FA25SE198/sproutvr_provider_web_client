@@ -3,7 +3,7 @@ import { Button } from '@/common/components/ui/button';
 import { Card, CardContent } from '@/common/components/ui/card';
 import { useMobile } from '@/common/hooks';
 import { Order } from '@/common/types';
-import { OrderStatus } from '@/common/utils';
+import { ORDER_STATUS_BADGE, OrderStatus } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 
 import { motion } from 'framer-motion';
@@ -34,7 +34,12 @@ const OrderCard = ({ order, index }: OrderCardProps) => {
               <div className='space-y-1'>
                 <div className='flex items-center gap-3'>
                   <h3 className='font-semibold'>Đơn hàng #{order.id.toUpperCase()}</h3>
-                  <Badge variant='secondary'>{OrderStatus[order.status as keyof typeof OrderStatus]}</Badge>
+                  <Badge
+                    variant='outline'
+                    className={`text-white ${ORDER_STATUS_BADGE[OrderStatus[order.status as keyof typeof OrderStatus]]}`}
+                  >
+                    {OrderStatus[order.status as keyof typeof OrderStatus]}
+                  </Badge>
                 </div>
                 {isMobile ? (
                   <>

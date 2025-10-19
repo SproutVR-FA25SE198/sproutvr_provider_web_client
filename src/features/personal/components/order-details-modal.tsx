@@ -4,7 +4,7 @@ import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/common/components/ui/dialog';
 import { Separator } from '@/common/components/ui/separator';
-import { OrderStatus } from '@/common/utils';
+import { ORDER_STATUS_BADGE, OrderStatus } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 
 import { Download, ExternalLink } from 'lucide-react';
@@ -41,7 +41,12 @@ export function OrderDetailsModal({ orderId, open, onOpenChange }: OrderDetailsM
               </div>
               <div>
                 <p className='text-sm text-muted-foreground mb-1'>Trạng thái</p>
-                <Badge variant='secondary'>{OrderStatus[order.status as keyof typeof OrderStatus]}</Badge>
+                <Badge
+                  variant='outline'
+                  className={`text-white ${ORDER_STATUS_BADGE[OrderStatus[order.status as keyof typeof OrderStatus]]}`}
+                >
+                  {OrderStatus[order.status as keyof typeof OrderStatus]}
+                </Badge>
               </div>
               <div>
                 <p className='text-sm text-muted-foreground mb-1'>Tổng tiền</p>
@@ -71,7 +76,7 @@ export function OrderDetailsModal({ orderId, open, onOpenChange }: OrderDetailsM
                     />
                     <div className='flex-1'>
                       <h4 className='font-semibold mb-1'>{item.mapName}</h4>
-                      <Badge variant='secondary' className='mb-2'>
+                      <Badge variant='default' className='mb-2'>
                         {item.subjectName}
                       </Badge>
                       <div className='flex items-center justify-between'>
