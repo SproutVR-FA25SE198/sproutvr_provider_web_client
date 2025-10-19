@@ -27,9 +27,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     const result = await dispatch(loginThunk(data));
 
-    if (loginThunk.fulfilled.match(result)) {
-      toast.success('Đăng nhập thành công!');
-    } else {
+    if (!loginThunk.fulfilled.match(result)) {
       toast.error(result.payload as string);
     }
   };

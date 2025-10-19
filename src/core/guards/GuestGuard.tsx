@@ -12,10 +12,10 @@ export default function GuestGuard() {
   const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth.auth);
   const isExternal = useExternalCheck();
   const navigate = useNavigate();
-  console.log('GuestGuard rendered. isAuthenticated:', isAuthenticated, 'isExternal:', isExternal);
+  const cameFromLogin = document.referrer && document.referrer.startsWith(window.location.origin + '/login');
 
   useEffect(() => {
-    if (isAuthenticated && !isExternal) {
+    if (isAuthenticated && !isExternal && !cameFromLogin) {
       navigate(-1);
     }
   }, [isAuthenticated, isExternal, navigate]);
