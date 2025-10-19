@@ -3,6 +3,8 @@
 import images from '@/assets/imgs';
 import { Button } from '@/common/components/ui/button';
 import configs from '@/core/configs';
+import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import { logoutThunk } from '@/features/auth/authThunks';
 
 import { LogOut, Menu, ShoppingBasket, User, X } from 'lucide-react';
 import { useState } from 'react';
@@ -10,6 +12,8 @@ import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { isAuthenticated } = useAppSelector((state) => state.auth.auth);
 
   return (
     <header className='fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border'>
@@ -29,7 +33,7 @@ export default function Header() {
 
           {/* CTA Buttons */}
           <div className='hidden md:flex items-center gap-0'>
-            <ActionButtons isAuthenticated={true} onClick={() => {}} />
+            <ActionButtons isAuthenticated={isAuthenticated} onClick={() => {}} />
           </div>
 
           {/* Mobile Menu Button */}
@@ -45,7 +49,7 @@ export default function Header() {
               <NavLinks /*mobile onClick={() => setMobileMenuOpen(false)}*/ />
 
               <div className='flex flex-col gap-2 pt-2'>
-                <ActionButtons mobile isAuthenticated={true} onClick={() => setMobileMenuOpen(false)} />
+                <ActionButtons mobile isAuthenticated={isAuthenticated} onClick={() => setMobileMenuOpen(false)} />
               </div>
             </nav>
           </div>
@@ -89,13 +93,12 @@ function ActionButtons({
   isAuthenticated?: boolean;
   onClick: () => void;
 }) {
-  // const url = useLocation().pathname;
-  //   const handleLogout = () => {
-  //     onClick();
-  //     removeAccessToken();
-  //     removeRefreshToken();
-  //     window.location.reload();
-  //   };
+  const dispatch = useAppDispatch();
+  const handleLogout = () => {
+    onClick();
+    dispatch(logoutThunk());
+    window.location.reload();
+  };
 
   return (
     <>
@@ -127,7 +130,7 @@ function ActionButtons({
             variant='ghost'
             size={mobile ? 'default' : 'icon'}
             className='text-primary hover:bg-secondary/90 text-secondary-foreground'
-            // onClick={handleLogout}
+            onClick={handleLogout}
           >
             <LogOut className='w-5 h-5 text-primary' />
             {mobile && <span className='ml-2'>Đăng xuất</span>}
@@ -136,11 +139,7 @@ function ActionButtons({
       ) : (
         <>
           <Link to={configs.routes.login}>
-            <Button
-              variant='ghost'
-              size={mobile ? 'default' : 'icon'}
-              className='text-primary hover:bg-secondary/10 text-secondary px-12'
-            >
+            <Button variant='secondary' size={mobile ? 'default' : 'icon'} className='px-12'>
               <span>Đăng nhập</span>
             </Button>
           </Link>
