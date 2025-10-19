@@ -22,7 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const { isLoading, error } = useAppSelector((state) => state.auth.auth);
 
   const onSubmit = async (data: LoginFormData) => {
     const result = await dispatch(loginThunk(data));

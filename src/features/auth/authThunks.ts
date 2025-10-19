@@ -11,8 +11,6 @@ export const loginThunk = createAsyncThunk(
     try {
       const data = await login(email, password);
 
-      console.log(data);
-
       // Save tokens securely
       setAccessToken(data.accessToken);
       setRefreshToken(data.refreshToken);
@@ -24,7 +22,7 @@ export const loginThunk = createAsyncThunk(
   },
 );
 
-export const logoutThunk = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
+export const logoutThunk = createAsyncThunk('auth/logout', async () => {
   try {
     removeAccessToken();
     removeRefreshToken();
