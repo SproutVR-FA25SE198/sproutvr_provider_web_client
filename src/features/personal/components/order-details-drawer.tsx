@@ -4,7 +4,6 @@ import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '@/common/components/ui/drawer';
 import { Separator } from '@/common/components/ui/separator';
-import { mockOrderDetails } from '@/common/services/mockData';
 import { OrderStatus } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 

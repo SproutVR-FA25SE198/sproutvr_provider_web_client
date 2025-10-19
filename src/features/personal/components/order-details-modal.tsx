@@ -1,6 +1,5 @@
 'use client';
 
-import Loading from '@/common/components/loading';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/common/components/ui/dialog';
