@@ -28,7 +28,7 @@ const LibraryTab = ({ purchasedMaps }: LibraryTabProps) => {
             <p className='text-muted-foreground'>Các map VR bạn đã mua</p>
           </div>
 
-          <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          <div className='grid md:grid-cols-2 lg:grid-cols-3'>
             {currentData.map((map, index) => (
               <PurchasedMapCard key={map.id} map={map} index={index} />
             ))}
