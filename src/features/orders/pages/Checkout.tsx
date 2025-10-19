@@ -23,7 +23,7 @@ export default function CheckoutPage() {
 
   const organization = {} as Organization;
 
-  const [selectedPayment, setSelectedPayment] = useState(PAYMENT_METHODS.BANK);
+  const [selectedPayment, setSelectedPayment] = useState(PAYMENT_METHODS.PAYOS);
   const [formData, setFormData] = useState({
     organizationName: organization.name,
     representativeName: '',
@@ -152,48 +152,49 @@ export default function CheckoutPage() {
                   <CardContent className='grid md:grid-cols-3 gap-4'>
                     <button
                       type='button'
-                      onClick={() => setSelectedPayment(PAYMENT_METHODS.BANK)}
+                      onClick={() => setSelectedPayment(PAYMENT_METHODS.PAYOS)}
                       className={`w-full p-4 border rounded-lg flex items-center gap-4 transition-all ${
-                        selectedPayment === PAYMENT_METHODS.BANK
+                        selectedPayment === PAYMENT_METHODS.PAYOS
                           ? 'border-secondary bg-secondary/5'
                           : 'border-border hover:border-secondary/50'
                       }`}
                     >
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          selectedPayment === PAYMENT_METHODS.BANK ? 'border-secondary' : 'border-border'
+                          selectedPayment === PAYMENT_METHODS.PAYOS ? 'border-secondary' : 'border-border'
                         }`}
                       >
-                        {selectedPayment === PAYMENT_METHODS.BANK && (
+                        {selectedPayment === PAYMENT_METHODS.PAYOS && (
                           <div className='w-3 h-3 rounded-full bg-secondary' />
                         )}
                       </div>
-                      <PAYMENT_METHODS.BANK.icon className='w-6 h-6 text-secondary' />
+                      <PAYMENT_METHODS.PAYOS.icon className='w-6 h-6 text-secondary' />
                       <div className='flex-1 text-left'>
-                        <p className='font-semibold'>{PAYMENT_METHODS.BANK.name}</p>
+                        <p className='font-semibold'>{PAYMENT_METHODS.PAYOS.name}</p>
                       </div>
                     </button>
+
                     <button
                       type='button'
-                      onClick={() => setSelectedPayment(PAYMENT_METHODS.CARD)}
+                      onClick={() => setSelectedPayment(PAYMENT_METHODS.ZALOPAY)}
                       className={`w-full p-4 border rounded-lg flex items-center gap-4 transition-all ${
-                        selectedPayment === PAYMENT_METHODS.CARD
+                        selectedPayment === PAYMENT_METHODS.ZALOPAY
                           ? 'border-secondary bg-secondary/5'
                           : 'border-border hover:border-secondary/50'
                       }`}
                     >
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          selectedPayment === PAYMENT_METHODS.CARD ? 'border-secondary' : 'border-border'
+                          selectedPayment === PAYMENT_METHODS.ZALOPAY ? 'border-secondary' : 'border-border'
                         }`}
                       >
-                        {selectedPayment === PAYMENT_METHODS.CARD && (
+                        {selectedPayment === PAYMENT_METHODS.ZALOPAY && (
                           <div className='w-3 h-3 rounded-full bg-secondary' />
                         )}
                       </div>
-                      <PAYMENT_METHODS.CARD.icon className='w-6 h-6 text-secondary' />
+                      <PAYMENT_METHODS.ZALOPAY.icon className='w-6 h-6 text-secondary' />
                       <div className='flex-1 text-left'>
-                        <p className='font-semibold'>{PAYMENT_METHODS.CARD.name}</p>
+                        <p className='font-semibold'>{PAYMENT_METHODS.ZALOPAY.name}</p>
                       </div>
                     </button>
 
