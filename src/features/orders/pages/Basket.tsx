@@ -1,24 +1,23 @@
 'use client';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent } from '@/common/components/ui/card';
-import { mapsWithSubjects } from '@/common/services/mockData';
-import { MapWithSubject } from '@/common/types';
+import useBaskets from '@/common/hooks/useBasket';
+import { BasketItem } from '@/common/types/basket.type';
 
 import { motion } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import MapBasketCard from '../components/map-basket-card';
 
 export default function BasketPage() {
-  const [cartItems, setCartItems] = useState<MapWithSubject[]>(mapsWithSubjects.slice(0, 5));
+  const { basket, basketTotal: subtotal, removeItem, clearBasket } = useBaskets();
 
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
+  const basketItems: BasketItem[] = basket.basketItems;
+
+  const removeBasketItem = (id: string) => {
+    removeItem(id);
   };
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
   const tax = subtotal * 0.1;
   const total = subtotal + tax;
 
@@ -29,10 +28,9 @@ export default function BasketPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className='mb-6 text-center'
+          className='my-6 text-center'
         >
           <h1 className='text-3xl md:text-4xl font-bold text-primary my-4'>Giỏ hàng của bạn</h1>
-          <p className='text-muted-foreground'>{cartItems.length} sản phẩm trong giỏ hàng</p>
         </motion.div>
 
         <div className='grid lg:grid-cols-3 gap-6 flex-1 overflow-hidden'>
@@ -45,7 +43,7 @@ export default function BasketPage() {
           >
             <Card className='flex-1 flex flex-col max-h-120'>
               <CardContent className='pt-6 flex-1 overflow-y-auto'>
-                {cartItems.length === 0 ? (
+                {basketItems.length === 0 ? (
                   <div className='text-center py-12'>
                     <ShoppingBag className='w-16 h-16 mx-auto text-muted-foreground mb-4' />
                     <h3 className='text-xl font-semibold mb-2'>Giỏ hàng trống</h3>
@@ -56,8 +54,19 @@ export default function BasketPage() {
                   </div>
                 ) : (
                   <div className='space-y-4'>
-                    {cartItems.map((item, index) => (
-                      <MapBasketCard key={item.id} item={item} index={index} removeItem={removeItem} />
+                    <div className='flex justify-between items-center mb-4'>
+                      <p className='text-muted-foreground'>{basket.basketItems.length} sản phẩm</p>
+                      <Button
+                        variant='link'
+                        size='sm'
+                        className='italic hover:text-destructive hover:cursor-pointer'
+                        onClick={() => clearBasket()}
+                      >
+                        Xóa tất cả
+                      </Button>
+                    </div>
+                    {basketItems.map((item, index) => (
+                      <MapBasketCard key={item.mapId} item={item} index={index} removeItem={removeBasketItem} />
                     ))}
                   </div>
                 )}
@@ -94,7 +103,7 @@ export default function BasketPage() {
                 <Button
                   className='w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground'
                   size='lg'
-                  disabled={cartItems.length === 0}
+                  disabled={basketItems.length === 0}
                 >
                   <Link to='/checkout'>Tiến hành thanh toán</Link>
                 </Button>

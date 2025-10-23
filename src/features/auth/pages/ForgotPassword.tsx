@@ -41,6 +41,7 @@ export default function ForgotPasswordPage() {
       reset();
     } catch (err) {
       toast.error('Gửi yêu cầu thất bại. Vui lòng thử lại.');
+      console.error('Error during password reset request:', err);
     }
   };
 

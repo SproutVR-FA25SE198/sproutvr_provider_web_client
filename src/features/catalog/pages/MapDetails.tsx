@@ -1,4 +1,5 @@
 import Loading from '@/common/components/loading';
+import useBaskets from '@/common/hooks/useBasket';
 import { useExternalCheck } from '@/common/hooks/useExternalCheck';
 import useScrollTop from '@/common/hooks/useScrollTop';
 import { mapsWithSubjects, mockMapMetadata as mapMetadata } from '@/common/services/mockData';
@@ -21,6 +22,9 @@ export default function MapDetails() {
   const navigate = useNavigate();
   const isExternal = useExternalCheck();
 
+  const { basketItems, addItem } = useBaskets();
+  const isInBasket = basketItems.some((item) => item.mapId === id);
+
   const { data: map, isLoading, isError } = useGetMapDetails({ mapId: id as string });
 
   useEffect(() => {
@@ -42,7 +46,7 @@ export default function MapDetails() {
 
         <div className='grid lg:grid-cols-2 gap-12 mt-4 mb-12'>
           <MediaGallery images={new Array(4).fill(map.imageUrl)} />
-          <MapInfo map={map} />
+          <MapInfo map={map} inBasket={isInBasket} updateBasket={addItem} />
         </div>
 
         <MapResources mapMetadata={mapMetadata} />

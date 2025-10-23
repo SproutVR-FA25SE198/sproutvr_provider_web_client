@@ -9,7 +9,7 @@ import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import configs from '../configs';
 
 export default function GuestGuard() {
-  const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth.auth);
+  const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.root.auth);
   const isExternal = useExternalCheck();
   const navigate = useNavigate();
   const cameFromLogin = document.referrer && document.referrer.startsWith(window.location.origin + '/login');

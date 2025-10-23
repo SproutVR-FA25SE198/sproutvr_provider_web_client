@@ -12,7 +12,6 @@ const useGetOrderById = (orderId: string) => {
     select: (res) => res.data,
     staleTime: GET_ORDERS_STALE_TIME,
   });
-  console.log('useGetOrderById data:', data);
 
   return { data: data as OrderDetails, isLoading, isError };
 };
