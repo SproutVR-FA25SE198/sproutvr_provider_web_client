@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
 
 export default function AuthGuard() {
-  const { isAuthenticated, isLoading, user } = useSelector((state: RootState) => state.root.auth);
+  const { isAuthenticated, isLoading } = useSelector((state: RootState) => state.root.auth);
 
   if (isLoading) {
     return <Loading isLoading />;
