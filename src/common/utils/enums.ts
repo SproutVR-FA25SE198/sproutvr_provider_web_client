@@ -10,9 +10,9 @@ export enum ActivityType {
 }
 
 export enum OrderStatus {
-  Pending_Payment = 'Chờ thanh toán',
+  Payment_Pending = 'Chờ thanh toán',
   Payment_Failed = 'Thanh toán thất bại',
-  Pending_Bundle = 'Đã tiếp nhận',
+  Bundle_Pending = 'Đã tiếp nhận',
   Assigned = 'Đang xử lý',
   Finished = 'Đã hoàn thành',
   Canceled = 'Đã hủy',

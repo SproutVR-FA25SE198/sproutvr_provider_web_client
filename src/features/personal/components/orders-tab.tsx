@@ -12,6 +12,14 @@ interface OrdersTabProps {
 }
 
 const OrdersTab = ({ orderHistory }: OrdersTabProps) => {
+  if (!orderHistory || orderHistory.data.length === 0) {
+    return (
+      <div className='h-full p-8 flex flex-col items-center justify-center'>
+        <p className='text-muted-foreground text-lg'>Bạn chưa có đơn hàng nào.</p>
+      </div>
+    );
+  }
+
   const { currentPage, totalPages, currentData, setPage, nextPage, prevPage } = usePagination(orderHistory.data, 3);
   return (
     <>

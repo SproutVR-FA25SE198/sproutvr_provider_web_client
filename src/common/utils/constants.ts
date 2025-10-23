@@ -38,6 +38,6 @@ export const ORDER_STATUS_BADGE = {
   [OrderStatus.Canceled]: 'bg-red-500',
   [OrderStatus.Finished]: 'bg-secondary',
   [OrderStatus.Payment_Failed]: 'bg-destructive',
-  [OrderStatus.Pending_Bundle]: 'bg-yellow-500',
-  [OrderStatus.Pending_Payment]: 'bg-blue-500',
+  [OrderStatus.Bundle_Pending]: 'bg-yellow-500',
+  [OrderStatus.Payment_Pending]: 'bg-blue-500',
 };
