@@ -4,7 +4,6 @@ import Loading from '@/common/components/loading';
 import { Card, CardContent } from '@/common/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/common/components/ui/tabs';
 import { useExternalCheck } from '@/common/hooks/useExternalCheck';
-import { mapsWithSubjects } from '@/common/services/mockData';
 import { GetOrdersResponse } from '@/common/types';
 import configs from '@/core/configs';
 
@@ -16,6 +15,7 @@ import { toast } from 'react-toastify';
 import LibraryTab from '../components/library-tab';
 import OrdersTab from '../components/orders-tab';
 import ProfileTab from '../components/profile-tab';
+import useGetLibrary from '../hooks/useGetLibrary';
 import useGetOrders from '../hooks/useGetOrders';
 import useGetProfile from '../hooks/useGetProfile';
 
@@ -28,9 +28,10 @@ export default function PersonalPage() {
 
   const { data: organization, isLoading: isLoadingProfile, isError: isErrorProfile } = useGetProfile();
   const { data: orders, isLoading: isLoadingOrders, isError: isErrorOrders } = useGetOrders();
+  const { data: purchasedMaps, isLoading: isLoadingLibrary, isError: isErrorLibrary } = useGetLibrary();
 
-  const isLoading = isLoadingProfile || isLoadingOrders;
-  const isError = isErrorProfile || isErrorOrders;
+  const isLoading = isLoadingProfile || isLoadingOrders || isLoadingLibrary;
+  const isError = isErrorProfile || isErrorOrders || isErrorLibrary;
 
   useEffect(() => {
     if (isError) {
@@ -122,7 +123,7 @@ export default function PersonalPage() {
             </TabsContent>
             {/* Library Tab Content */}
             <TabsContent value={PERSONAL_TABS.library} className='mt-0 mb-14 md:mt-0'>
-              <LibraryTab purchasedMaps={mapsWithSubjects.slice(0, 7)} />
+              <LibraryTab purchasedMaps={purchasedMaps} />
             </TabsContent>
             {/* Orders Tab Content */}
             <TabsContent value={PERSONAL_TABS.orders} className='mt-0 mb-14 md:mt-0'>
