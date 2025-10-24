@@ -6,12 +6,18 @@ import { BasketItem } from '@/common/types/basket.type';
 
 import { motion } from 'framer-motion';
 import { ShoppingBag } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import MapBasketCard from '../components/map-basket-card';
 
 export default function BasketPage() {
   const { basket, basketTotal: subtotal, removeItem, clearBasket } = useBaskets();
+
+  const navigate = useNavigate();
+
+  function goToCheckout() {
+    navigate('/checkout', { state: { fromBasket: true } });
+  }
 
   const basketItems: BasketItem[] = basket.basketItems;
 
@@ -83,19 +89,19 @@ export default function BasketPage() {
           >
             <Card className='top-15'>
               <CardContent className='pt-6'>
-                <h2 className='text-xl font-bold mb-4'>Tóm tắt đơn hàng</h2>
+                {/* <h2 className='text-xl font-bold mb-4'>Tóm tắt đơn hàng</h2> */}
 
                 <div className='space-y-3 mb-6'>
-                  <div className='flex justify-between text-sm'>
+                  {/* <div className='flex justify-between text-sm'>
                     <span className='text-muted-foreground'>Tạm tính</span>
                     <span className='font-medium'>{subtotal.toLocaleString('vi-VN')} VND</span>
                   </div>
                   <div className='flex justify-between text-sm'>
                     <span className='text-muted-foreground'>Thuế (10%)</span>
                     <span className='font-medium'>{tax.toLocaleString('vi-VN')} VND</span>
-                  </div>
-                  <div className='border-t pt-3 flex justify-between'>
-                    <span className='font-semibold'>Tổng cộng</span>
+                  </div> */}
+                  <div className='pt-3 flex justify-between'>
+                    <h2 className='font-semibold text-xl'>Tổng cộng</h2>
                     <span className='text-xl font-bold text-secondary'>{total.toLocaleString('vi-VN')} VND</span>
                   </div>
                 </div>
@@ -104,8 +110,9 @@ export default function BasketPage() {
                   className='w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground'
                   size='lg'
                   disabled={basketItems.length === 0}
+                  onClick={goToCheckout}
                 >
-                  <Link to='/checkout'>Tiến hành thanh toán</Link>
+                  Tiến hành thanh toán
                 </Button>
 
                 <Button variant='ghost' className='w-full mt-3' asChild>

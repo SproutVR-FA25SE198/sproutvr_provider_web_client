@@ -2,6 +2,7 @@ export interface BasketItem {
   mapId: string;
   mapName: string;
   mapCode: string;
+  subjectName: string;
   imageUrl: string;
   price: number;
 }
