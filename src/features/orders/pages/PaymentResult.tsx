@@ -6,7 +6,7 @@ import { getCookie } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 
 import { motion } from 'framer-motion';
-import { AlertCircle, ArrowRight, CheckCircle2, Clock, Download, XCircle } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, Download, XCircle } from 'lucide-react';
 import { Suspense } from 'react';
 import { Link } from 'react-router-dom';
 

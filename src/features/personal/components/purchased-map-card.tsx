@@ -1,14 +1,13 @@
 import { Badge } from '@/common/components/ui/badge';
-import { Card, CardContent, CardDescription } from '@/common/components/ui/card';
-import { MapWithSubject } from '@/common/types';
-import { BasketItem } from '@/common/types/basket.type';
+import { Card, CardContent } from '@/common/components/ui/card';
+import { MapSummary } from '@/common/types';
 import { truncateText } from '@/common/utils/truncateText';
 
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 interface PurchasedMapCardProps {
-  map: BasketItem;
+  map: MapSummary;
   index: number;
 }
 

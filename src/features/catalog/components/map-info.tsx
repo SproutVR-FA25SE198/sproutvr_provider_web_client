@@ -46,6 +46,7 @@ export function MapInfo({ map, inBasket, updateBasket }: MapInfoProps) {
               mapCode: map.mapCode,
               imageUrl: map.imageUrl[0],
               price: map.price,
+              subjectName: map.subject.name,
             })
           }
         >
