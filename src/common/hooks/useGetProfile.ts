@@ -1,4 +1,4 @@
-import { GET_PROFILE_QUERY_KEY, GET_PROFILE_STALE_TIME, getProfile } from '../services/account.service';
+import { GET_PROFILE_QUERY_KEY, GET_PROFILE_STALE_TIME, getProfile } from '@/common/services/user.service';
 
 import { useQuery } from '@tanstack/react-query';
 

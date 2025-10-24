@@ -4,6 +4,7 @@ import Loading from '@/common/components/loading';
 import { Card, CardContent } from '@/common/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/common/components/ui/tabs';
 import { useExternalCheck } from '@/common/hooks/useExternalCheck';
+import useGetProfile from '@/common/hooks/useGetProfile';
 import { GetOrdersResponse } from '@/common/types';
 import configs from '@/core/configs';
 
@@ -17,7 +18,6 @@ import OrdersTab from '../components/orders-tab';
 import ProfileTab from '../components/profile-tab';
 import useGetLibrary from '../hooks/useGetLibrary';
 import useGetOrders from '../hooks/useGetOrders';
-import useGetProfile from '../hooks/useGetProfile';
 
 const PERSONAL_TABS = { profile: 'profile', library: 'library', orders: 'orders' };
 
