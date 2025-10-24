@@ -1,49 +1,94 @@
-'use client';
-
+import Loading from '@/common/components/loading';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Input } from '@/common/components/ui/input';
-import { Label } from '@/common/components/ui/label';
-import { Separator } from '@/common/components/ui/separator';
-import useScrollTop from '@/common/hooks/useScrollTop';
-import { mapsWithSubjects } from '@/common/services/mockData';
-import { Organization } from '@/common/types';
-import { PAYMENT_METHODS } from '@/common/utils';
+import useBaskets from '@/common/hooks/useBasket';
+import useGetProfile from '@/common/hooks/useGetProfile';
+import { PlaceOrderRequest } from '@/common/types';
+import { PAYMENT_METHODS, setCookie } from '@/common/utils';
 
 import { motion } from 'framer-motion';
-import type React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const cartItems = mapsWithSubjects.slice(0, 3);
+import { CheckoutFormData, checkoutSchema } from '../components/schema';
+import { checkout } from '../services/payment.service';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Label } from '@radix-ui/react-label';
+import { Separator } from '@radix-ui/react-separator';
+import { useMutation } from '@tanstack/react-query';
 
 export default function CheckoutPage() {
-  //   const navigate = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const organization = {} as Organization;
+  useEffect(() => {
+    const fromBasket = location.state?.fromBasket;
 
-  const [selectedPayment, setSelectedPayment] = useState(PAYMENT_METHODS.PAYOS);
-  const [formData, setFormData] = useState({
-    organizationName: organization.name,
-    representativeName: '',
-    email: organization.email,
-    phoneNumber: organization.phoneNumber,
-    address: organization.address,
+    if (!fromBasket) {
+      navigate('/basket', { replace: true });
+    }
+  }, [location.state, navigate]);
+
+  const [selectedPayment, setSelectedPayment] = useState(PAYMENT_METHODS.PAYOS.code);
+  const { data: organization, isLoading: isGettingOrganization } = useGetProfile();
+  const { basket, basketTotal: subtotal } = useBaskets();
+  const { mutate: placeOrder, isPending: isPlacingOrder } = useMutation({
+    mutationFn: (order: PlaceOrderRequest) => checkout(order),
   });
 
-  useScrollTop();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      organizationName: 'Trường THPT ABC',
+      representativeName: '',
+      representativePhone: '',
+      email: 'contact@school.edu.vn',
+      phoneNumber: '0123456789',
+      address: '123 Đường ABC, Quận XYZ, TP. HCM',
+      paymentMethod: selectedPayment,
+    },
+  });
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
-  const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  useEffect(() => {
+    if (organization) {
+      // Prefill organization info if available
+      register('organizationName').onChange({ target: { value: organization.name } });
+      register('email').onChange({ target: { value: organization.email } });
+      register('phoneNumber').onChange({ target: { value: organization.phoneNumber } });
+      register('address').onChange({ target: { value: organization.address } });
+    }
+  }, [organization, register]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Checkout submitted:', { formData, selectedPayment, total });
-    // Redirect to payment status page
-    // navigate.;
+  const onSubmit = (data: CheckoutFormData) => {
+    const checkoutData = {
+      organizationId: basket.organizationId,
+      basket,
+      representativeName: data.representativeName,
+      representativePhone: data.representativePhone,
+      paymentMethod: selectedPayment,
+    } as PlaceOrderRequest;
+    placeOrder(checkoutData, {
+      onSuccess: (result) => {
+        const expiry = new Date(Date.now() + 15 * 60 * 1000);
+        setCookie('payment-data', { ...result, expiry }, expiry);
+        window.location.href = result.paymentUrl;
+      },
+    });
   };
+
+  const isLoading = isGettingOrganization || isPlacingOrder;
+
+  if (isLoading) {
+    return <Loading isLoading />;
+  }
 
   return (
     <div className='bg-background'>
@@ -58,243 +103,122 @@ export default function CheckoutPage() {
           <p className='text-muted-foreground'>Hoàn tất đơn hàng của bạn</p>
         </motion.div>
 
-        <form onSubmit={handleSubmit}>
-          <div className='grid lg:grid-cols-3 gap-8  mb-12'>
-            {/* Left - Checkout Form */}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className='grid lg:grid-cols-3 gap-8 mb-12'>
+            {/* Left - Form */}
             <div className='lg:col-span-2 space-y-6'>
-              {/* Organization Information */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Thông Tin Tổ Chức</CardTitle>
-                  </CardHeader>
-                  <CardContent className='space-y-4'>
-                    <div className='space-y-2'>
-                      <Label htmlFor='organizationName'>Tên Tổ Chức *</Label>
-                      <Input
-                        id='organizationName'
-                        placeholder='Trường THPT ABC'
-                        readOnly
-                        value={formData.organizationName}
-                        onChange={(e) => setFormData({ ...formData, organizationName: e.target.value })}
-                        required
-                      />
+              <Card>
+                <CardHeader>
+                  <CardTitle>Thông Tin Tổ Chức</CardTitle>
+                </CardHeader>
+                <CardContent className='space-y-4'>
+                  <div>
+                    <Label>Tên Tổ Chức *</Label>
+                    <Input className='bg-accent' {...register('organizationName')} readOnly />
+                    {errors.organizationName && (
+                      <p className='text-red-500 text-sm'>{errors.organizationName.message}</p>
+                    )}
+                  </div>
+
+                  <div className='grid md:grid-cols-2 gap-4'>
+                    <div>
+                      <Label>Email *</Label>
+                      <Input className='bg-accent' {...register('email')} readOnly />
+                      {errors.email && <p className='text-red-500 text-sm'>{errors.email.message}</p>}
                     </div>
-
-                    <div className='space-y-2'>
-                      <Label htmlFor='representativeName'>Tên Người Đại Diện *</Label>
-                      <Input
-                        id='representativeName'
-                        placeholder='Nguyễn Văn A'
-                        value={formData.representativeName}
-                        onChange={(e) => setFormData({ ...formData, representativeName: e.target.value })}
-                        required
-                      />
+                    <div>
+                      <Label>Số Điện Thoại *</Label>
+                      <Input className='bg-accent' {...register('phoneNumber')} readOnly />
+                      {errors.phoneNumber && <p className='text-red-500 text-sm'>{errors.phoneNumber.message}</p>}
                     </div>
+                  </div>
 
-                    <div className='grid md:grid-cols-2 gap-4'>
-                      <div className='space-y-2'>
-                        <Label htmlFor='email'>Email *</Label>
-                        <Input
-                          id='email'
-                          readOnly
-                          type='email'
-                          placeholder='contact@school.edu.vn'
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          required
-                        />
-                      </div>
+                  <div>
+                    <Label>Địa Chỉ *</Label>
+                    <Input className='bg-accent' {...register('address')} readOnly />
+                    {errors.address && <p className='text-red-500 text-sm'>{errors.address.message}</p>}
+                  </div>
 
-                      <div className='space-y-2'>
-                        <Label htmlFor='phone'>Số Điện Thoại *</Label>
-                        <Input
-                          id='phone'
-                          type='tel'
-                          readOnly
-                          placeholder='0123 456 789'
-                          value={formData.phoneNumber}
-                          onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                          required
-                        />
-                      </div>
+                  <hr className='my-8' />
+
+                  <div className='grid md:grid-cols-2 mb-5 gap-4'>
+                    <div>
+                      <Label>Tên Người Đại Diện *</Label>
+                      <Input {...register('representativeName')} autoFocus />
+                      {errors.representativeName && (
+                        <p className='text-red-500 text-sm'>{errors.representativeName.message}</p>
+                      )}
                     </div>
-
-                    <div className='space-y-2'>
-                      <Label htmlFor='billingAddress'>Địa Chỉ Thanh Toán *</Label>
-                      <Input
-                        id='billingAddress'
-                        readOnly
-                        placeholder='123 Đường ABC, Quận XYZ, TP. HCM'
-                        value={formData.address}
-                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                        required
-                      />
+                    <div>
+                      <Label>SĐT Người Đại Diện *</Label>
+                      <Input {...register('representativePhone')} />
+                      {errors.representativePhone && (
+                        <p className='text-red-500 text-sm'>{errors.representativePhone.message}</p>
+                      )}
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
 
-              {/* Payment Method */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Phương Thức Thanh Toán</CardTitle>
-                  </CardHeader>
-                  <CardContent className='grid md:grid-cols-3 gap-4'>
+              {/* Payment */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Phương Thức Thanh Toán</CardTitle>
+                </CardHeader>
+                <CardContent className='grid md:grid-cols-3 gap-4'>
+                  {Object.values(PAYMENT_METHODS).map((method) => (
                     <button
+                      key={method.code}
                       type='button'
-                      onClick={() => setSelectedPayment(PAYMENT_METHODS.PAYOS)}
+                      onClick={() => setSelectedPayment(method.code)}
                       className={`w-full p-4 border rounded-lg flex items-center gap-4 transition-all ${
-                        selectedPayment === PAYMENT_METHODS.PAYOS
+                        selectedPayment === method.code
                           ? 'border-secondary bg-secondary/5'
                           : 'border-border hover:border-secondary/50'
                       }`}
                     >
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          selectedPayment === PAYMENT_METHODS.PAYOS ? 'border-secondary' : 'border-border'
+                          selectedPayment === method.code ? 'border-secondary' : 'border-border'
                         }`}
                       >
-                        {selectedPayment === PAYMENT_METHODS.PAYOS && (
-                          <div className='w-3 h-3 rounded-full bg-secondary' />
-                        )}
+                        {selectedPayment === method.code && <div className='w-3 h-3 rounded-full bg-secondary' />}
                       </div>
-                      <PAYMENT_METHODS.PAYOS.icon className='w-6 h-6 text-secondary' />
-                      <div className='flex-1 text-left'>
-                        <p className='font-semibold'>{PAYMENT_METHODS.PAYOS.name}</p>
-                      </div>
+                      <method.icon className='w-6 h-6 text-secondary' />
+                      <p className='font-semibold'>{method.name}</p>
                     </button>
-
-                    <button
-                      type='button'
-                      onClick={() => setSelectedPayment(PAYMENT_METHODS.ZALOPAY)}
-                      className={`w-full p-4 border rounded-lg flex items-center gap-4 transition-all ${
-                        selectedPayment === PAYMENT_METHODS.ZALOPAY
-                          ? 'border-secondary bg-secondary/5'
-                          : 'border-border hover:border-secondary/50'
-                      }`}
-                    >
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          selectedPayment === PAYMENT_METHODS.ZALOPAY ? 'border-secondary' : 'border-border'
-                        }`}
-                      >
-                        {selectedPayment === PAYMENT_METHODS.ZALOPAY && (
-                          <div className='w-3 h-3 rounded-full bg-secondary' />
-                        )}
-                      </div>
-                      <PAYMENT_METHODS.ZALOPAY.icon className='w-6 h-6 text-secondary' />
-                      <div className='flex-1 text-left'>
-                        <p className='font-semibold'>{PAYMENT_METHODS.ZALOPAY.name}</p>
-                      </div>
-                    </button>
-
-                    <button
-                      type='button'
-                      onClick={() => setSelectedPayment(PAYMENT_METHODS.VNPAY)}
-                      className={`w-full p-4 border rounded-lg flex items-center gap-4 transition-all ${
-                        selectedPayment === PAYMENT_METHODS.VNPAY
-                          ? 'border-secondary bg-secondary/5'
-                          : 'border-border hover:border-secondary/50'
-                      }`}
-                    >
-                      <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          selectedPayment === PAYMENT_METHODS.VNPAY ? 'border-secondary' : 'border-border'
-                        }`}
-                      >
-                        {selectedPayment === PAYMENT_METHODS.VNPAY && (
-                          <div className='w-3 h-3 rounded-full bg-secondary' />
-                        )}
-                      </div>
-                      <PAYMENT_METHODS.VNPAY.icon className='w-6 h-6 text-secondary' />
-                      <div className='flex-1 text-left'>
-                        <p className='font-semibold'>{PAYMENT_METHODS.VNPAY.name}</p>
-                      </div>
-                    </button>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                  ))}
+                </CardContent>
+              </Card>
             </div>
 
-            {/* Right - Order Summary */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className='lg:col-span-1'
-            >
+            {/* Right - Summary */}
+            <motion.div className='lg:col-span-1'>
               <Card className='sticky top-24'>
                 <CardHeader>
                   <CardTitle>Đơn Hàng Của Bạn</CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-4'>
-                  {/* Cart Items */}
-                  <div className='space-y-3'>
-                    {cartItems.map((item) => (
-                      <div key={item.id} className='flex gap-3'>
-                        <img
-                          src={item.imageUrl || '/placeholder.svg'}
-                          alt={item.name}
-                          className='w-16 h-16 object-cover rounded-md'
-                        />
-                        <div className='flex-1 min-w-0'>
-                          <p className='font-medium text-sm line-clamp-1'>{item.name}</p>
-                          <div className='flex items-center gap-2 mt-1'>
-                            <Badge variant='secondary' className='text-xs'>
-                              {item.subject.name}
-                            </Badge>
-                          </div>
-                        </div>
-                        <p className='text-sm font-semibold text-secondary mt-1'>
-                          {item.price.toLocaleString('vi-VN')} VND
-                        </p>{' '}
+                  {basket.basketItems.map((item) => (
+                    <div key={item.mapId} className='flex gap-3'>
+                      <img src={item.imageUrl} alt={item.mapName} className='w-16 h-16 object-cover rounded-md' />
+                      <div className='flex-1'>
+                        <p className='font-medium text-sm'>{item.mapName}</p>
+                        <Badge variant='secondary' className='text-xs'>
+                          {item.subjectName || 'Chưa xác định'}
+                        </Badge>
                       </div>
-                    ))}
-                  </div>
-
+                      <p className='text-sm font-semibold text-secondary'>{item.price.toLocaleString('vi-VN')} VND</p>
+                    </div>
+                  ))}
                   <Separator />
-
-                  {/* Price Summary */}
-                  <div className='space-y-2'>
-                    <div className='flex justify-between text-sm'>
-                      <span className='text-muted-foreground'>Tạm tính</span>
-                      <span className='font-medium'>{subtotal.toLocaleString('vi-VN')} VND</span>
-                    </div>
-                    <div className='flex justify-between text-sm'>
-                      <span className='text-muted-foreground'>Thuế (10%)</span>
-                      <span className='font-medium'>{tax.toLocaleString('vi-VN')} VND</span>
-                    </div>
-                    <Separator />
-                    <div className='flex justify-between'>
-                      <span className='font-semibold'>Tổng cộng</span>
-                      <span className='text-xl font-bold text-secondary'>{total.toLocaleString('vi-VN')} VND</span>
-                    </div>
+                  <div className='flex justify-between text-sm'>
+                    <span>Tổng cộng</span>
+                    <span className='text-xl font-bold text-secondary'>{subtotal.toLocaleString('vi-VN')} VND</span>
                   </div>
-
-                  <Button
-                    type='submit'
-                    className='w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground'
-                    size='lg'
-                  >
+                  <Button type='submit' className='w-full bg-secondary hover:bg-secondary/90 text-white'>
                     Xác Nhận Thanh Toán
                   </Button>
-
-                  <p className='text-xs text-center text-muted-foreground'>
-                    Bằng cách thanh toán, bạn đồng ý với{' '}
-                    <Link to='#' className='text-secondary hover:underline'>
-                      Điều khoản dịch vụ
-                    </Link>
-                  </p>
                 </CardContent>
               </Card>
             </motion.div>

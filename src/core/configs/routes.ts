@@ -8,6 +8,7 @@ const routes = {
   basket: '/basket',
   mapDetails: '/catalog/:id',
   checkout: '/checkout',
+  paymentResult: '/payment-result',
   logout: '/logout',
   notFound: '*',
 };

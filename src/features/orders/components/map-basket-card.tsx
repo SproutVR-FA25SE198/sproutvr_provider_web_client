@@ -34,9 +34,7 @@ const MapBasketCard: React.FC<MapBasketCardProps> = ({ item, index, removeItem }
             {item.mapName}
           </Link>
         </h3>
-        <p className='text-sm text-muted-foreground mb-2'>
-          {item.mapName} • {item.mapName}
-        </p>
+        <p className='text-sm text-muted-foreground mb-2'>{item.subjectName}</p>
         <p className='text-lg font-bold text-secondary'>{item.price.toLocaleString('vi-VN')} VND</p>
       </div>
       <div className='flex flex-col items-end my-auto justify-between'>
