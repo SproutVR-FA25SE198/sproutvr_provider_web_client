@@ -24,7 +24,7 @@ export default function BasketPage() {
   const removeBasketItem = (id: string) => {
     removeItem(id);
   };
-  const tax = subtotal * 0.1;
+  // const tax = subtotal * 0.1;
   // const total = subtotal + tax;
   const total = subtotal;
 
