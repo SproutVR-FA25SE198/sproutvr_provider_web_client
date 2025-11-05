@@ -1,26 +1,158 @@
 'use client';
 
+import Loading from '@/common/components/loading';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent } from '@/common/components/ui/card';
 import { getCookie } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
+import useGetOrderById from '@/features/personal/hooks/useGetOrderById';
 
 import { motion } from 'framer-motion';
 import { AlertCircle, ArrowRight, CheckCircle2, Download, XCircle } from 'lucide-react';
-import { Suspense } from 'react';
-import { Link } from 'react-router-dom';
+import { Suspense, useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+
+import { cancelPayment, checkPaymentStatus } from '../services/payment.service';
+
+import { useMutation } from '@tanstack/react-query';
 
 function PaymentStatusContent() {
-  const isSuccess = true;
+  const [searchParams] = useSearchParams();
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed' | 'cancelled'>('pending');
+  const [orderId, setOrderId] = useState<string>('');
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const paymentData = getCookie('payment-data');
+
+  // Mutations
+  const { mutate: cancelPaymentMutation } = useMutation({
+    mutationFn: (orderCode: string | number) => cancelPayment(orderCode),
+  });
+
+  const { mutate: checkStatusMutation } = useMutation({
+    mutationFn: (orderId: string) => checkPaymentStatus(orderId),
+  });
+
+  // Get order details only after we have orderId and successful payment
+  const { data: orderDetails, isLoading: isLoadingOrder } = useGetOrderById(orderId);
+
+  useEffect(() => {
+    // Prevent multiple calls
+    if (isInitialized) return;
+
+    // Get orderId from URL params or cookie
+    const orderIdFromParams = searchParams.get('orderId') || searchParams.get('id');
+    const orderCodeFromParams = searchParams.get('orderCode');
+    const statusFromParams = searchParams.get('status')?.toUpperCase();
+    const cancelFromParams = searchParams.get('cancel') === 'true';
+    const orderIdFromCookie = paymentData?.orderId;
+    const currentOrderId = orderIdFromParams || orderIdFromCookie;
+
+    if (!currentOrderId) {
+      setPaymentStatus('failed');
+      setIsInitialized(true);
+      return;
+    }
+
+    setOrderId(currentOrderId);
+
+    // Check status from URL params first (if payment gateway already returned status)
+    if (statusFromParams) {
+      if (statusFromParams === 'PAID' || statusFromParams === 'COMPLETED' || statusFromParams === 'SUCCESS') {
+        setPaymentStatus('success');
+        setIsInitialized(true);
+        return;
+      } else if (statusFromParams === 'CANCELLED' || statusFromParams === 'CANCELED') {
+        // Call cancel API
+        const orderCodeForCancel = orderCodeFromParams || currentOrderId;
+        cancelPaymentMutation(orderCodeForCancel, {
+          onSuccess: () => {
+            setPaymentStatus('cancelled');
+            setIsInitialized(true);
+          },
+          onError: () => {
+            setPaymentStatus('cancelled');
+            setIsInitialized(true);
+          },
+        });
+        return;
+      }
+    }
+
+    // Check if payment was cancelled via cancel param
+    if (cancelFromParams) {
+      // If we have orderCode in params, use it directly
+      if (orderCodeFromParams) {
+        cancelPaymentMutation(orderCodeFromParams, {
+          onSuccess: () => {
+            setPaymentStatus('cancelled');
+            setIsInitialized(true);
+          },
+          onError: () => {
+            setPaymentStatus('cancelled');
+            setIsInitialized(true);
+          },
+        });
+      } else {
+        // Otherwise, get order details first to get orderCode
+        checkStatusMutation(currentOrderId, {
+          onSuccess: (response) => {
+            const orderCode = response.orderCode || currentOrderId;
+            cancelPaymentMutation(orderCode, {
+              onSuccess: () => {
+                setPaymentStatus('cancelled');
+                setIsInitialized(true);
+              },
+              onError: () => {
+                setPaymentStatus('cancelled');
+                setIsInitialized(true);
+              },
+            });
+          },
+          onError: () => {
+            setPaymentStatus('cancelled');
+            setIsInitialized(true);
+          },
+        });
+      }
+    } else {
+      // No status in URL, need to check payment status via API
+      checkStatusMutation(currentOrderId, {
+        onSuccess: (response) => {
+          // Check status field from API response
+          const status = response.status?.toUpperCase();
+          if (status === 'PAID' || status === 'COMPLETED' || status === 'SUCCESS') {
+            setPaymentStatus('success');
+          } else if (status === 'CANCELLED' || status === 'CANCELED') {
+            setPaymentStatus('cancelled');
+          } else if (status === 'PENDING' || status === 'PENDING_BUNDLE') {
+            // If still pending, could be waiting for payment confirmation
+            setPaymentStatus('failed');
+          } else {
+            setPaymentStatus('failed');
+          }
+          setIsInitialized(true);
+        },
+        onError: () => {
+          setPaymentStatus('failed');
+          setIsInitialized(true);
+        },
+      });
+    }
+  }, []);
+
+  if (paymentStatus === 'pending' || (paymentStatus === 'success' && isLoadingOrder)) {
+    return <Loading isLoading />;
+  }
+
+  const isSuccess = paymentStatus === 'success';
 
   const successConfig = {
     icon: CheckCircle2,
     iconColor: 'text-secondary',
     bgColor: 'bg-secondary/10',
     title: 'Thanh Toán Thành Công!',
-    description: 'Đơn hàng của bạn đã được xác nhận. Các bản đồ VR đã có sẵn trong thư viện của bạn.',
+    description: 'Đơn hàng của bạn đã được xác nhận. Các bản đồ VR đã được thêm thư viện của bạn.',
     actions: [
       { label: 'Xem Thư Viện', href: '/personal/library', icon: ArrowRight },
       { label: 'Tải Hóa Đơn', href: '#', icon: Download, variant: 'outline' as const },
@@ -34,12 +166,27 @@ function PaymentStatusContent() {
     title: 'Thanh Toán Thất Bại',
     description: 'Rất tiếc, thanh toán của bạn không thành công. Vui lòng thử lại hoặc liên hệ hỗ trợ.',
     actions: [
-      { label: 'Thử Lại', href: paymentData?.paymentUrl, icon: ArrowRight },
+      { label: 'Thử Lại', href: paymentData?.paymentUrl || '/basket', icon: ArrowRight },
       { label: 'Liên Hệ Hỗ Trợ', href: '/contact', icon: ArrowRight, variant: 'outline' as const },
     ],
   };
 
-  const config = isSuccess ? successConfig : failedConfig;
+  const cancelledConfig = {
+    icon: AlertCircle,
+    iconColor: 'text-orange-500',
+    bgColor: 'bg-orange-500/10',
+    title: 'Thanh Toán Đã Hủy',
+    description: 'Bạn đã hủy thanh toán. Đơn hàng của bạn đã được hủy bỏ.',
+    actions: [
+      { label: 'Quay Về Giỏ Hàng', href: '/basket', icon: ArrowRight },
+      { label: 'Tiếp Tục Mua Sắm', href: '/maps', icon: ArrowRight, variant: 'outline' as const },
+    ],
+  };
+
+  const config =
+    paymentStatus === 'success' ? successConfig :
+      paymentStatus === 'cancelled' ? cancelledConfig :
+        failedConfig;
   const Icon = config.icon;
 
   return (
@@ -82,7 +229,7 @@ function PaymentStatusContent() {
                 {config.description}
               </motion.p>
 
-              {!isSuccess && (
+              {paymentStatus === 'failed' && paymentData?.expiry && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -95,14 +242,14 @@ function PaymentStatusContent() {
                     <p className='text-sm text-muted-foreground'>
                       Bạn có thể thực hiện thanh toán lại cho đơn hàng này cho đến{' '}
                       <span className='font-semibold text-foreground'>
-                        {convertUtcDate(paymentData?.expiry).fullDateTime}
+                        {convertUtcDate(paymentData.expiry).fullDateTime}
                       </span>
                     </p>
                   </div>
                 </motion.div>
               )}
 
-              {isSuccess && (
+              {isSuccess && orderDetails && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -113,19 +260,27 @@ function PaymentStatusContent() {
                   <div className='space-y-3'>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Mã đơn hàng:</span>
-                      <span className='font-medium'>#VR-2025-001234</span>
+                      <span className='font-medium'>#{orderDetails.id}</span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Ngày:</span>
-                      <span className='font-medium'>{new Date().toLocaleDateString('vi-VN')}</span>
+                      <span className='font-medium'>
+                        {orderDetails.createdAtUtc
+                          ? new Date(orderDetails.createdAtUtc).toLocaleDateString('vi-VN')
+                          : new Date().toLocaleDateString('vi-VN')}
+                      </span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Số lượng sản phẩm:</span>
-                      <span className='font-medium'>3 bản đồ VR</span>
+                      <span className='font-medium'>
+                        {orderDetails.orderItems?.length || orderDetails.totalItems || 0} bản đồ VR
+                      </span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Tổng tiền:</span>
-                      <span className='font-semibold text-secondary'>630.000 VND</span>
+                      <span className='font-semibold text-secondary'>
+                        {orderDetails.totalMoneyAmount?.toLocaleString('vi-VN') || '0'} VND
+                      </span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Trạng thái:</span>

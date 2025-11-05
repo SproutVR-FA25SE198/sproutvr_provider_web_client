@@ -8,6 +8,7 @@ const useGetOrderById = (orderId: string) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: [GET_ORDER_BY_ID_QUERY_KEY, orderId],
     queryFn: () => getOrderById(orderId),
+    enabled: !!orderId,
     refetchOnWindowFocus: false,
     select: (res) => res.data,
     staleTime: GET_ORDERS_STALE_TIME,

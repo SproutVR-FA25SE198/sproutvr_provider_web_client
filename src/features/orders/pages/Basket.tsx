@@ -25,7 +25,8 @@ export default function BasketPage() {
     removeItem(id);
   };
   const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  // const total = subtotal + tax;
+  const total = subtotal;
 
   return (
     <div className='bg-background max-h-screen flex flex-col'>

@@ -33,7 +33,7 @@ const OrderCard = ({ order, index }: OrderCardProps) => {
             <div className='flex flex-col md:flex-row md:items-center justify-between md:gap-4'>
               <div className='space-y-1'>
                 <div className='flex items-center gap-3'>
-                  <h3 className='font-semibold'>Đơn hàng #{order.id.toUpperCase()}</h3>
+                  <h3 className='font-semibold'>Đơn hàng #ORD{order.orderCode}</h3>
                   <Badge
                     variant='outline'
                     className={`text-white ${ORDER_STATUS_BADGE[OrderStatus[order.status as keyof typeof OrderStatus]]}`}
