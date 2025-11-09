@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
 import { Spinner } from '@/common/components/ui/spinner';
+import { loginThunk } from '@/common/stores/authStore/authThunks';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 
 import { motion } from 'framer-motion';
@@ -14,7 +15,6 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { loginThunk } from '../authThunks';
 import { LoginFormData, loginSchema } from '../components/schema';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,7 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector((state) => state.auth.auth);
+  const { isLoading, error } = useAppSelector((state) => state.root.auth);
 
   const onSubmit = async (data: LoginFormData) => {
     const result = await dispatch(loginThunk(data));

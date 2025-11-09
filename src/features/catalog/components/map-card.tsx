@@ -2,6 +2,7 @@ import images from '@/assets/imgs';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/common/components/ui/card';
+import useBaskets from '@/common/hooks/useBasket';
 import { MapWithSubject } from '@/common/types';
 import { truncateText } from '@/common/utils/truncateText';
 
@@ -15,6 +16,20 @@ interface MapCardProps {
 }
 
 const MapCard = ({ map, index }: MapCardProps) => {
+  const { basket, addItem } = useBaskets();
+
+  const isInBasket = basket?.basketItems?.some((item) => item.mapId === map.id) || false;
+
+  const addToBasket = () => {
+    addItem({
+      mapId: map.id,
+      mapName: map.name,
+      mapCode: map.mapCode,
+      imageUrl: map.imageUrl[0],
+      subjectName: map.subject.name,
+      price: map.price,
+    });
+  };
   return (
     <motion.div
       key={map.id}
@@ -57,9 +72,11 @@ const MapCard = ({ map, index }: MapCardProps) => {
           <Button className='flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground' asChild>
             <Link to={`/catalog/${map.id}`}>Xem Chi Tiết</Link>
           </Button>
-          <Button variant='outline' size='icon'>
-            <ShoppingCart className='w-4 h-4' />
-          </Button>
+          {!isInBasket && (
+            <Button variant='outline' size='icon' onClick={addToBasket}>
+              <ShoppingCart className='w-4 h-4' />
+            </Button>
+          )}
         </CardFooter>
       </Card>
     </motion.div>

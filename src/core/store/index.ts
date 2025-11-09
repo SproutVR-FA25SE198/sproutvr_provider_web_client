@@ -1,5 +1,6 @@
+import authReducer from '@/common/stores/authStore/authSlice';
+import basketReducer from '@/common/stores/basketStore/basketSlice';
 import { hasValidTokens } from '@/common/utils/hasValidTokens';
-import authReducer from '@/features/auth/authSlice';
 
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -8,19 +9,20 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  basket: basketReducer,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'basket'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: {
-    auth: persistedReducer,
+    root: persistedReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

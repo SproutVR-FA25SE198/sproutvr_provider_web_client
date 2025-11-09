@@ -98,6 +98,12 @@ const router = createBrowserRouter([
           Component: (await import('@/features/orders/pages/Checkout')).default,
         }),
       },
+      {
+        path: configs.routes.paymentResult,
+        lazy: async () => ({
+          Component: (await import('@/features/orders/pages/PaymentResult')).default,
+        }),
+      },
     ],
   },
 

@@ -28,7 +28,7 @@ export function OrderDetailsDrawer({ orderId, open, onOpenChange }: OrderDetails
         <DrawerContent data-vaul-custom-container='true' className='max-w-2xl max-h-[90vh] overflow-y-auto'>
           <DrawerHeader className='sm:text-center'>
             <DrawerTitle className='text-2xl'>Chi Tiết Đơn Hàng</DrawerTitle>
-            <DrawerDescription>Mã đơn hàng: {order.id.toUpperCase()}</DrawerDescription>
+            <DrawerDescription>Mã đơn hàng: #ORD{order.orderCode}</DrawerDescription>
           </DrawerHeader>
 
           <div className='space-y-6'>
@@ -62,7 +62,7 @@ export function OrderDetailsDrawer({ orderId, open, onOpenChange }: OrderDetails
             {/* Order Items */}
             <div>
               <h3 className='font-semibold mb-4'>
-                Sản phẩm đã mua <span className='text-muted-foreground'>({order.orderItems.length})</span>
+                Sản phẩm<span className='text-muted-foreground'>({order.orderItems.length})</span>
               </h3>
               <div className='space-y-3  max-h-[30vh] overflow-y-auto'>
                 {order.orderItems.map((item) => (

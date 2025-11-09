@@ -25,6 +25,7 @@ class Http {
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
+        Authorization: getAccessToken() || '',
       },
     });
     this.instance.interceptors.request.use(

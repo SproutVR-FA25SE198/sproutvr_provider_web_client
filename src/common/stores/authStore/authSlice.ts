@@ -1,3 +1,6 @@
+import { getAccessToken } from '@/common/utils';
+import http from '@/common/utils/http';
+
 import { loginThunk, logoutThunk } from './authThunks';
 import { User } from './authTypes';
 
@@ -32,10 +35,13 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isAuthenticated = true;
         state.user = action.payload as User;
+        http.defaults.headers['Authorization'] = `Bearer ${getAccessToken()}`;
+        // dispatch(fetchBasketThunk());
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+        http.defaults.headers['Authorization'] = '';
       })
       //   // CHECK AUTH
       //   .addCase(checkAuthThunk.pending, (state) => {
@@ -55,6 +61,7 @@ const authSlice = createSlice({
       .addCase(logoutThunk.fulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;
+        http.defaults.headers['Authorization'] = '';
       });
   },
 });

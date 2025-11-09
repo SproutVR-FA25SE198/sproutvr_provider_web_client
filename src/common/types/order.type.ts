@@ -1,3 +1,4 @@
+import { Basket } from './basket.type';
 import { Pagination } from './response.type';
 
 export interface Order {
@@ -7,7 +8,7 @@ export interface Order {
   updatedAtUtc: string;
   totalItems: number;
   totalMoneyAmount: number;
-  payosOrderCode: number;
+  orderCode: number;
   paymentMethod: string;
   representativeName: string;
   representativePhone: string;
@@ -29,4 +30,17 @@ export interface OrderDetails extends Order {
   orderItems: OrderItem[];
 }
 
-export interface GetOrdersResponse extends Pagination<Order> {}
+export interface GetOrdersResponse extends Pagination<Order> { }
+
+export interface PlaceOrderRequest {
+  organizationId: string;
+  paymentMethod: string;
+  representativeName: string;
+  representativePhone: string;
+  basket: Basket;
+}
+
+export interface PlaceOrderResponse {
+  orderId: string;
+  paymentUrl: string;
+}

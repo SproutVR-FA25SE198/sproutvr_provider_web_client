@@ -1,7 +1,6 @@
+import { login } from '@/common/services/auth.service';
 import { removeAccessToken, removeRefreshToken, setAccessToken, setRefreshToken } from '@/common/utils';
 import JwtDecode from '@/common/utils/jwtDecode';
-
-import { login } from './services/auth.service';
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
