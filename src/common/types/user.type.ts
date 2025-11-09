@@ -12,5 +12,19 @@ export interface Organization extends User {
   address: string;
   macAddress: string;
   activationKey: string;
-  bundleGoogleDriveUrl: null;
+  bundleGoogleDriveId: string | null;
+}
+
+export interface OrganizationDetailsDto {
+  maCAddress: string | null;
+  name: string;
+  address: string | null;
+  bundleGoogleDriveId: string | null;
+  userName: string | null;
+  email: string | null;
+  phoneNumber: string | null;
+  avatarUrl: string | null;
+  status: string;
+  createdAtUtc: string;
+  updatedAtUtc: string | null;
 }

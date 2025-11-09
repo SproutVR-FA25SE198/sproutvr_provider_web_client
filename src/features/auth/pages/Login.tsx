@@ -5,14 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
 import { Spinner } from '@/common/components/ui/spinner';
+import { UserRole } from '@/common/constants/roles';
 import { loginThunk } from '@/common/stores/authStore/authThunks';
+import configs from '@/core/configs';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 
 import { motion } from 'framer-motion';
 import { BookOpen, Eye, EyeClosed, GraduationCap, TrendingUp, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { LoginFormData, loginSchema } from '../components/schema';
@@ -22,12 +24,21 @@ import { zodResolver } from '@hookform/resolvers/zod';
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { isLoading, error } = useAppSelector((state) => state.root.auth);
 
   const onSubmit = async (data: LoginFormData) => {
     const result = await dispatch(loginThunk(data));
 
-    if (!loginThunk.fulfilled.match(result)) {
+    if (loginThunk.fulfilled.match(result)) {
+      // Redirect based on user role
+      const user = result.payload;
+      if (user && user.role === UserRole.SystemAdmin) {
+        navigate(configs.routes.adminOrders);
+      } else {
+        navigate(configs.routes.home);
+      }
+    } else {
       toast.error(result.payload as string);
     }
   };

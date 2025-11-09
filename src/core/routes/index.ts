@@ -6,12 +6,20 @@ const authGuardLazy = async () => ({
   Component: (await import('@/core/guards/AuthGuard')).default,
 });
 
+const adminGuardLazy = async () => ({
+  Component: (await import('@/core/guards/AdminGuard')).default,
+});
+
 const guestGuardLazy = async () => ({
   Component: (await import('@/core/guards/GuestGuard')).default,
 });
 
 const clientLayoutLazy = async () => ({
   Component: (await import('@/core/layouts/ClientLayout')).default,
+});
+
+const adminLayoutLazy = async () => ({
+  Component: (await import('@/core/layouts/AdminLayout')).default,
 });
 
 const router = createBrowserRouter([
@@ -81,6 +89,30 @@ const router = createBrowserRouter([
             path: configs.routes.personal,
             lazy: async () => ({
               Component: (await import('@/features/personal/pages/Personal')).default,
+            }),
+          },
+        ],
+      },
+    ],
+  },
+
+  // Admin routes
+  {
+    lazy: adminGuardLazy,
+    children: [
+      {
+        lazy: adminLayoutLazy,
+        children: [
+          {
+            path: configs.routes.adminOrders,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-order-management/pages/OrderList')).default,
+            }),
+          },
+          {
+            path: configs.routes.adminOrderDetails,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-order-management/pages/Order')).default,
             }),
           },
         ],
