@@ -10,6 +10,9 @@ const routes = {
   checkout: '/checkout',
   paymentResult: '/payment-result',
   logout: '/logout',
+  // Admin routes
+  adminOrders: '/admin/orders',
+  adminOrderDetails: '/admin/orders/:id',
   notFound: '*',
 };
 
