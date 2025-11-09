@@ -20,15 +20,24 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
   const [activationKey] = useState(organization.activationKey || undefined);
   const [copiedMac, setCopiedMac] = useState(false);
   const [copiedKey, setCopiedKey] = useState(false);
+  const [copiedBundleUrl, setCopiedBundleUrl] = useState(false);
 
-  const copyToClipboard = (text: string, type: 'mac' | 'key') => {
+  // Create Google Drive folder URL from bundleGoogleDriveId
+  const bundleUrl = organization.bundleGoogleDriveId 
+    ? `https://drive.google.com/drive/folders/${organization.bundleGoogleDriveId}`
+    : null;
+
+  const copyToClipboard = (text: string, type: 'mac' | 'key' | 'bundle') => {
     navigator.clipboard.writeText(text);
     if (type === 'mac') {
       setCopiedMac(true);
       setTimeout(() => setCopiedMac(false), 2000);
-    } else {
+    } else if (type === 'key') {
       setCopiedKey(true);
       setTimeout(() => setCopiedKey(false), 2000);
+    } else {
+      setCopiedBundleUrl(true);
+      setTimeout(() => setCopiedBundleUrl(false), 2000);
     }
   };
 
@@ -161,23 +170,56 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
 
             {/* Bundle Link */}
             <div className='space-y-2'>
-              <Label htmlFor='activation-key' className='text-sm'>
+              <Label htmlFor='bundle-url' className='text-sm'>
                 Bundle Download URL
               </Label>
               <div className='flex gap-2'>
                 <div className='relative flex-1'>
-                  <a href={organization.bundleGoogleDriveUrl || undefined} target='_blank' rel='noopener noreferrer'>
+                  {bundleUrl ? (
+                    <a href={bundleUrl} target='_blank' rel='noopener noreferrer'>
+                      <Input
+                        id='bundle-url'
+                        value={bundleUrl}
+                        readOnly
+                        className='cursor-pointer hover:bg-muted/50 transition-colors'
+                        onClick={(e) => {
+                          e.preventDefault();
+                          copyToClipboard(bundleUrl, 'bundle');
+                        }}
+                      />
+                    </a>
+                  ) : (
                     <Input
-                      id='activation-key'
-                      value={organization.bundleGoogleDriveUrl || 'Bạn chưa có link tải bộ cài đặt'}
+                      id='bundle-url'
+                      value='Bạn chưa có link tải bộ cài đặt'
                       readOnly
-                      className={`cursor-pointer ${!organization.bundleGoogleDriveUrl && 'italic'}`}
+                      className='cursor-not-allowed italic'
                     />
-                  </a>
+                  )}
+                  {copiedBundleUrl && (
+                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>Copied!</span>
+                  )}
                 </div>
-                <Button variant='outline' size='icon' className='shrink-0 bg-transparent' title='Help'>
+                <Button 
+                  variant='outline' 
+                  size='icon' 
+                  className='shrink-0 bg-transparent' 
+                  title='Click vào URL để copy hoặc mở link'
+                  disabled={!bundleUrl}
+                >
                   <HelpCircle className='w-4 h-4' />
                 </Button>
+                {bundleUrl && (
+                  <Button
+                    variant='default'
+                    size='icon'
+                    className='shrink-0'
+                    onClick={() => window.open(bundleUrl, '_blank')}
+                    title='Mở Google Drive'
+                  >
+                    <Eye className='w-4 h-4' />
+                  </Button>
+                )}
               </div>
             </div>
 
