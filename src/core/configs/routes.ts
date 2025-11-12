@@ -13,6 +13,9 @@ const routes = {
   // Admin routes
   adminOrders: '/admin/orders',
   adminOrderDetails: '/admin/orders/:id',
+  adminOrganizationRequests: '/admin/organization-requests',
+  adminOrganizationRequestCheck: '/admin/organization-requests/:id/check',
+  adminOrganizationManagement: '/admin/organizations',
   notFound: '*',
 };
 
