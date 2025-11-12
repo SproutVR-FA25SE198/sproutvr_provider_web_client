@@ -36,7 +36,7 @@ export default function OrderDetailsPage() {
   const { data: order, isLoading, isError, refetch } = useGetAdminOrderById(id || '');
   const { data: organization, isLoading: isLoadingOrg, isError: isErrorOrg } = useGetOrganizationById(order?.organizationId || '');
   const uploadMutation = useUploadBundle();
-  
+
   // Get current admin user ID
   const currentUser = useAppSelector((state) => state.root.auth.user);
 
@@ -337,7 +337,7 @@ export default function OrderDetailsPage() {
                         </div>
                         <div>
                           <span className='text-muted-foreground'>MAC Address:</span>
-                          <p className='font-medium text-xs'>{organization.maCAddress || 'Chưa có'}</p>
+                          <p className='font-medium text-xs'>{organization.macAddress || 'Chưa có'}</p>
                         </div>
                         <div className='col-span-2'>
                           <span className='text-muted-foreground'>Bundle Drive ID:</span>

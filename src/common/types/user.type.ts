@@ -16,7 +16,7 @@ export interface Organization extends User {
 }
 
 export interface OrganizationDetailsDto {
-  maCAddress: string | null;
+  macAddress: string | null;
   name: string;
   address: string | null;
   bundleGoogleDriveId: string | null;
