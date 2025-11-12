@@ -13,7 +13,6 @@ const useGetOrganizationRequests = (params: GetOrganizationRequestsParams = {}) 
     queryKey: [GET_ORGANIZATION_REQUESTS_QUERY_KEY, params],
     queryFn: () => getOrganizationRequests(params),
     refetchOnWindowFocus: false,
-    keepPreviousData: true,
   });
 
   return {

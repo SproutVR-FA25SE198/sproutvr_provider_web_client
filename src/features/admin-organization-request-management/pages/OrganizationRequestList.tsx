@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/common/components/ui/select';
 import configs from '@/core/configs';
 import { motion } from 'framer-motion';
-import { Loader2, RefreshCw, ShieldPlus } from 'lucide-react';
+import { Loader2, ShieldPlus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ export default function OrganizationRequestListPage() {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data, isLoading, isError, refetch } = useGetOrganizationRequests({
+  const { data, isLoading, isError } = useGetOrganizationRequests({
     pageIndex,
     pageSize,
   });
