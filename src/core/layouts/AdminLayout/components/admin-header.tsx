@@ -6,7 +6,7 @@ import { logoutThunk } from '@/common/stores/authStore/authThunks';
 import configs from '@/core/configs';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 
-import { LogOut, Package, Shield } from 'lucide-react';
+import { Building2, ClipboardList, LogOut, Package, Shield } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function AdminHeader() {
@@ -38,19 +38,48 @@ export default function AdminHeader() {
 
           {/* Navigation */}
           <nav className='flex items-center gap-1'>
-            <Link to={configs.routes.adminOrders}>
-              <Button
-                variant={location.pathname.includes('/admin/orders') ? 'secondary' : 'ghost'}
-                className={`gap-2 ${
-                  location.pathname.includes('/admin/orders')
-                    ? 'bg-white text-primary hover:bg-white/90'
-                    : 'text-white hover:bg-white/20'
-                }`}
-              >
+            <Button
+              asChild
+              variant={location.pathname.includes('/admin/orders') ? 'secondary' : 'ghost'}
+              className={`gap-2 ${
+                location.pathname.includes('/admin/orders')
+                  ? 'bg-white text-primary hover:bg-white/90'
+                  : 'text-white hover:bg-white/20'
+              }`}
+            >
+              <Link to={configs.routes.adminOrders}>
                 <Package className='w-4 h-4' />
                 Quản lý đơn hàng
-              </Button>
-            </Link>
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant={location.pathname.includes('/admin/organization-requests') ? 'secondary' : 'ghost'}
+              className={`gap-2 ${
+                location.pathname.includes('/admin/organization-requests')
+                  ? 'bg-white text-primary hover:bg-white/90'
+                  : 'text-white hover:bg-white/20'
+              }`}
+            >
+              <Link to={configs.routes.adminOrganizationRequests}>
+                <ClipboardList className='w-4 h-4' />
+                Yêu cầu tổ chức
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant={location.pathname.includes('/admin/organizations') ? 'secondary' : 'ghost'}
+              className={`gap-2 ${
+                location.pathname.includes('/admin/organizations')
+                  ? 'bg-white text-primary hover:bg-white/90'
+                  : 'text-white hover:bg-white/20'
+              }`}
+            >
+              <Link to={configs.routes.adminOrganizationManagement}>
+                <Building2 className='w-4 h-4' />
+                Quản lý tổ chức
+              </Link>
+            </Button>
           </nav>
 
           {/* User Info & Logout */}

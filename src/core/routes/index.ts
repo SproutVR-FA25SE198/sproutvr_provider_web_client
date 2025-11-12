@@ -115,6 +115,24 @@ const router = createBrowserRouter([
               Component: (await import('@/features/admin-order-management/pages/Order')).default,
             }),
           },
+          {
+            path: configs.routes.adminOrganizationRequests,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-organization-request-management/pages/OrganizationRequestList')).default,
+            }),
+          },
+          {
+            path: configs.routes.adminOrganizationRequestCheck,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-organization-request-management/pages/OrganizationRequestCheck')).default,
+            }),
+          },
+          {
+            path: configs.routes.adminOrganizationManagement,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-organization-management/pages/OrganizationManagement')).default,
+            }),
+          },
         ],
       },
     ],
