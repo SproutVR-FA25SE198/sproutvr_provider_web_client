@@ -45,6 +45,12 @@ const router = createBrowserRouter([
           Component: (await import('@/features/catalog/pages/MapDetails')).default,
         }),
       },
+      {
+        path: configs.routes.verifyEmail,
+        lazy: async () => ({
+          Component: (await import('@/features/auth/pages/VerifyEmail')).default,
+        }),
+      },
     ],
   },
 

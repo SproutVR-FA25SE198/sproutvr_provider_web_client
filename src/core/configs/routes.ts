@@ -2,6 +2,7 @@ const routes = {
   home: '/',
   login: '/login',
   forgotPassword: '/forgot-password',
+  verifyEmail: '/verify-email',
   register: '/register',
   personal: '/personal/:tab?',
   catalog: '/catalog',
