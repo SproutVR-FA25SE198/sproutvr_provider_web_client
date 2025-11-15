@@ -47,17 +47,17 @@ export function RegisterForm({ title, subtitle, submitText, disclaimer }: Regist
         ContactPhone: data.phone.trim(),
         ContactEmail: data.email.trim(),
       });
-      toast.success('Đăng ký thành công!');
+      toast.success('Yêu cầu đăng ký của bạn đã được gửi! Hãy kiểm tra email của bạn để xác thực!');
       reset();
     } catch (error) {
       if (isAxiosError(error)) {
         const message =
           (typeof error.response?.data === 'string' && error.response.data) ||
           (error.response?.data as { message?: string })?.message;
-        toast.error(message || 'Đăng ký thất bại. Vui lòng thử lại sau.');
+        toast.error(message || 'Yêu cầu đăng ký thất bại. Vui lòng thử lại sau.');
         return;
       }
-      toast.error('Đăng ký thất bại. Vui lòng thử lại sau.');
+      toast.error('Yêu cầu đăng ký thất bại. Vui lòng thử lại sau.');
     }
   };
 
