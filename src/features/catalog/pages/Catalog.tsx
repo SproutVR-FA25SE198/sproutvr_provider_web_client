@@ -10,7 +10,6 @@ import useGetMaps from '@/common/hooks/useGetMaps';
 import { usePaginationNew } from '@/common/hooks/usePagination';
 import useScrollTop from '@/common/hooks/useScrollTop';
 import { GetAllMapsRequest } from '@/common/services/map.service';
-import { mapsWithSubjects, subjectsWithMasters as defaultSubject } from '@/common/services/mockData';
 import configs from '@/core/configs';
 
 import { motion } from 'framer-motion';
@@ -20,26 +19,36 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import MapList from '../components/map-list';
-
-const subjects = [{ id: 'all', name: 'Tất cả' }, ...defaultSubject];
+import useGetSubjects from '../hooks/useGetSubjects';
 
 export default function CatalogPage() {
   useScrollTop();
 
+  // ------------------ API Calls ------------------
+  const { data: subjectsData, isLoading: isLoadingSubjects } = useGetSubjects();
+  const subjects = useMemo(() => {
+    if (!subjectsData?.data) return [{ id: 'all', name: 'Tất cả' }];
+    return [{ id: 'all', name: 'Tất cả' }, ...subjectsData.data.map((subject) => ({ id: subject.id, name: subject.name }))];
+  }, [subjectsData]);
+
   // ------------------ Local UI States ------------------
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [filterSubject, setFilterSubject] = useState<string[]>(['all']);
   const [sortBy, setSortBy] = useState('name');
 
   // Pagination state (for backend)
   const { pageIndex, setPageIndex } = usePaginationNew(1);
 
-  // This state stores when to actually trigger API
-  const [submittedParams, setSubmittedParams] = useState({
-    search: '',
-    subjects: [] as string[],
-    sort: 'name',
-  });
+  // Debounce search query to avoid too many API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery.trim());
+      setPageIndex(1); // Reset to first page when search changes
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, setPageIndex]);
 
   // ------------------ Handlers ------------------
   const handleCategoryToggle = (subjectId: string) => {
@@ -51,34 +60,52 @@ export default function CatalogPage() {
         : [...filterSubject.filter((id) => id !== 'all'), subjectId];
       setFilterSubject(newSubjects.length === 0 ? ['all'] : newSubjects);
     }
+    // Reset to first page when filter changes
+    setPageIndex(1);
   };
 
   const handleSearchSubmit = () => {
-    // Save filters into submitted state
-    setSubmittedParams({
-      search: searchQuery.trim(),
-      subjects: filterSubject.includes('all') ? [] : filterSubject,
-      sort: sortBy,
-    });
-    // Reset to first page
+    // Trigger search immediately on button click or Enter key
+    setDebouncedSearchQuery(searchQuery.trim());
+    setPageIndex(1);
+  };
+
+  const handleSortChange = (newSort: string) => {
+    setSortBy(newSort);
+    // Reset to first page when sort changes
     setPageIndex(1);
   };
 
   // ------------------ Build Query Params ------------------
+  // Map SortBy values to backend format if needed
+  const mapSortBy = (sort: string): string | undefined => {
+    switch (sort) {
+      case 'name':
+        return 'Name'; // Sort by name A-Z
+      case 'price-asc':
+        return 'Price ASC'; // Sort by price low to high
+      case 'price-desc':
+        return 'Price DESC'; // Sort by price high to low
+      default:
+        return sort || undefined;
+    }
+  };
+
   const queryParams = useMemo(
     () => ({
-      searchKeyword: submittedParams.search || '',
-      subjectIds: submittedParams.subjects,
-      sortBy: submittedParams.sort,
+      Name: debouncedSearchQuery || undefined,
+      SubjectIds: filterSubject.includes('all') ? undefined : filterSubject.length > 0 ? filterSubject : undefined,
+      SortBy: mapSortBy(sortBy),
+      Status: 'Active', // Only show active maps
       pageIndex,
       pageSize: 3,
     }),
-    [submittedParams, pageIndex],
+    [debouncedSearchQuery, filterSubject, sortBy, pageIndex],
   );
 
   // ------------------ API Call ------------------
   const { data, isLoading, isError } = useGetMaps(queryParams as GetAllMapsRequest);
-  const maps = data?.data ?? mapsWithSubjects.slice(0, 3); // Fallback to mock data
+  const maps = data?.data ?? []; // Use API data only
   const totalCount = data?.count ?? 0;
   const totalPages = Math.ceil(totalCount / (data?.pageSize ?? 3));
   const navigate = useNavigate();
@@ -95,7 +122,7 @@ export default function CatalogPage() {
     }
   }, [isError, isExternal, navigate]);
 
-  if (isLoading || isError) return <Loading isLoading={isLoading || isError} message={isError ? 'Quay lại...' : ''} />;
+  if (isLoading || isError || isLoadingSubjects) return <Loading isLoading={isLoading || isError || isLoadingSubjects} message={isError ? 'Quay lại...' : ''} />;
   return (
     <div className='pt-6 min-h-screen bg-background'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
@@ -123,16 +150,7 @@ export default function CatalogPage() {
             <div className='sticky top-24 '>
               <Card>
                 <CardHeader>
-                  <div className='grid grid-cols-2 items-center'>
-                    <CardTitle className='text-lg'>Danh mục</CardTitle>
-                    <Button
-                      variant='default'
-                      className='p-0 text-xs px-2 h-7 hover:cursor-pointer justify-self-end'
-                      onClick={handleSearchSubmit}
-                    >
-                      Lọc
-                    </Button>
-                  </div>
+                  <CardTitle className='text-lg'>Danh mục</CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-3'>
                   {subjects.map((subject) => (
@@ -170,9 +188,11 @@ export default function CatalogPage() {
                   placeholder='Tìm kiếm sản phẩm...'
                   className='pl-5'
                   value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setPageIndex(1);
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearchSubmit();
+                    }
                   }}
                 />
                 <Button
@@ -186,11 +206,11 @@ export default function CatalogPage() {
               <select
                 className='px-4 py-2 border border-input rounded-md bg-background text-sm'
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => handleSortChange(e.target.value)}
               >
                 <option value='name'>Sắp xếp: Tên A-Z</option>
-                <option value='price-low'>Giá: Thấp đến Cao</option>
-                <option value='price-high'>Giá: Cao đến Thấp</option>
+                <option value='price-asc'>Giá: Thấp đến Cao</option>
+                <option value='price-desc'>Giá: Cao đến Thấp</option>
               </select>
             </motion.div>
 

@@ -1,14 +1,14 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTrigger } from '@/common/components/ui/dialog';
-import { GetMapByIdResponse } from '@/common/types';
+import { GetMapByIdResponse, MapDetails } from '@/common/types';
 import { ActivityType, cn } from '@/common/utils';
 
 import { Box, ChevronLeft, ChevronRight, MapPin, ZoomIn } from 'lucide-react';
 import { useState } from 'react';
 
 interface MapResourcesProps {
-  mapMetadata: GetMapByIdResponse;
+  mapMetadata: GetMapByIdResponse | MapDetails;
 }
 
 export function MapResources({ mapMetadata }: MapResourcesProps) {
