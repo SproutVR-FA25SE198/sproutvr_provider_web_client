@@ -14,6 +14,7 @@ export const signatureProductsData = () => {
     useGetMaps({
       pageIndex: 1,
       pageSize: 3,
+      Status: 'Active',
     } as GetAllMapsRequest).data?.data || mapsWithSubjects.slice(0, 3);
   return {
     heading: 'Các Bài Học Với Nội Dung VR Đặc Sắc',
