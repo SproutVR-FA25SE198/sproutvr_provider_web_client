@@ -4,6 +4,7 @@ export const UPLOAD_BUNDLE_MUTATION_KEY = 'UPLOAD_BUNDLE_MUTATION_KEY';
 
 export interface UploadBundleRequest {
   orderId: string;
+  orderCode: number;
   organizationId: string;
   bundleGoogleDriveId: string;
   assignedSystemAdminId: string;
@@ -17,6 +18,7 @@ export const uploadBundle = async (data: UploadBundleRequest) => {
   const formData = new FormData();
   formData.append('bundleFile', data.file);
   formData.append('orderDto.OrderId', data.orderId);
+  formData.append('orderDto.OrderCode', data.orderCode.toString());
   formData.append('orderDto.OrganizationId', data.organizationId);
   formData.append('orderDto.BundleGoogleDriveId', data.bundleGoogleDriveId);
   formData.append('orderDto.AssignedSystemAdminId', data.assignedSystemAdminId);

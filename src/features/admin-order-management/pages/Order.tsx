@@ -64,6 +64,7 @@ export default function OrderDetailsPage() {
 
     uploadMutation.mutate(
       {
+        orderCode: order.orderCode,
         orderId: id,
         organizationId: order.organizationId,
         bundleGoogleDriveId: organization.bundleGoogleDriveId,
