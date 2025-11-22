@@ -3,7 +3,6 @@ import useBaskets from '@/common/hooks/useBasket';
 import { useExternalCheck } from '@/common/hooks/useExternalCheck';
 import useGetMaps from '@/common/hooks/useGetMaps';
 import useScrollTop from '@/common/hooks/useScrollTop';
-import { GetAllMapsRequest } from '@/common/services/map.service';
 import configs from '@/core/configs';
 
 import { useMemo, useEffect } from 'react';
@@ -16,6 +15,7 @@ import { MapInfo } from '../components/map-info';
 import { MapResources } from '../components/map-resources';
 import { MediaGallery } from '../components/media-gallery';
 import useGetMapDetails from '../hooks/useGetMapDetails';
+import { GetAllMapsRequest } from '@/common/services/map.service';
 
 export default function MapDetails() {
   useScrollTop();
@@ -34,7 +34,6 @@ export default function MapDetails() {
       pageIndex: 1,
       pageSize: 4,
       SubjectIds: map?.subject?.id ? [map.subject.id] : undefined,
-      Status: 'active', // Only show active maps
     }),
     [map?.subject?.id],
   );
@@ -42,8 +41,7 @@ export default function MapDetails() {
   const { data: relatedMapsData } = useGetMaps(relatedMapsParams);
   const relatedMaps = useMemo(() => {
     if (!relatedMapsData?.data) return [];
-    // Filter out current map and limit to 4
-    return relatedMapsData.data.filter((m) => m.id !== id).slice(0, 4);
+    return relatedMapsData.data.filter((m: { id: string | undefined; }) => m.id !== id).slice(0, 4);
   }, [relatedMapsData, id]);
 
   useEffect(() => {
@@ -76,7 +74,7 @@ export default function MapDetails() {
         />
 
         <div className='grid lg:grid-cols-2 gap-12 mt-4 mb-12'>
-          <MediaGallery images={new Array(4).fill(map.imageUrl)} />
+          <MediaGallery images={Array.isArray(map.imageUrl) ? map.imageUrl : [map.imageUrl]} />
           <MapInfo map={map} inBasket={isInBasket} updateBasket={addItem} />
         </div>
 

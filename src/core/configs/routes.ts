@@ -17,6 +17,8 @@ const routes = {
   adminOrganizationRequests: '/admin/organization-requests',
   adminOrganizationRequestCheck: '/admin/organization-requests/:id/check',
   adminOrganizationManagement: '/admin/organizations',
+  adminMaps: '/admin/maps',
+  adminMapDetails: '/admin/maps/:id',
   notFound: '*',
 };
 

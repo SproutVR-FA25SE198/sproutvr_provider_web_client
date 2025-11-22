@@ -9,7 +9,6 @@ import { useExternalCheck } from '@/common/hooks/useExternalCheck';
 import useGetMaps from '@/common/hooks/useGetMaps';
 import { usePaginationNew } from '@/common/hooks/usePagination';
 import useScrollTop from '@/common/hooks/useScrollTop';
-import { GetAllMapsRequest } from '@/common/services/map.service';
 import configs from '@/core/configs';
 
 import { motion } from 'framer-motion';
@@ -20,6 +19,7 @@ import { toast } from 'react-toastify';
 
 import MapList from '../components/map-list';
 import useGetSubjects from '../hooks/useGetSubjects';
+import { GetAllMapsRequest } from '@/common/services/map.service';
 
 export default function CatalogPage() {
   useScrollTop();

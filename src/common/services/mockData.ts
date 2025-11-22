@@ -8,21 +8,21 @@ export const masterSubjects = [
     name: 'Khoa học Tự nhiên',
     description: 'Khám phá thế giới xung quanh qua các bài học VR sinh động và trực quan.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
   },
   {
     id: 'ms002',
     name: 'Toán học',
     description: 'Biến những công thức khô khan thành trải nghiệm học tập tương tác đầy hứng thú.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
   },
   {
     id: 'ms003',
     name: 'Lịch sử & Địa lý',
     description: 'Du hành thời gian và không gian, chứng kiến lịch sử và địa lý bằng trải nghiệm thực tế ảo.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
   },
 ] as MasterSubject[];
 
@@ -32,7 +32,7 @@ export const subjectsWithMasters = [
     name: 'Sinh học tế bào',
     description: 'Khám phá cấu trúc tế bào và cơ chế hoạt động của sự sống.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     masterSubject: masterSubjects[0],
   },
   {
@@ -40,7 +40,7 @@ export const subjectsWithMasters = [
     name: 'Hóa học cơ bản',
     description: 'Thực hiện thí nghiệm an toàn và sinh động ngay trong thế giới ảo.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     masterSubject: masterSubjects[0],
   },
   {
@@ -48,7 +48,7 @@ export const subjectsWithMasters = [
     name: 'Đại số cơ bản',
     description: 'Khám phá phương trình và hàm số thông qua các bài toán trực quan trong không gian 3D.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     masterSubject: masterSubjects[1],
   },
   {
@@ -56,7 +56,7 @@ export const subjectsWithMasters = [
     name: 'Hình học không gian',
     description: 'Xoay, cắt, ghép các khối hình 3D để hiểu rõ bản chất của hình học.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     masterSubject: masterSubjects[1],
   },
   {
@@ -64,7 +64,7 @@ export const subjectsWithMasters = [
     name: 'Lịch sử Việt Nam',
     description: 'Trải nghiệm những thời khắc quan trọng của dân tộc qua thực tế ảo sống động.',
     imageUrl: '/images/subjects/vietnam-history.jpg',
-    status: 'active',
+    status: 'Active',
     masterSubject: masterSubjects[2],
   },
   {
@@ -72,7 +72,7 @@ export const subjectsWithMasters = [
     name: 'Địa lý tự nhiên Việt Nam',
     description: 'Khám phá cảnh quan, khí hậu và hệ sinh thái đặc trưng của Việt Nam.',
     imageUrl: '/images/subjects/geography.jpg',
-    status: 'active',
+    status: 'Active',
     masterSubject: masterSubjects[2],
   },
 ] as SubjectWithMaster[];
@@ -85,7 +85,7 @@ export const mapsWithSubjects = [
     name: 'Khám phá tế bào',
     description: 'Quan sát cấu trúc tế bào trong môi trường VR sống động, nơi từng bào quan đều chuyển động chân thực.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     subject: subjectsWithMasters[0],
   },
   {
@@ -95,7 +95,7 @@ export const mapsWithSubjects = [
     name: 'Phòng thí nghiệm ảo',
     description: 'Pha chế, phản ứng và quan sát hiện tượng hóa học trong môi trường an toàn và mô phỏng chính xác.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     subject: subjectsWithMasters[1],
   },
   {
@@ -105,7 +105,7 @@ export const mapsWithSubjects = [
     name: 'Phương trình và Hàm số',
     description: 'Tương tác với đồ thị 3D, quan sát sự thay đổi của hàm số theo từng biến số trong không gian.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     subject: subjectsWithMasters[2],
   },
   {
@@ -115,7 +115,7 @@ export const mapsWithSubjects = [
     name: 'Khám phá hình khối 3D',
     description: 'Tạo, chia và ghép các hình học không gian bằng thao tác tay trong VR.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     subject: subjectsWithMasters[3],
   },
   {
@@ -125,7 +125,7 @@ export const mapsWithSubjects = [
     name: 'Chiến thắng Điện Biên Phủ',
     description: 'Trở về năm 1954 và chứng kiến trận chiến lịch sử của dân tộc Việt Nam trong không gian thực tế ảo.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     subject: subjectsWithMasters[4],
   },
   {
@@ -135,7 +135,7 @@ export const mapsWithSubjects = [
     name: 'Khám phá miền Trung Việt Nam',
     description: 'Bay qua các dãy núi, con sông và bờ biển đặc trưng của miền Trung trong VR 360°.',
     imageUrl: `${images.landingHero}`,
-    status: 'active',
+    status: 'Active',
     subject: subjectsWithMasters[5],
   },
 ] as MapWithSubject[];
@@ -148,19 +148,19 @@ export const mockMapMetadata: GetMapByIdResponse = {
   description:
     'Khám phá thế giới vật lý và hóa học trong môi trường 3D tương tác, giúp học sinh hiểu sâu hơn về các hiện tượng tự nhiên.',
   imageUrl: '/images/maps/science-lab-vr.jpg',
-  status: 'active',
+  status: 'Active',
   subject: {
     id: 'subject001',
     name: 'Vật Lý Cơ Bản',
     description: 'Môn học giúp học sinh làm quen với các khái niệm cơ bản về vật lý thông qua trải nghiệm thực tế ảo.',
     imageUrl: '/images/subjects/basic-physics.jpg',
-    status: 'active',
+    status: 'Active',
     masterSubject: {
       id: 'master001',
       name: 'Khoa Học Tự Nhiên',
       description: 'Nhóm môn học giúp học sinh khám phá các hiện tượng tự nhiên qua mô phỏng thực tế ảo.',
       imageUrl: '/images/masters/natural-science.jpg',
-      status: 'active',
+      status: 'Active',
     },
   },
   mapObjects: [
@@ -170,6 +170,7 @@ export const mockMapMetadata: GetMapByIdResponse = {
       name: 'Ống Nghiệm',
       imageUrl: '/images/objects/test-tube.png',
       objectCode: 'OBJ_TEST_TUBE',
+      description: ""
     },
     {
       id: 'obj002',
@@ -177,6 +178,7 @@ export const mockMapMetadata: GetMapByIdResponse = {
       name: 'Cân Điện Tử',
       imageUrl: '/images/objects/digital-scale.png',
       objectCode: 'OBJ_SCALE',
+      description: ""
     },
     {
       id: 'obj003',
@@ -184,6 +186,7 @@ export const mockMapMetadata: GetMapByIdResponse = {
       name: 'Bếp Cồn',
       imageUrl: '/images/objects/burner.png',
       objectCode: 'OBJ_BURNER',
+      description: ""
     },
     {
       id: 'obj004',
@@ -191,6 +194,7 @@ export const mockMapMetadata: GetMapByIdResponse = {
       name: 'Ống Đong',
       imageUrl: '/images/objects/measuring-cylinder.png',
       objectCode: 'OBJ_CYLINDER',
+      description: ""
     },
   ],
   taskLocations: [
@@ -200,6 +204,7 @@ export const mockMapMetadata: GetMapByIdResponse = {
       name: 'Khu Chuẩn Bị Thí Nghiệm',
       imageUrl: '/images/locations/preparation-area.jpg',
       locationCode: 'LOC_PREP',
+      description: ""
     },
     {
       id: 'loc002',
@@ -207,6 +212,7 @@ export const mockMapMetadata: GetMapByIdResponse = {
       name: 'Khu Đun Nóng',
       imageUrl: '/images/locations/heating-area.jpg',
       locationCode: 'LOC_HEAT',
+      description: ""
     },
     {
       id: 'loc003',
@@ -214,6 +220,7 @@ export const mockMapMetadata: GetMapByIdResponse = {
       name: 'Khu Pha Chế Dung Dịch',
       imageUrl: '/images/locations/mixing-area.jpg',
       locationCode: 'LOC_MIX',
+      description: ""
     },
   ],
   createdAt: '2025-03-12T10:45:00Z',
