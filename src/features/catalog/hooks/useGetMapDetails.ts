@@ -3,6 +3,7 @@ import { MapDetails } from '@/common/types/map.type';
 import { GET_MAP_BY_ID_QUERY_KEY, GET_MAPS_STALE_TIME, getMapById, GetMapByIdRequest } from '../services/map.service';
 
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 const useGetMapDetails = (params: GetMapByIdRequest) => {
   const { data, isLoading, isError } = useQuery({
@@ -14,16 +15,32 @@ const useGetMapDetails = (params: GetMapByIdRequest) => {
     staleTime: GET_MAPS_STALE_TIME,
   });
 
-  const images = [
-    data?.imageUrl,
-    data?.taskLocations[0].imageUrl,
-    data?.taskLocations[1].imageUrl,
-    data?.taskLocations[2].imageUrl,
-  ];
+  // Memoize images array to prevent re-renders
+  const images = useMemo(() => {
+    if (!data) return [];
+    
+    // Get up to 4 images from task locations for gallery
+    const locationImages = (data.taskLocations || [])
+      .slice(0, 3) // Take first 3 locations
+      .map(loc => loc.imageUrl)
+      .filter(Boolean); // Remove any null/undefined
+    
+    const allImages = [data.imageUrl, ...locationImages].filter(Boolean);
+    
+    // Fill with main image if not enough locations
+    while (allImages.length < 4 && data.imageUrl) {
+      allImages.push(data.imageUrl);
+    }
+    
+    return allImages.slice(0, 4);
+  }, [data]);
 
-  const returnData: MapDetails = data ? { ...data, imageUrl: images as string[] } : ({} as MapDetails);
+  const returnData: MapDetails = useMemo(() => 
+    data ? { ...data, imageUrl: images as string[] } : ({} as MapDetails),
+    [data, images]
+  );
 
-  return { data: returnData || data, isLoading, isError };
+  return { data: returnData, isLoading, isError };
 };
 
 export default useGetMapDetails;

@@ -1,6 +1,7 @@
 import { Map } from './map.type';
 
 export interface TaskObject {
+  description: any;
   id: string;
   mapId: string;
   name: string;
@@ -9,6 +10,7 @@ export interface TaskObject {
 }
 
 export interface TaskLocation {
+  description: any;
   id: string;
   mapId: string;
   name: string;

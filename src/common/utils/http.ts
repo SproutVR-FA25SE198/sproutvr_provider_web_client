@@ -32,7 +32,9 @@ class Http {
       (config) => {
         if (this.accessToken && config.headers) {
           config.headers.Authorization = `Bearer ${this.accessToken}`;
-          return config;
+        }
+        if (config.headers && config.headers['Content-Type'] === undefined) {
+          delete config.headers['Content-Type'];
         }
         return config;
       },

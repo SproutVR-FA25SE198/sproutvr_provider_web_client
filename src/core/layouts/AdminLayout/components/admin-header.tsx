@@ -6,7 +6,7 @@ import { logoutThunk } from '@/common/stores/authStore/authThunks';
 import configs from '@/core/configs';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 
-import { Building2, ClipboardList, LogOut, Package, Shield } from 'lucide-react';
+import { Building2, ClipboardList, LogOut, Map, Package, Shield } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function AdminHeader() {
@@ -50,6 +50,20 @@ export default function AdminHeader() {
               <Link to={configs.routes.adminOrders}>
                 <Package className='w-4 h-4' />
                 Quản lý đơn hàng
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant={location.pathname.includes('/admin/maps') ? 'secondary' : 'ghost'}
+              className={`gap-2 ${
+                location.pathname.includes('/admin/maps')
+                  ? 'bg-white text-primary hover:bg-white/90'
+                  : 'text-white hover:bg-white/20'
+              }`}
+            >
+              <Link to={configs.routes.adminMaps}>
+                <Map className='w-4 h-4' />
+                Quản lý Map
               </Link>
             </Button>
             <Button
