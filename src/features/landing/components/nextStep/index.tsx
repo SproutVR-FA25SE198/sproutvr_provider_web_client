@@ -19,7 +19,7 @@ export function NextStep() {
   const stepsInView = useInView(stepsRef, { once: true, amount: 0.3 });
 
   return (
-    <section id='get-started' ref={ref} className='bg-background'>
+    <section id='register' ref={ref} className='bg-background'>
       <SectionContainer>
         <SectionHeader
           heading={nextStepData.heading}
@@ -38,7 +38,6 @@ export function NextStep() {
             <RegisterForm
               title={nextStepData.form.title}
               subtitle={nextStepData.form.subtitle}
-              fields={nextStepData.form.fields}
               submitText={nextStepData.form.submitText}
               disclaimer={nextStepData.form.disclaimer}
             />

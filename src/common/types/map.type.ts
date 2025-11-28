@@ -29,11 +29,25 @@ export interface MapMetadata {
   taskObjects: TaskObject[];
 }
 
+export interface MapSummary {
+  mapId: string;
+  mapCode: string;
+  mapName: string;
+  imageUrl: string;
+  subjectName: string;
+}
+
 export interface GetMapsResponse extends Pagination<MapWithSubject> {}
+
+export interface GetLibraryResponse extends Pagination<MapSummary> {}
 
 export interface GetMapByIdResponse extends MapWithSubject {
   mapObjects: TaskObject[];
   taskLocations: TaskLocation[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface MapDetails extends Omit<GetMapByIdResponse, 'imageUrl'> {
+  imageUrl: string[];
 }

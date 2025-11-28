@@ -21,17 +21,20 @@ class Http {
     this.accessToken = getAccessToken();
     this.refreshToken = getRefreshToken();
     this.instance = axios.create({
-      baseURL: import.meta.env.BASE_URL,
+      baseURL: import.meta.env.VITE_BASE_URL,
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
+        Authorization: getAccessToken() || '',
       },
     });
     this.instance.interceptors.request.use(
       (config) => {
         if (this.accessToken && config.headers) {
           config.headers.Authorization = `Bearer ${this.accessToken}`;
-          return config;
+        }
+        if (config.headers && config.headers['Content-Type'] === undefined) {
+          delete config.headers['Content-Type'];
         }
         return config;
       },

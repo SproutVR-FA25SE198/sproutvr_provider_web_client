@@ -1,6 +1,8 @@
+import images from '@/assets/imgs';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/common/components/ui/card';
+import useBaskets from '@/common/hooks/useBasket';
 import { MapWithSubject } from '@/common/types';
 import { truncateText } from '@/common/utils/truncateText';
 
@@ -14,6 +16,20 @@ interface MapCardProps {
 }
 
 const MapCard = ({ map, index }: MapCardProps) => {
+  const { basket, addItem } = useBaskets();
+
+  const isInBasket = basket?.basketItems?.some((item) => item.mapId === map.id) || false;
+
+  const addToBasket = () => {
+    addItem({
+      mapId: map.id,
+      mapName: map.name,
+      mapCode: map.mapCode,
+      imageUrl: map.imageUrl[0],
+      subjectName: map.subject.name,
+      price: map.price,
+    });
+  };
   return (
     <motion.div
       key={map.id}
@@ -25,7 +41,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
         <Link to={`/catalog/${map.id}`}>
           <div className=' relative aspect-video overflow-hidden'>
             <img
-              src={map.imageUrl || '/placeholder.svg'}
+              src={map.imageUrl || images.empty}
               alt={map.name}
               className='w-full h-full object-cover hover:scale-105 transition-transform duration-300'
             />
@@ -34,7 +50,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
             </Badge>
           </div>
         </Link>
-        <CardHeader className='flex-1 -mb-2 py-4'>
+        <CardHeader className='flex-1 -mb-5 h-25 py-4'>
           <div className='flex items-start justify-between gap-2 mb-2'>
             <CardTitle className='text-xl'>
               <Link to={`/catalog/${map.id}`} className='hover:text-secondary transition-colors'>
@@ -42,11 +58,11 @@ const MapCard = ({ map, index }: MapCardProps) => {
               </Link>
             </CardTitle>
           </div>
-          <CardDescription>{truncateText(map.description, 50)}</CardDescription>
+          <CardDescription>{truncateText(map.description, 65)}</CardDescription>
         </CardHeader>
         <CardContent className='py-0 flex-1'>
           <div className='flex items-center h-15 justify-between'>
-            <Badge variant='default' className='px-2 md:w-25'>
+            <Badge variant='default' className='px-2 md:max-w-25'>
               {map.subject.name}
             </Badge>
             <span className='text-lg font-bold text-secondary'>{map.price.toLocaleString('vi-VN')} VND</span>
@@ -56,9 +72,11 @@ const MapCard = ({ map, index }: MapCardProps) => {
           <Button className='flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground' asChild>
             <Link to={`/catalog/${map.id}`}>Xem Chi Tiết</Link>
           </Button>
-          <Button variant='outline' size='icon'>
-            <ShoppingCart className='w-4 h-4' />
-          </Button>
+          {!isInBasket && (
+            <Button variant='outline' size='icon' onClick={addToBasket}>
+              <ShoppingCart className='w-4 h-4' />
+            </Button>
+          )}
         </CardFooter>
       </Card>
     </motion.div>

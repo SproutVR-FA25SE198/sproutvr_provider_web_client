@@ -1,81 +1,189 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTrigger } from '@/common/components/ui/dialog';
-import { GetMapByIdResponse } from '@/common/types';
+import { GetMapByIdResponse, MapDetails } from '@/common/types';
 import { ActivityType, cn } from '@/common/utils';
 
 import { Box, ChevronLeft, ChevronRight, MapPin, ZoomIn } from 'lucide-react';
 import { useState } from 'react';
 
 interface MapResourcesProps {
-  mapMetadata: GetMapByIdResponse;
+  mapMetadata: GetMapByIdResponse | MapDetails;
 }
 
 export function MapResources({ mapMetadata }: MapResourcesProps) {
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0);
+  const [currentLocationIndex, setCurrentLocationIndex] = useState(0);
   const objectsPerPage = 4;
-  const totalPages = Math.ceil(mapMetadata.mapObjects.length / objectsPerPage);
+  const locationsPerPage = 4;
+  const totalObjectPages = Math.ceil(mapMetadata.mapObjects.length / objectsPerPage);
+  const totalLocationPages = Math.ceil(mapMetadata.taskLocations.length / locationsPerPage);
   const totalObjects = mapMetadata.mapObjects.length;
   const totalLocations = mapMetadata.taskLocations.length;
 
   const visibleObjects = mapMetadata.mapObjects.slice(currentObjectIndex, currentObjectIndex + objectsPerPage);
+  const visibleLocations = mapMetadata.taskLocations.slice(currentLocationIndex, currentLocationIndex + locationsPerPage);
 
-  const handlePrevious = () => {
+  const handleObjectPrevious = () => {
     setCurrentObjectIndex((prev) => Math.max(0, prev - objectsPerPage));
   };
 
-  const handleNext = () => {
+  const handleObjectNext = () => {
     setCurrentObjectIndex((prev) => Math.min(mapMetadata.mapObjects.length - objectsPerPage, prev + objectsPerPage));
+  };
+
+  const handleLocationPrevious = () => {
+    setCurrentLocationIndex((prev) => Math.max(0, prev - locationsPerPage));
+  };
+
+  const handleLocationNext = () => {
+    setCurrentLocationIndex((prev) => Math.min(mapMetadata.taskLocations.length - locationsPerPage, prev + locationsPerPage));
   };
 
   return (
     <div className='border-t border-border pt-8 mb-16'>
       <h2 className='text-2xl font-bold text-foreground mb-8'>Resources</h2>
 
-      <div className='grid lg:grid-cols-2 gap-8 mb-12'>
-        {/* Task Location */}
-        <div>
-          <h3 className='text-lg font-semibold text-foreground mb-4 flex items-center gap-2'>
-            <MapPin className='w-5 h-5 text-primary' />
-            Task location
-            <span className='text-muted-foreground'>({totalLocations})</span>
-          </h3>
-          <Dialog>
-            <DialogTrigger asChild>
-              <div className='relative aspect-video rounded-xl overflow-hidden bg-accent border border-border cursor-pointer group'>
-                <img
-                  src={mapMetadata.taskLocations[0].imageUrl || '/placeholder.svg'}
-                  alt='Task location'
-                  className='object-cover transition-transform duration-300 group-hover:scale-105'
-                />
-                <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center'>
-                  <ZoomIn className='w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-                </div>
-              </div>
-            </DialogTrigger>
-            <DialogContent className='max-w-4xl'>
-              <div className='relative aspect-video w-full'>
-                <img
-                  src={mapMetadata.taskLocations[0].imageUrl || '/placeholder.svg'}
-                  alt='Task location'
-                  className='object-contain'
-                />
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+      {/* Task Locations Carousel */}
+      <div className='mb-12'>
+        <h3 className='text-lg font-semibold text-foreground mb-4 flex items-center gap-2'>
+          <MapPin className='w-5 h-5 text-primary' />
+          Task location
+          <span className='text-muted-foreground'>({totalLocations})</span>
+        </h3>
+        <div className='relative'>
+          {/* Navigation Buttons */}
+          {totalLocations > locationsPerPage && (
+            <>
+              <button
+                onClick={handleLocationPrevious}
+                disabled={currentLocationIndex === 0}
+                className={cn(
+                  'absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10',
+                  'w-10 h-10 rounded-full bg-background border-2 border-border',
+                  'flex items-center justify-center transition-all duration-200',
+                  'hover:bg-accent hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed',
+                  'shadow-lg',
+                )}
+              >
+                <ChevronLeft className='w-5 h-5' />
+              </button>
 
-        {/* Activity Types */}
-        <div>
-          <h3 className='text-lg font-semibold text-foreground mb-4'>Activity types</h3>
-          <ul className='space-y-3'>
-            {Object.values(ActivityType).map((type, index) => (
-              <li key={index} className='flex items-start gap-3 p-4 rounded-lg bg-accent/50 border border-border'>
-                <div className='w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0' />
-                <span className='text-foreground'>{type}</span>
-              </li>
+              <button
+                onClick={handleLocationNext}
+                disabled={currentLocationIndex >= totalLocations - locationsPerPage}
+                className={cn(
+                  'absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10',
+                  'w-10 h-10 rounded-full bg-background border-2 border-border',
+                  'flex items-center justify-center transition-all duration-200',
+                  'hover:bg-accent hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed',
+                  'shadow-lg',
+                )}
+              >
+                <ChevronRight className='w-5 h-5' />
+              </button>
+            </>
+          )}
+
+          {/* Locations Grid */}
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-6 px-2'>
+            {visibleLocations.map((location) => (
+              <Dialog key={location.id}>
+                <DialogTrigger asChild>
+                  <div className='group cursor-pointer'>
+                    <div className='relative aspect-video rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-border mb-3 shadow-sm hover:shadow-lg transition-all duration-300'>
+                      <img
+                        src={location.imageUrl || '/placeholder.svg'}
+                        alt={location.name}
+                        className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-110'
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
+                      />
+                      <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
+                        <ZoomIn className='w-8 h-8 text-white drop-shadow-lg' />
+                      </div>
+                    </div>
+                    <div className='text-center'>
+                      <p className='text-sm font-semibold text-foreground line-clamp-2 mb-1'>{location.name}</p>
+
+                    </div>
+                  </div>
+                </DialogTrigger>
+                <DialogContent className='max-w-4xl'>
+                  <div className='space-y-4'>
+                    <div className='relative aspect-video w-full bg-accent rounded-lg overflow-hidden'>
+                      <img
+                        src={location.imageUrl || '/placeholder.svg'}
+                        alt={location.name}
+                        className='w-full h-full object-contain'
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
+                      />
+                    </div>
+                    <div className='text-center space-y-2'>
+                      <h3 className='text-2xl font-bold text-foreground'>{location.name}</h3>
+
+                      {location.description && (
+                        <p className='text-muted-foreground mt-4'>{location.description}</p>
+                      )}
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             ))}
-          </ul>
+          </div>
+
+          {/* Page Indicator */}
+          {totalLocationPages > 1 && (
+            <div className='flex justify-center gap-2 mt-6'>
+              {Array.from({ length: totalLocationPages }).map((_, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    'w-2 h-2 rounded-full transition-all duration-200',
+                    Math.floor(currentLocationIndex / locationsPerPage) === index ? 'bg-primary w-6' : 'bg-border',
+                  )}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Activity Types */}
+      <div className='mb-12'>
+        <h3 className='text-lg font-semibold text-foreground mb-4'>Activity types</h3>
+        <div className='grid md:grid-cols-2 gap-3'>
+          {Object.values(ActivityType).map((type, index) => {
+            const isQuiz = type === ActivityType.QUIZ;
+            return (
+              <div
+                key={index}
+                className={cn(
+                  'flex items-center gap-3 p-4 rounded-xl transition-all duration-200',
+                  'border-2 hover:shadow-md hover:scale-[1.02]',
+                  isQuiz
+                    ? 'bg-blue-50 border-blue-200 hover:border-blue-300 dark:bg-blue-950/30 dark:border-blue-800'
+                    : 'bg-green-50 border-green-200 hover:border-green-300 dark:bg-green-950/30 dark:border-green-800'
+                )}
+              >
+                <div
+                  className={cn(
+                    'w-3 h-3 rounded-full flex-shrink-0',
+                    isQuiz ? 'bg-blue-500' : 'bg-green-500'
+                  )}
+                />
+                <span className={cn(
+                  'font-medium text-base',
+                  isQuiz ? 'text-blue-700 dark:text-blue-300' : 'text-green-700 dark:text-green-300'
+                )}>
+                  {type}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -83,38 +191,42 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
       <div>
         <h3 className='text-lg font-semibold text-foreground mb-4 flex items-center gap-2'>
           <Box className='w-5 h-5 text-secondary' />
-          Map objects
+          Vật thể
           <span className='text-muted-foreground'>({totalObjects})</span>
         </h3>
         <div className='relative'>
           {/* Navigation Buttons */}
-          <button
-            onClick={handlePrevious}
-            disabled={currentObjectIndex === 0}
-            className={cn(
-              'absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10',
-              'w-10 h-10 rounded-full bg-background border-2 border-border',
-              'flex items-center justify-center transition-all duration-200',
-              'hover:bg-accent hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed',
-              'shadow-lg',
-            )}
-          >
-            <ChevronLeft className='w-5 h-5' />
-          </button>
+          {totalObjects > objectsPerPage && (
+            <>
+              <button
+                onClick={handleObjectPrevious}
+                disabled={currentObjectIndex === 0}
+                className={cn(
+                  'absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10',
+                  'w-10 h-10 rounded-full bg-background border-2 border-border',
+                  'flex items-center justify-center transition-all duration-200',
+                  'hover:bg-accent hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed',
+                  'shadow-lg',
+                )}
+              >
+                <ChevronLeft className='w-5 h-5' />
+              </button>
 
-          <button
-            onClick={handleNext}
-            disabled={currentObjectIndex >= totalObjects - objectsPerPage}
-            className={cn(
-              'absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10',
-              'w-10 h-10 rounded-full bg-background border-2 border-border',
-              'flex items-center justify-center transition-all duration-200',
-              'hover:bg-accent hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed',
-              'shadow-lg',
-            )}
-          >
-            <ChevronRight className='w-5 h-5' />
-          </button>
+              <button
+                onClick={handleObjectNext}
+                disabled={currentObjectIndex >= totalObjects - objectsPerPage}
+                className={cn(
+                  'absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10',
+                  'w-10 h-10 rounded-full bg-background border-2 border-border',
+                  'flex items-center justify-center transition-all duration-200',
+                  'hover:bg-accent hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed',
+                  'shadow-lg',
+                )}
+              >
+                <ChevronRight className='w-5 h-5' />
+              </button>
+            </>
+          )}
 
           {/* Objects Grid */}
           <div className='grid grid-cols-2 md:grid-cols-4 gap-6 px-2'>
@@ -122,43 +234,66 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
               <Dialog key={object.id}>
                 <DialogTrigger asChild>
                   <div className='group cursor-pointer'>
-                    <div className='relative aspect-square rounded-xl overflow-hidden bg-accent border border-border mb-3'>
+                    <div className='relative aspect-square rounded-xl overflow-hidden bg-gradient-to-br from-accent to-accent/50 border-2 border-border mb-3 shadow-sm hover:shadow-lg transition-all duration-300'>
                       <img
                         src={object.imageUrl || '/placeholder.svg'}
                         alt={object.name}
-                        className='object-cover transition-transform duration-300 group-hover:scale-105'
+                        className='w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-110'
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
                       />
-                      <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center'>
-                        <ZoomIn className='w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+                      <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
+                        <ZoomIn className='w-8 h-8 text-white drop-shadow-lg' />
                       </div>
                     </div>
-                    <p className='text-sm text-center text-foreground font-medium'>{object.name}</p>
+                    <div className='text-center'>
+                      <p className='text-sm font-semibold text-foreground line-clamp-2 mb-1'>{object.name}</p>
+                    </div>
                   </div>
                 </DialogTrigger>
-                <DialogContent className='max-w-3xl'>
-                  <div className='relative aspect-square w-full'>
-                    <img src={object.imageUrl || '/placeholder.svg'} alt={object.name} className='object-contain' />
+                <DialogContent className='max-w-4xl'>
+                  <div className='space-y-4'>
+                    <div className='relative aspect-square w-full bg-accent rounded-lg overflow-hidden'>
+                      <img
+                        src={object.imageUrl || '/placeholder.svg'}
+                        alt={object.name}
+                        className='w-full h-full object-contain p-8'
+                        onError={(e) => {
+                          e.currentTarget.src = '/placeholder.svg';
+                        }}
+                      />
+                    </div>
+                    <div className='text-center space-y-2'>
+                      <h3 className='text-2xl font-bold text-foreground'>{object.name}</h3>
+
+                      {object.description && (
+                        <p className='text-muted-foreground mt-4'>{object.description}</p>
+                      )}
+                    </div>
                   </div>
-                  <p className='text-center text-lg font-semibold mt-4'>{object.name}</p>
                 </DialogContent>
               </Dialog>
             ))}
           </div>
 
           {/* Page Indicator */}
-          <div className='flex justify-center gap-2 mt-6'>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <div
-                key={index}
-                className={cn(
-                  'w-2 h-2 rounded-full transition-all duration-200',
-                  Math.floor(currentObjectIndex / objectsPerPage) === index ? 'bg-primary w-6' : 'bg-border',
-                )}
-              />
-            ))}
-          </div>
+          {totalObjectPages > 1 && (
+            <div className='flex justify-center gap-2 mt-6'>
+              {Array.from({ length: totalObjectPages }).map((_, index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    'w-2 h-2 rounded-full transition-all duration-200',
+                    Math.floor(currentObjectIndex / objectsPerPage) === index ? 'bg-secondary w-6' : 'bg-border',
+                  )}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
+

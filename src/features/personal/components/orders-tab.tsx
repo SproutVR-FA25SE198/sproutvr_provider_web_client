@@ -1,6 +1,6 @@
 import { Button } from '@/common/components/ui/button';
 import { usePagination } from '@/common/hooks/usePagination';
-import { Order } from '@/common/types';
+import { GetOrdersResponse } from '@/common/types';
 
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -8,11 +8,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import OrderCard from './order-card';
 
 interface OrdersTabProps {
-  orderHistory: Order[];
+  orderHistory: GetOrdersResponse;
 }
 
 const OrdersTab = ({ orderHistory }: OrdersTabProps) => {
-  const { currentPage, totalPages, currentData, setPage, nextPage, prevPage } = usePagination(orderHistory, 3);
+  if (!orderHistory || orderHistory.data.length === 0) {
+    return (
+      <div className='h-full p-8 flex flex-col items-center justify-center'>
+        <p className='text-muted-foreground text-lg'>Bạn chưa có đơn hàng nào.</p>
+      </div>
+    );
+  }
+
+  const { currentPage, totalPages, currentData, setPage, nextPage, prevPage } = usePagination(orderHistory.data, 3);
   return (
     <>
       <div className='h-full p-8 overflow-auto'>
@@ -28,7 +36,7 @@ const OrdersTab = ({ orderHistory }: OrdersTabProps) => {
           </div>
 
           <div className='space-y-4'>
-            {currentData.map((order, index) => (
+            {currentData?.map((order, index) => (
               <OrderCard key={order.id} order={order} index={index} />
             ))}
           </div>

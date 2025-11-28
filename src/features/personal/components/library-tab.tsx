@@ -1,6 +1,6 @@
 import { Button } from '@/common/components/ui/button';
 import { usePagination } from '@/common/hooks/usePagination';
-import { MapWithSubject } from '@/common/types';
+import { GetLibraryResponse } from '@/common/types';
 
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -8,11 +8,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import PurchasedMapCard from './purchased-map-card';
 
 interface LibraryTabProps {
-  purchasedMaps: MapWithSubject[];
+  purchasedMaps: GetLibraryResponse;
 }
 
 const LibraryTab = ({ purchasedMaps }: LibraryTabProps) => {
-  const { currentPage, totalPages, currentData, setPage, nextPage, prevPage } = usePagination(purchasedMaps, 3);
+  if (!purchasedMaps || purchasedMaps.data.length === 0) {
+    return (
+      <div className='h-full p-8 flex flex-col items-center justify-center'>
+        <p className='text-muted-foreground text-lg'>Bạn chưa mua map VR nào.</p>
+      </div>
+    );
+  }
+
+  const { currentPage, totalPages, currentData, setPage, nextPage, prevPage } = usePagination(purchasedMaps.data, 3);
 
   return (
     <>
@@ -28,9 +36,9 @@ const LibraryTab = ({ purchasedMaps }: LibraryTabProps) => {
             <p className='text-muted-foreground'>Các map VR bạn đã mua</p>
           </div>
 
-          <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          <div className='grid md:grid-cols-2 lg:grid-cols-3'>
             {currentData.map((map, index) => (
-              <PurchasedMapCard key={map.id} map={map} index={index} />
+              <PurchasedMapCard key={map?.mapId} map={map} index={index} />
             ))}
           </div>
         </motion.div>

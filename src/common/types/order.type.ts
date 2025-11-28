@@ -1,18 +1,46 @@
-import { MapWithSubject } from './map.type';
+import { Basket } from './basket.type';
+import { Pagination } from './response.type';
 
 export interface Order {
   id: string;
   organizationId: string;
   createdAtUtc: string;
   updatedAtUtc: string;
-  items: number;
+  totalItems: number;
   totalMoneyAmount: number;
-  payosOrderCode: number;
+  orderCode: number;
   paymentMethod: string;
+  representativeName: string;
+  representativePhone: string;
   bank: string;
   status: string;
 }
 
+export interface OrderItem {
+  orderId: string;
+  mapId: string;
+  mapCode: string;
+  mapName: string;
+  price: number;
+  imageUrl: string;
+  subjectName: string;
+}
+
 export interface OrderDetails extends Order {
-  orderItems: MapWithSubject[];
+  orderItems: OrderItem[];
+}
+
+export interface GetOrdersResponse extends Pagination<Order> { }
+
+export interface PlaceOrderRequest {
+  organizationId: string;
+  paymentMethod: string;
+  representativeName: string;
+  representativePhone: string;
+  basket: Basket;
+}
+
+export interface PlaceOrderResponse {
+  orderId: string;
+  paymentUrl: string;
 }

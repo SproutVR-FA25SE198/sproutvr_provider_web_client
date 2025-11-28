@@ -3,6 +3,7 @@ import { Button } from '@/common/components/ui/button';
 import { Card, CardContent } from '@/common/components/ui/card';
 import { useMobile } from '@/common/hooks';
 import { Order } from '@/common/types';
+import { ORDER_STATUS_BADGE, OrderStatus } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 
 import { motion } from 'framer-motion';
@@ -32,18 +33,23 @@ const OrderCard = ({ order, index }: OrderCardProps) => {
             <div className='flex flex-col md:flex-row md:items-center justify-between md:gap-4'>
               <div className='space-y-1'>
                 <div className='flex items-center gap-3'>
-                  <h3 className='font-semibold'>Đơn hàng #{order.id.toUpperCase()}</h3>
-                  <Badge variant='secondary'>{order.status}</Badge>
+                  <h3 className='font-semibold'>Đơn hàng #ORD{order.orderCode}</h3>
+                  <Badge
+                    variant='outline'
+                    className={`text-white ${ORDER_STATUS_BADGE[OrderStatus[order.status as keyof typeof OrderStatus]]}`}
+                  >
+                    {OrderStatus[order.status as keyof typeof OrderStatus]}
+                  </Badge>
                 </div>
                 {isMobile ? (
                   <>
-                    <p className='text-sm text-muted-foreground'>Ngày đặt: {order.createdAtUtc}</p>
-                    <p className='text-sm text-muted-foreground'>{order.items} sản phẩm</p>
+                    <p className='text-sm text-muted-foreground'>Ngày đặt: {convertUtcDate(order.createdAtUtc).date}</p>
+                    <p className='text-sm text-muted-foreground'>{order.totalItems} sản phẩm</p>
                   </>
                 ) : (
                   <>
                     <p className='text-sm text-muted-foreground'>
-                      Ngày đặt: {convertUtcDate(order.createdAtUtc).date} • {order.items} sản phẩm
+                      Ngày đặt: {convertUtcDate(order.createdAtUtc).date} • {order.totalItems} sản phẩm
                     </p>
                   </>
                 )}
