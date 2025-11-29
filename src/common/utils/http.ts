@@ -26,6 +26,7 @@ class Http {
       headers: {
         'Content-Type': 'application/json',
         Authorization: getAccessToken() || '',
+        NgrokSkipBrowserWarning: 'true',
       },
     });
     this.instance.interceptors.request.use(
