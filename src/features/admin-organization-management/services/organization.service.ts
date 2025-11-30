@@ -6,7 +6,7 @@ import type {
   UpdateOrganizationPayload,
 } from '../types/organization.type';
 
-const ACCOUNT_BASE_URL = import.meta.env.VITE_BASE_ACCOUNT_URL;
+const ACCOUNT_BASE_URL = import.meta.env.VITE_BASE_ACCOUNT_URL + "/api/v1";
 
 const ensureBaseUrl = () => {
   if (!ACCOUNT_BASE_URL) {

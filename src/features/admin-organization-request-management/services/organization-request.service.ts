@@ -6,7 +6,7 @@ import type {
   OrganizationRequestPaginationResponse,
 } from '../types/organization-request.type';
 
-const ACCOUNT_BASE_URL = import.meta.env.VITE_BASE_ACCOUNT_URL;
+const ACCOUNT_BASE_URL = import.meta.env.VITE_BASE_ACCOUNT_URL + "/api/v1";
 
 export const GET_ORGANIZATION_REQUESTS_QUERY_KEY = 'GET_ORGANIZATION_REQUESTS_QUERY_KEY';
 export const GET_ORGANIZATION_REQUEST_BY_ID_QUERY_KEY = 'GET_ORGANIZATION_REQUEST_BY_ID_QUERY_KEY';
