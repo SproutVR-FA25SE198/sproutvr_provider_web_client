@@ -151,6 +151,18 @@ const router = createBrowserRouter([
               Component: (await import('@/features/admin-maps/pages/MapDetails')).default,
             }),
           },
+          {
+            path: configs.routes.adminNotifications,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-notifications/pages/NotificationList')).default,
+            }),
+          },
+          {
+            path: configs.routes.adminNotificationDetails,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-notifications/pages/NotificationDetails')).default,
+            }),
+          },
         ],
       },
     ],

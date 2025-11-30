@@ -41,3 +41,11 @@ export const getAdminOrderById = async (orderId: string) => {
   return result;
 };
 
+/**
+ * Get order by order code (admin)
+ */
+export const getAdminOrderByCode = async (orderCode: string) => {
+  const result = await http.get(`/orders?OrderCode=${orderCode}`);
+  return result.data;
+};
+
