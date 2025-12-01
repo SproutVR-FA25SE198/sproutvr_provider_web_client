@@ -5,6 +5,7 @@ import { Button } from '@/common/components/ui/button';
 import { logoutThunk } from '@/common/stores/authStore/authThunks';
 import configs from '@/core/configs';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
+import NotificationBell from '@/features/admin-notifications/components/NotificationBell';
 
 import { Building2, ClipboardList, LogOut, Map, Package, Shield } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -98,6 +99,7 @@ export default function AdminHeader() {
 
           {/* User Info & Logout */}
           <div className='flex items-center gap-4'>
+            <NotificationBell />
             <div className='text-right hidden sm:block'>
               <p className='text-sm font-medium'>{user?.email || 'Admin'}</p>
               <p className='text-xs text-white/70'>System Administrator</p>
