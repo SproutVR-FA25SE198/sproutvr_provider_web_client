@@ -2,12 +2,13 @@
 
 import images from '@/assets/imgs';
 import { Button } from '@/common/components/ui/button';
+import { UserRole } from '@/common/constants/roles';
 import useBaskets from '@/common/hooks/useBasket';
 import { logoutThunk } from '@/common/stores/authStore/authThunks';
 import configs from '@/core/configs';
 import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 
-import { LogOut, Menu, ShoppingBasket, User, X } from 'lucide-react';
+import { LogOut, Menu, Settings, ShoppingBasket, User, X } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -96,6 +97,8 @@ function ActionButtons({
 }) {
   const dispatch = useAppDispatch();
 
+  const userRole = useAppSelector((state) => state.root.auth.user?.role);
+
   const { basketCount } = useBaskets();
 
   const handleLogout = () => {
@@ -114,26 +117,32 @@ function ActionButtons({
               className='text-primary hover:bg-secondary/90 text-secondary-foreground'
               onClick={onClick}
             >
-              <User className='w-5 h-5 text-primary' />
+              {userRole !== UserRole.SystemAdmin ? (
+                <User className='w-5 h-5 text-primary' />
+              ) : (
+                <Settings className='w-5 h-5 text-primary' />
+              )}
               {mobile && <span className='ml-2'>Tài khoản</span>}
             </Button>
           </Link>
-          <Link to={configs.routes.basket}>
-            <Button
-              variant='ghost'
-              size={mobile ? 'default' : 'icon'}
-              className='text-primary relative hover:bg-secondary/90 text-secondary-foreground'
-              onClick={onClick}
-            >
-              <ShoppingBasket className='w-5 h-5 text-primary' />
-              {mobile && <span className='ml-2'>Giỏ hàng</span>}
-              {basketCount > 0 && (
-                <span className='absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-600 rounded-full'>
-                  {basketCount}
-                </span>
-              )}
-            </Button>
-          </Link>
+          {userRole !== UserRole.SystemAdmin && (
+            <Link to={configs.routes.basket}>
+              <Button
+                variant='ghost'
+                size={mobile ? 'default' : 'icon'}
+                className='text-primary relative hover:bg-secondary/90 text-secondary-foreground'
+                onClick={onClick}
+              >
+                <ShoppingBasket className='w-5 h-5 text-primary' />
+                {mobile && <span className='ml-2'>Giỏ hàng</span>}
+                {basketCount > 0 && (
+                  <span className='absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-600 rounded-full'>
+                    {basketCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+          )}
           <Button
             variant='ghost'
             size={mobile ? 'default' : 'icon'}
