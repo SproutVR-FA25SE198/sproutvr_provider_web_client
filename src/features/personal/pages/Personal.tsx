@@ -67,7 +67,7 @@ export default function PersonalPage() {
                 className='gap-2'
               >
                 <User className='w-4 h-4' />
-                <span className='hidden sm:inline'>Profile</span>
+                <span className='hidden sm:inline'>Thông tin tổ chức</span>
               </TabsTrigger>
               <TabsTrigger
                 onChange={() => setTab(PERSONAL_TABS.library)}
@@ -75,11 +75,11 @@ export default function PersonalPage() {
                 className='gap-2'
               >
                 <Library className='w-4 h-4' />
-                <span className='hidden sm:inline'>Library</span>
+                <span className='hidden sm:inline'>Thư viện</span>
               </TabsTrigger>
               <TabsTrigger onChange={() => setTab(PERSONAL_TABS.orders)} value={PERSONAL_TABS.orders} className='gap-2'>
                 <History className='w-4 h-4' />
-                <span className='hidden sm:inline'>Orders</span>
+                <span className='hidden sm:inline'>Lịch sử thanh toán</span>
               </TabsTrigger>
             </TabsList>
 
@@ -93,7 +93,7 @@ export default function PersonalPage() {
                     className='w-full justify-start gap-3 data-[state=active]:bg-secondary data-[state=active]:text-white'
                   >
                     <User className='w-5 h-5' />
-                    <span>Profile</span>
+                    <span>Thông tin tổ chức</span>
                   </TabsTrigger>
                   <TabsTrigger
                     onClick={() => setTab(PERSONAL_TABS.library)}
@@ -101,7 +101,7 @@ export default function PersonalPage() {
                     className='w-full justify-start gap-3 data-[state=active]:bg-secondary data-[state=active]:text-white'
                   >
                     <Library className='w-5 h-5' />
-                    <span>Library</span>
+                    <span>Thư viện</span>
                   </TabsTrigger>
                   <TabsTrigger
                     onClick={() => setTab(PERSONAL_TABS.orders)}
@@ -109,7 +109,7 @@ export default function PersonalPage() {
                     className='w-full justify-start gap-3 data-[state=active]:bg-secondary data-[state=active]:text-white'
                   >
                     <History className='w-5 h-5' />
-                    <span>Payment History</span>
+                    <span>Lịch sử thanh toán</span>
                   </TabsTrigger>
                 </TabsList>
               </CardContent>

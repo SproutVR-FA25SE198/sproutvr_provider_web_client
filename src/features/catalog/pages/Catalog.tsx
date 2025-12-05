@@ -9,6 +9,7 @@ import { useExternalCheck } from '@/common/hooks/useExternalCheck';
 import useGetMaps from '@/common/hooks/useGetMaps';
 import { usePaginationNew } from '@/common/hooks/usePagination';
 import useScrollTop from '@/common/hooks/useScrollTop';
+import { GetAllMapsRequest } from '@/common/services/map.service';
 import configs from '@/core/configs';
 
 import { motion } from 'framer-motion';
@@ -19,7 +20,6 @@ import { toast } from 'react-toastify';
 
 import MapList from '../components/map-list';
 import useGetSubjects from '../hooks/useGetSubjects';
-import { GetAllMapsRequest } from '@/common/services/map.service';
 
 export default function CatalogPage() {
   useScrollTop();
@@ -28,7 +28,10 @@ export default function CatalogPage() {
   const { data: subjectsData, isLoading: isLoadingSubjects } = useGetSubjects();
   const subjects = useMemo(() => {
     if (!subjectsData?.data) return [{ id: 'all', name: 'Tất cả' }];
-    return [{ id: 'all', name: 'Tất cả' }, ...subjectsData.data.map((subject) => ({ id: subject.id, name: subject.name }))];
+    return [
+      { id: 'all', name: 'Tất cả' },
+      ...subjectsData.data.map((subject) => ({ id: subject.id, name: subject.name })),
+    ];
   }, [subjectsData]);
 
   // ------------------ Local UI States ------------------
@@ -122,7 +125,8 @@ export default function CatalogPage() {
     }
   }, [isError, isExternal, navigate]);
 
-  if (isLoading || isError || isLoadingSubjects) return <Loading isLoading={isLoading || isError || isLoadingSubjects} message={isError ? 'Quay lại...' : ''} />;
+  if (isLoading || isError || isLoadingSubjects)
+    return <Loading isLoading={isLoading || isError || isLoadingSubjects} message={isError ? 'Quay lại...' : ''} />;
   return (
     <div className='pt-6 min-h-screen bg-background'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-8'>
@@ -133,7 +137,7 @@ export default function CatalogPage() {
           transition={{ duration: 0.6 }}
           className='text-center mb-4'
         >
-          <h1 className='text-4xl md:text-4xl font-bold text-primary mb-4 text-balance'>Catalog Sản Phẩm VR</h1>
+          <h1 className='text-4xl md:text-4xl font-bold text-primary mb-4 text-balance'>Catalog Học Liệu VR</h1>
           <p className='text-lg text-muted-foreground max-w-2xl mx-auto text-pretty'>
             Khám phá bộ sưu tập bài học VR tương tác cho mọi môn học
           </p>
@@ -150,7 +154,7 @@ export default function CatalogPage() {
             <div className='sticky top-24 '>
               <Card>
                 <CardHeader>
-                  <CardTitle className='text-lg'>Danh mục</CardTitle>
+                  <CardTitle className='text-lg'>Môn học</CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-3'>
                   {subjects.map((subject) => (
