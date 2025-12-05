@@ -16,12 +16,9 @@ export function MediaGallery({ images }: MediaGalleryProps) {
       {/* Main preview */}
       <div className='relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-lg'>
         <img
-          src={images[selectedIndex] || '/placeholder.svg'}
+          src={images[selectedIndex]}
           alt='Product preview'
           className='w-full h-full object-cover transition-opacity duration-300'
-          onError={(e) => {
-            e.currentTarget.src = '/placeholder.svg';
-          }}
         />
         {/* Image indicator */}
         <div className='absolute top-4 right-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm font-medium'>
@@ -43,20 +40,15 @@ export function MediaGallery({ images }: MediaGalleryProps) {
                 selectedIndex === index ? 'ring-2 ring-primary scale-105 shadow-md' : 'opacity-70',
               )}
             >
-              <img 
-                src={image || '/placeholder.svg'} 
-                alt={labels[index] || `Thumbnail ${index + 1}`} 
-                className='w-full h-full object-cover'
-                onError={(e) => {
-                  e.currentTarget.src = '/placeholder.svg';
-                }}
-              />
+              <img src={image} alt={labels[index] || `Thumbnail ${index + 1}`} className='w-full h-full object-cover' />
               {/* Thumbnail label */}
-              <div className={cn(
-                'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1',
-                'transition-opacity duration-200',
-                selectedIndex === index ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-              )}>
+              <div
+                className={cn(
+                  'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1',
+                  'transition-opacity duration-200',
+                  selectedIndex === index ? 'opacity-100' : 'opacity-0 group-hover:opacity-100',
+                )}
+              >
                 <span className='text-xs text-white font-medium drop-shadow'>
                   {index === 0 ? 'Main' : `Location ${index}`}
                 </span>

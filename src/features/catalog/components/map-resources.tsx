@@ -22,7 +22,10 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
   const totalLocations = mapMetadata.taskLocations.length;
 
   const visibleObjects = mapMetadata.mapObjects.slice(currentObjectIndex, currentObjectIndex + objectsPerPage);
-  const visibleLocations = mapMetadata.taskLocations.slice(currentLocationIndex, currentLocationIndex + locationsPerPage);
+  const visibleLocations = mapMetadata.taskLocations.slice(
+    currentLocationIndex,
+    currentLocationIndex + locationsPerPage,
+  );
 
   const handleObjectPrevious = () => {
     setCurrentObjectIndex((prev) => Math.max(0, prev - objectsPerPage));
@@ -37,7 +40,9 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
   };
 
   const handleLocationNext = () => {
-    setCurrentLocationIndex((prev) => Math.min(mapMetadata.taskLocations.length - locationsPerPage, prev + locationsPerPage));
+    setCurrentLocationIndex((prev) =>
+      Math.min(mapMetadata.taskLocations.length - locationsPerPage, prev + locationsPerPage),
+    );
   };
 
   return (
@@ -93,12 +98,9 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                   <div className='group cursor-pointer'>
                     <div className='relative aspect-video rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-border mb-3 shadow-sm hover:shadow-lg transition-all duration-300'>
                       <img
-                        src={location.imageUrl || '/placeholder.svg'}
+                        src={location.imageUrl}
                         alt={location.name}
                         className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-110'
-                        onError={(e) => {
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
                       />
                       <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
                         <ZoomIn className='w-8 h-8 text-white drop-shadow-lg' />
@@ -106,7 +108,6 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                     </div>
                     <div className='text-center'>
                       <p className='text-sm font-semibold text-foreground line-clamp-2 mb-1'>{location.name}</p>
-
                     </div>
                   </div>
                 </DialogTrigger>
@@ -114,7 +115,7 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                   <div className='space-y-4'>
                     <div className='relative aspect-video w-full bg-accent rounded-lg overflow-hidden'>
                       <img
-                        src={location.imageUrl || '/placeholder.svg'}
+                        src={location.imageUrl}
                         alt={location.name}
                         className='w-full h-full object-contain'
                         onError={(e) => {
@@ -125,9 +126,7 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                     <div className='text-center space-y-2'>
                       <h3 className='text-2xl font-bold text-foreground'>{location.name}</h3>
 
-                      {location.description && (
-                        <p className='text-muted-foreground mt-4'>{location.description}</p>
-                      )}
+                      {location.description && <p className='text-muted-foreground mt-4'>{location.description}</p>}
                     </div>
                   </div>
                 </DialogContent>
@@ -166,19 +165,16 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                   'border-2 hover:shadow-md hover:scale-[1.02]',
                   isQuiz
                     ? 'bg-blue-50 border-blue-200 hover:border-blue-300 dark:bg-blue-950/30 dark:border-blue-800'
-                    : 'bg-green-50 border-green-200 hover:border-green-300 dark:bg-green-950/30 dark:border-green-800'
+                    : 'bg-green-50 border-green-200 hover:border-green-300 dark:bg-green-950/30 dark:border-green-800',
                 )}
               >
-                <div
+                <div className={cn('w-3 h-3 rounded-full flex-shrink-0', isQuiz ? 'bg-blue-500' : 'bg-green-500')} />
+                <span
                   className={cn(
-                    'w-3 h-3 rounded-full flex-shrink-0',
-                    isQuiz ? 'bg-blue-500' : 'bg-green-500'
+                    'font-medium text-base',
+                    isQuiz ? 'text-blue-700 dark:text-blue-300' : 'text-green-700 dark:text-green-300',
                   )}
-                />
-                <span className={cn(
-                  'font-medium text-base',
-                  isQuiz ? 'text-blue-700 dark:text-blue-300' : 'text-green-700 dark:text-green-300'
-                )}>
+                >
                   {type}
                 </span>
               </div>
@@ -236,12 +232,9 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                   <div className='group cursor-pointer'>
                     <div className='relative aspect-square rounded-xl overflow-hidden bg-gradient-to-br from-accent to-accent/50 border-2 border-border mb-3 shadow-sm hover:shadow-lg transition-all duration-300'>
                       <img
-                        src={object.imageUrl || '/placeholder.svg'}
+                        src={object.imageUrl}
                         alt={object.name}
                         className='w-full h-full object-contain p-4 transition-transform duration-300 group-hover:scale-110'
-                        onError={(e) => {
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
                       />
                       <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
                         <ZoomIn className='w-8 h-8 text-white drop-shadow-lg' />
@@ -255,21 +248,12 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                 <DialogContent className='max-w-4xl'>
                   <div className='space-y-4'>
                     <div className='relative aspect-square w-full bg-accent rounded-lg overflow-hidden'>
-                      <img
-                        src={object.imageUrl || '/placeholder.svg'}
-                        alt={object.name}
-                        className='w-full h-full object-contain p-8'
-                        onError={(e) => {
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
-                      />
+                      <img src={object.imageUrl} alt={object.name} className='w-full h-full object-contain p-8' />
                     </div>
                     <div className='text-center space-y-2'>
                       <h3 className='text-2xl font-bold text-foreground'>{object.name}</h3>
 
-                      {object.description && (
-                        <p className='text-muted-foreground mt-4'>{object.description}</p>
-                      )}
+                      {object.description && <p className='text-muted-foreground mt-4'>{object.description}</p>}
                     </div>
                   </div>
                 </DialogContent>
@@ -296,4 +280,3 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
     </div>
   );
 }
-
