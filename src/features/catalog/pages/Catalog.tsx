@@ -36,7 +36,6 @@ export default function CatalogPage() {
 
   // ------------------ Local UI States ------------------
   const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [filterSubject, setFilterSubject] = useState<string[]>(['all']);
   const [sortBy, setSortBy] = useState('name');
 
@@ -46,7 +45,7 @@ export default function CatalogPage() {
   // Debounce search query to avoid too many API calls
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery.trim());
+      setSearchQuery(searchQuery.trim());
       setPageIndex(1); // Reset to first page when search changes
     }, 500); // 500ms debounce
 
@@ -64,12 +63,6 @@ export default function CatalogPage() {
       setFilterSubject(newSubjects.length === 0 ? ['all'] : newSubjects);
     }
     // Reset to first page when filter changes
-    setPageIndex(1);
-  };
-
-  const handleSearchSubmit = () => {
-    // Trigger search immediately on button click or Enter key
-    setDebouncedSearchQuery(searchQuery.trim());
     setPageIndex(1);
   };
 
@@ -96,20 +89,29 @@ export default function CatalogPage() {
 
   const queryParams = useMemo(
     () => ({
-      Name: debouncedSearchQuery || undefined,
       SubjectIds: filterSubject.includes('all') ? undefined : filterSubject.length > 0 ? filterSubject : undefined,
       SortBy: mapSortBy(sortBy),
       Status: 'Active', // Only show active maps
       pageIndex,
       pageSize: 3,
     }),
-    [debouncedSearchQuery, filterSubject, sortBy, pageIndex],
+    [filterSubject, sortBy, pageIndex],
   );
 
   // ------------------ API Call ------------------
   const { data, isLoading, isError } = useGetMaps(queryParams as GetAllMapsRequest);
-  const maps = data?.data ?? []; // Use API data only
-  const totalCount = data?.count ?? 0;
+  const filteredMaps = useMemo(() => {
+    if (!data?.data) return [];
+
+    if (!searchQuery.trim()) return data.data;
+
+    const query = searchQuery.toLowerCase().trim();
+    return data.data.filter(
+      (map) => map.name?.toLowerCase().includes(query) || map.description?.toLowerCase().includes(query),
+    );
+  }, [data?.data, searchQuery]);
+  const maps = filteredMaps; // Use filtered data
+  const totalCount = filteredMaps.length; // Use filtered count for pagination
   const totalPages = Math.ceil(totalCount / (data?.pageSize ?? 3));
   const navigate = useNavigate();
   const isExternal = useExternalCheck();
@@ -193,16 +195,10 @@ export default function CatalogPage() {
                   className='pl-5'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSearchSubmit();
-                    }
-                  }}
                 />
                 <Button
                   variant='ghost'
                   className='absolute right-1 top-1/2 -translate-y-1/2 rounded-md hover:bg-transparent hover:text-secondary hover:cursor-pointer'
-                  onClick={handleSearchSubmit}
                 >
                   <Search />
                 </Button>
