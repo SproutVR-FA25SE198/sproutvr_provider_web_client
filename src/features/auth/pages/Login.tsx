@@ -134,9 +134,9 @@ export default function LoginPage() {
                   <div>
                     <div className='flex items-center justify-between'>
                       <Label htmlFor='password'>Mật Khẩu</Label>
-                      <Link to='/forgot-password' className='text-sm text-secondary hover:underline'>
+                      {/* <Link to='/forgot-password' className='text-sm text-secondary hover:underline'>
                         Quên mật khẩu?
-                      </Link>
+                      </Link> */}
                     </div>
                     <div className='relative mt-1.5'>
                       <Input
