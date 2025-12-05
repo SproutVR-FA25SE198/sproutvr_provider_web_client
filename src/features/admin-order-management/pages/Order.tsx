@@ -170,7 +170,7 @@ export default function OrderDetailsPage() {
             {/* Order Information */}
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
+                <CardTitle className='flex text-green-500 items-center gap-2'>
                   <Package className='w-5 h-5' />
                   Thông tin đơn hàng
                 </CardTitle>
@@ -212,7 +212,7 @@ export default function OrderDetailsPage() {
             {/* Customer Information */}
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
+                <CardTitle className='flex items-center text-blue-500 gap-2'>
                   <User className='w-5 h-5' />
                   Thông tin người đại diện
                 </CardTitle>
@@ -235,8 +235,8 @@ export default function OrderDetailsPage() {
                 <div className='flex items-start gap-3'>
                   <Building2 className='w-5 h-5 text-muted-foreground mt-0.5' />
                   <div className='flex-1'>
-                    <p className='text-sm text-muted-foreground'>Mã tổ chức</p>
-                    <p className='font-medium text-xs break-all'>{order.organizationId}</p>
+                    <p className='text-sm text-muted-foreground'>Tổ chức</p>
+                    <p className='font-medium break-all'>{organization.name}</p>
                   </div>
                 </div>
               </CardContent>
