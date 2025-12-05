@@ -54,7 +54,7 @@ export function OrderDetailsModal({ orderId, open, onOpenChange }: OrderDetailsM
               </div>
               <div>
                 <p className='text-sm text-muted-foreground mb-1'>Phương thức</p>
-                <p className='font-medium'>{order.paymentMethod}</p>
+                <p className='font-medium'>{order.paymentMethod || 'Chuyển khoản ngân hàng'}</p>
               </div>
             </div>
 

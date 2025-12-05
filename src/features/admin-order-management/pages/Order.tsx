@@ -34,7 +34,11 @@ export default function OrderDetailsPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { data: order, isLoading, isError, refetch } = useGetAdminOrderById(id || '');
-  const { data: organization, isLoading: isLoadingOrg, isError: isErrorOrg } = useGetOrganizationById(order?.organizationId || '');
+  const {
+    data: organization,
+    isLoading: isLoadingOrg,
+    isError: isErrorOrg,
+  } = useGetOrganizationById(order?.organizationId || '');
   const uploadMutation = useUploadBundle();
 
   // Get current admin user ID
@@ -106,11 +110,7 @@ export default function OrderDetailsPage() {
     const label = ORDER_STATUS_LABELS[status] || status;
     const className = ORDER_STATUS_STYLES[status] || 'bg-gray-100 text-gray-800';
 
-    return (
-      <span className={`px-3 py-1.5 text-sm font-medium rounded-full ${className}`}>
-        {label}
-      </span>
-    );
+    return <span className={`px-3 py-1.5 text-sm font-medium rounded-full ${className}`}>{label}</span>;
   };
 
   if (isLoading) {
@@ -147,18 +147,10 @@ export default function OrderDetailsPage() {
   return (
     <div className='min-h-screen'>
       <div className='container mx-auto px-4 py-8'>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           {/* Header */}
           <div className='mb-6'>
-            <Button
-              onClick={() => navigate(configs.routes.adminOrders)}
-              variant='ghost'
-              className='mb-4'
-            >
+            <Button onClick={() => navigate(configs.routes.adminOrders)} variant='ghost' className='mb-4'>
               <ArrowLeft className='w-4 h-4 mr-2' />
               Quay lại danh sách
             </Button>
@@ -202,7 +194,7 @@ export default function OrderDetailsPage() {
                   <CreditCard className='w-5 h-5 text-muted-foreground mt-0.5' />
                   <div className='flex-1'>
                     <p className='text-sm text-muted-foreground'>Phương thức thanh toán</p>
-                    <p className='font-medium'>{order.paymentMethod}</p>
+                    <p className='font-medium'>{order.paymentMethod || 'Chuyển khoản ngân hàng'}</p>
                   </div>
                 </div>
                 {order.bank && (
@@ -267,11 +259,7 @@ export default function OrderDetailsPage() {
                     className='flex items-center gap-4 p-4 border rounded-lg hover:shadow-md transition-shadow'
                   >
                     {item.imageUrl && (
-                      <img
-                        src={item.imageUrl}
-                        alt={item.mapName}
-                        className='w-20 h-20 object-cover rounded-md'
-                      />
+                      <img src={item.imageUrl} alt={item.mapName} className='w-20 h-20 object-cover rounded-md' />
                     )}
                     <div className='flex-1'>
                       <h3 className='font-semibold text-lg'>{item.mapName}</h3>
@@ -401,9 +389,7 @@ export default function OrderDetailsPage() {
                     )}
                   </div>
 
-                  <p className='text-xs text-muted-foreground'>
-                    Định dạng file được hỗ trợ: .zip, .rar, .7z
-                  </p>
+                  <p className='text-xs text-muted-foreground'>Định dạng file được hỗ trợ: .zip, .rar, .7z</p>
                 </div>
               </CardContent>
             </Card>
@@ -413,4 +399,3 @@ export default function OrderDetailsPage() {
     </div>
   );
 }
-

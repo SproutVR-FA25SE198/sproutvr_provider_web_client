@@ -53,7 +53,7 @@ export function OrderDetailsDrawer({ orderId, open, onOpenChange }: OrderDetails
               </div>
               <div>
                 <p className='text-sm text-muted-foreground mb-1'>Phương thức</p>
-                <p className='font-medium'>{order.paymentMethod}</p>
+                <p className='font-medium'>{order.paymentMethod || 'Chuyển khoản ngân hàng'}</p>
               </div>
             </div>
 
