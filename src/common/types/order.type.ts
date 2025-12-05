@@ -4,6 +4,7 @@ import { Pagination } from './response.type';
 export interface Order {
   id: string;
   organizationId: string;
+  organizationName?: string;
   createdAtUtc: string;
   updatedAtUtc: string;
   totalItems: number;
@@ -30,7 +31,7 @@ export interface OrderDetails extends Order {
   orderItems: OrderItem[];
 }
 
-export interface GetOrdersResponse extends Pagination<Order> { }
+export interface GetOrdersResponse extends Pagination<Order> {}
 
 export interface PlaceOrderRequest {
   organizationId: string;

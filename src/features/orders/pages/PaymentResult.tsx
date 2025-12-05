@@ -3,6 +3,7 @@
 import Loading from '@/common/components/loading';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent } from '@/common/components/ui/card';
+import useBaskets from '@/common/hooks/useBasket';
 import { getCookie } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 import useGetOrderById from '@/features/personal/hooks/useGetOrderById';
@@ -20,6 +21,7 @@ function PaymentStatusContent() {
   const [searchParams] = useSearchParams();
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed' | 'cancelled'>('pending');
   const [orderId, setOrderId] = useState<string>('');
+  const { clearBasket } = useBaskets();
   const [isInitialized, setIsInitialized] = useState(false);
 
   const paymentData = getCookie('payment-data');
@@ -60,6 +62,7 @@ function PaymentStatusContent() {
     if (statusFromParams) {
       if (statusFromParams === 'PAID' || statusFromParams === 'COMPLETED' || statusFromParams === 'SUCCESS') {
         setPaymentStatus('success');
+        clearBasket();
         setIsInitialized(true);
         return;
       } else if (statusFromParams === 'CANCELLED' || statusFromParams === 'CANCELED') {
@@ -184,9 +187,7 @@ function PaymentStatusContent() {
   };
 
   const config =
-    paymentStatus === 'success' ? successConfig :
-      paymentStatus === 'cancelled' ? cancelledConfig :
-        failedConfig;
+    paymentStatus === 'success' ? successConfig : paymentStatus === 'cancelled' ? cancelledConfig : failedConfig;
   const Icon = config.icon;
 
   return (

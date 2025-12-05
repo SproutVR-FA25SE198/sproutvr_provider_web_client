@@ -17,10 +17,11 @@ import {
   Loader2,
   Package,
   RefreshCw,
+  ScrollText,
   Search,
   X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function OrderListPage() {
@@ -31,15 +32,53 @@ export default function OrderListPage() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
 
+  // Fetch all orders without search term (we'll filter client-side)
   const { data, isLoading, isError, refetch } = useGetAdminOrders({
-    pageIndex,
-    pageSize,
+    pageIndex: 1,
+    pageSize: 1000, // Fetch all orders for client-side filtering
     status: status || undefined,
-    searchTerm: searchTerm || undefined,
   });
 
-  const orders = data?.data || [];
-  const totalPages = data?.pageSize ? Math.ceil(data.count / data.pageSize) : 0;
+  // Filter and paginate on client side
+  const { orders, totalCount, totalPages } = useMemo(() => {
+    if (!data?.data) return { orders: [], totalCount: 0, totalPages: 0 };
+
+    let filtered = [...data.data];
+
+    // Client-side search filtering
+    if (searchTerm.trim()) {
+      const query = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(
+        (order) =>
+          order.id.toLowerCase().includes(query) ||
+          order.orderCode?.toString().includes(query) ||
+          order.representativeName?.toLowerCase().includes(query) ||
+          order.organizationName?.toLowerCase().includes(query) ||
+          order.representativePhone?.includes(query),
+      );
+    }
+
+    const totalCount = filtered.length;
+    const totalPages = Math.ceil(totalCount / pageSize);
+
+    // Paginate
+    const startIndex = (pageIndex - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedOrders = filtered.slice(startIndex, endIndex);
+
+    return { orders: paginatedOrders, totalCount, totalPages };
+  }, [data?.data, searchTerm, pageIndex, pageSize]);
+
+  // Reset to page 1 when filters change
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setPageIndex(1);
+  };
+
+  const handleStatusChange = (value: string) => {
+    setStatus(value);
+    setPageIndex(1);
+  };
 
   const handleClearFilters = () => {
     setStatus('');
@@ -71,11 +110,7 @@ export default function OrderListPage() {
     const label = ORDER_STATUS_LABELS[status] || status;
     const className = ORDER_STATUS_STYLES[status] || 'bg-gray-100 text-gray-800';
 
-    return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${className}`}>
-        {label}
-      </span>
-    );
+    return <span className={`px-2 py-1 text-xs font-medium rounded-full ${className}`}>{label}</span>;
   };
 
   if (isError) {
@@ -93,19 +128,13 @@ export default function OrderListPage() {
   return (
     <div className='min-h-screen'>
       <div className='container mx-auto px-4 py-8'>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className='flex items-center justify-between mb-6'>
             <div className='flex items-center gap-3'>
               <Package className='w-8 h-8 text-primary' />
               <div>
                 <h1 className='text-3xl font-bold text-foreground'>Quản lý đơn hàng</h1>
-                <p className='text-sm text-muted-foreground mt-1'>
-                  Tổng số: {data?.count || 0} đơn hàng
-                </p>
+                <p className='text-sm text-muted-foreground mt-1'>Tổng số: {totalCount} đơn hàng</p>
               </div>
             </div>
             <div className='flex gap-2'>
@@ -137,12 +166,9 @@ export default function OrderListPage() {
                         <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
                         <Input
                           id='search'
-                          placeholder='Tìm theo mã đơn, tên, SĐT...'
+                          placeholder='Tìm theo mã đơn, tên người đại diện, tên tổ chức, SĐT...'
                           value={searchTerm}
-                          onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setPageIndex(1);
-                          }}
+                          onChange={(e) => handleSearchChange(e.target.value)}
                           className='pl-10'
                         />
                       </div>
@@ -152,10 +178,7 @@ export default function OrderListPage() {
                       <select
                         id='status'
                         value={status}
-                        onChange={(e) => {
-                          setStatus(e.target.value);
-                          setPageIndex(1);
-                        }}
+                        onChange={(e) => handleStatusChange(e.target.value)}
                         className='mt-1.5 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
                       >
                         <option value=''>Tất cả</option>
@@ -182,7 +205,13 @@ export default function OrderListPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle className='text-xl'>Danh sách đơn hàng</CardTitle>
+              <CardTitle className='text-xl flex items-center justify-between'>
+                <span>Danh sách đơn hàng</span>
+                <Button variant={'secondary'}>
+                  <ScrollText className='w-4 h-4' />
+                  Xuất báo cáo doanh thu
+                </Button>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -194,6 +223,9 @@ export default function OrderListPage() {
                 <div className='text-center py-12'>
                   <Package className='w-16 h-16 mx-auto text-muted-foreground mb-4' />
                   <p className='text-muted-foreground'>Chưa có đơn hàng nào</p>
+                  {hasActiveFilters && (
+                    <p className='text-sm text-muted-foreground mt-2'>Thử xóa bộ lọc để xem tất cả đơn hàng</p>
+                  )}
                 </div>
               ) : (
                 <>
@@ -205,7 +237,7 @@ export default function OrderListPage() {
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Tổng tiền</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Số sản phẩm</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Trạng thái</th>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>Người đại diện</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Tổ chức</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>SĐT</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Ngày tạo</th>
                           <th className='px-4 py-3 text-center text-sm font-semibold'>Thao tác</th>
@@ -226,7 +258,7 @@ export default function OrderListPage() {
                             </td>
                             <td className='px-4 py-3 text-sm text-center'>{order.totalItems}</td>
                             <td className='px-4 py-3'>{getStatusBadge(order.status)}</td>
-                            <td className='px-4 py-3 text-sm'>{order.representativeName}</td>
+                            <td className='px-4 py-3 text-sm'>{order.organizationName || order.representativeName}</td>
                             <td className='px-4 py-3 text-sm'>{order.representativePhone}</td>
                             <td className='px-4 py-3 text-sm text-muted-foreground'>
                               {formatDate(order.createdAtUtc)}
@@ -252,8 +284,8 @@ export default function OrderListPage() {
                   {totalPages > 1 && (
                     <div className='flex flex-col sm:flex-row items-center justify-between gap-4 mt-6'>
                       <p className='text-sm text-muted-foreground'>
-                        Hiển thị {(pageIndex - 1) * pageSize + 1} -{' '}
-                        {Math.min(pageIndex * pageSize, data.count)} trong tổng số {data.count} đơn hàng
+                        Hiển thị {(pageIndex - 1) * pageSize + 1} - {Math.min(pageIndex * pageSize, totalCount)} trong
+                        tổng số {totalCount} đơn hàng
                       </p>
                       <div className='flex items-center gap-2'>
                         <Button
@@ -265,7 +297,7 @@ export default function OrderListPage() {
                           <ChevronLeft className='w-4 h-4' />
                           Trước
                         </Button>
-                        
+
                         {/* Page Numbers */}
                         <div className='flex gap-1'>
                           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
@@ -279,7 +311,7 @@ export default function OrderListPage() {
                             } else {
                               pageNum = pageIndex - 2 + i;
                             }
-                            
+
                             return (
                               <Button
                                 key={pageNum}
@@ -315,4 +347,3 @@ export default function OrderListPage() {
     </div>
   );
 }
-

@@ -1,5 +1,5 @@
+import Loading from '@/common/components/loading';
 import { Button } from '@/common/components/ui/button';
-import { Card, CardContent } from '@/common/components/ui/card';
 import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
 import { Organization } from '@/common/types/user.type';
@@ -7,6 +7,12 @@ import { Organization } from '@/common/types/user.type';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, HelpCircle, Save } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+
+import { SaveMACAddress } from '../services/profile.service';
+
+import ActivationKeyInstruction from './activation-key-instruction';
+import MacAddressInstruction from './mac-address-instruction';
 
 interface ProfileTabProps {
   organization: Organization;
@@ -15,15 +21,17 @@ interface ProfileTabProps {
 const ProfileTab = ({ organization }: ProfileTabProps) => {
   const [showMacAddress, setShowMacAddress] = useState(false);
   const [showInstruction, setShowInstruction] = useState(false);
+  const [showActivationInstruction, setShowActivationInstruction] = useState(false);
   const [showActivationKey, setShowActivationKey] = useState(false);
   const [macAddress, setMacAddress] = useState(organization.macAddress || '');
+  const [isLoading, setIsLoading] = useState(false);
   const [activationKey] = useState(organization.activationKey || undefined);
   const [copiedMac, setCopiedMac] = useState(false);
   const [copiedKey, setCopiedKey] = useState(false);
   const [copiedBundleUrl, setCopiedBundleUrl] = useState(false);
 
   // Create Google Drive folder URL from bundleGoogleDriveId
-  const bundleUrl = organization.bundleGoogleDriveId 
+  const bundleUrl = organization.bundleGoogleDriveId
     ? `https://drive.google.com/drive/folders/${organization.bundleGoogleDriveId}`
     : null;
 
@@ -41,16 +49,36 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
     }
   };
 
+  const handleSaveMacAddress = async () => {
+    if (!macAddress) {
+      toast.error('Vui lòng nhập địa chỉ MAC hợp lệ.');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await SaveMACAddress(macAddress).then(() => {
+        toast.success('Địa chỉ MAC đã được lưu thành công.');
+      });
+    } catch (error) {
+      console.error('Error saving MAC address:', error);
+      toast.error('Có lỗi xảy ra khi lưu địa chỉ MAC. Vui lòng thử lại.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleMacChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
       .replace(/[^A-Fa-f0-9]/g, '') // allow only hex characters
       .toUpperCase()
       .slice(0, 12); // max 12 hex digits
 
-    // group every two characters and join with :
-    const formatted = value.match(/.{1,2}/g)?.join(':') || '';
+    // group every two characters and join with -
+    const formatted = value.match(/.{1,2}/g)?.join('-') || '';
     setMacAddress(formatted);
   };
+
+  if (isLoading) return <Loading isLoading />;
 
   return (
     <div className='h-full flex flex-col'>
@@ -71,13 +99,13 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
             <div className='grid md:grid-cols-2 gap-4'>
               <div className='space-y-2'>
                 <Label htmlFor='contact-email' className='text-sm'>
-                  Contact email:
+                  Email liên hệ:
                 </Label>
                 <Input id='contact-email' type='email' readOnly value={organization.email} />
               </div>
               <div className='space-y-2'>
                 <Label htmlFor='contact-phone' className='text-sm'>
-                  Contact phone:
+                  Số điện thoại liên hệ:
                 </Label>
                 <Input id='contact-phone' readOnly value={organization.phoneNumber} />
               </div>
@@ -85,7 +113,7 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
 
             <div className='space-y-2'>
               <Label htmlFor='contact-address' className='text-sm'>
-                Contact address:
+                Địa chỉ liên hệ:
               </Label>
               <Input id='contact-address' readOnly value={organization.address} />
             </div>
@@ -98,7 +126,7 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
             <div className='space-y-2'>
               <form onSubmit={(e) => e.preventDefault()}>
                 <Label htmlFor='mac-address' className='text-sm'>
-                  MAC Address
+                  Địa chỉ MAC
                 </Label>
                 <div className='flex gap-2'>
                   <div className='relative flex-1'>
@@ -110,7 +138,7 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                           ? showMacAddress
                             ? ''
                             : '••••••••••••••••'
-                          : 'Hãy thêm địa chỉ MAC, ví dụ: 00:1A:2B:3C:4D:5E'
+                          : 'Hãy thêm địa chỉ MAC, ví dụ: 00-1A-2B-3C-4D-5E'
                       }
                       required
                       readOnly={organization.macAddress !== null}
@@ -119,7 +147,9 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                       onClick={() => showMacAddress && copyToClipboard(macAddress, 'mac')}
                     />
                     {copiedMac && (
-                      <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>Copied!</span>
+                      <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>
+                        Đã sao chép!
+                      </span>
                     )}
                   </div>
                   <Button
@@ -127,7 +157,7 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                     onClick={() => setShowInstruction(!showInstruction)}
                     size='icon'
                     className='shrink-0 bg-transparent'
-                    title='Help'
+                    title='Hướng dẫn'
                   >
                     <HelpCircle className='w-4 h-4' />
                   </Button>
@@ -137,7 +167,7 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                       size='icon'
                       className='shrink-0 bg-transparent'
                       onClick={() => setShowMacAddress(!showMacAddress)}
-                      title={showMacAddress ? 'Hide' : 'Show'}
+                      title={showMacAddress ? 'Ẩn' : 'Hiện'}
                     >
                       {showMacAddress ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
                     </Button>
@@ -147,10 +177,8 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                       size='icon'
                       type='submit'
                       className='shrink-0'
-                      onClick={() => {
-                        console.log('Save MAC Address:', macAddress);
-                      }}
-                      title={showMacAddress ? 'Hide' : 'Show'}
+                      onClick={handleSaveMacAddress}
+                      title={showMacAddress ? 'Ẩn' : 'Hiện'}
                     >
                       <Save className='w-4 h-4' />
                     </Button>
@@ -160,18 +188,12 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
             </div>
 
             {/* Instruction Box */}
-            <Card className='border-muted bg-muted/30' hidden={!showInstruction}>
-              <CardContent className='py-8'>
-                <div className='text-center text-muted-foreground font-medium'>
-                  Instruction related to MAC & activation key
-                </div>
-              </CardContent>
-            </Card>
+            {showInstruction && <MacAddressInstruction />}
 
             {/* Bundle Link */}
             <div className='space-y-2'>
               <Label htmlFor='bundle-url' className='text-sm'>
-                Bundle Download URL
+                Link tải Bundle
               </Label>
               <div className='flex gap-2'>
                 <div className='relative flex-1'>
@@ -197,13 +219,15 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                     />
                   )}
                   {copiedBundleUrl && (
-                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>Copied!</span>
+                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>
+                      Đã sao chép!
+                    </span>
                   )}
                 </div>
-                <Button 
-                  variant='outline' 
-                  size='icon' 
-                  className='shrink-0 bg-transparent' 
+                <Button
+                  variant='outline'
+                  size='icon'
+                  className='shrink-0 bg-transparent'
                   title='Click vào URL để copy hoặc mở link'
                   disabled={!bundleUrl}
                 >
@@ -226,7 +250,7 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
             {/* Activation Key */}
             <div className='space-y-2'>
               <Label htmlFor='activation-key' className='text-sm'>
-                Activation key
+                Key kích hoạt
               </Label>
               <div className='flex gap-2'>
                 <div className='relative flex-1'>
@@ -247,10 +271,18 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                     }
                   />
                   {copiedKey && (
-                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>Copied!</span>
+                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>
+                      Đã sao chép!
+                    </span>
                   )}
                 </div>
-                <Button variant='outline' size='icon' className='shrink-0 bg-transparent' title='Help'>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  className='shrink-0 bg-transparent'
+                  title='Help'
+                  onClick={() => setShowActivationInstruction(!showActivationInstruction)}
+                >
                   <HelpCircle className='w-4 h-4' />
                 </Button>
                 <Button
@@ -258,12 +290,13 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                   size='icon'
                   className='shrink-0 bg-transparent'
                   onClick={() => setShowActivationKey(!showActivationKey)}
-                  title={showActivationKey ? 'Hide' : 'Show'}
+                  title={showActivationKey ? 'Ẩn' : 'Hiện'}
                 >
                   {showActivationKey ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
                 </Button>
               </div>
             </div>
+            {showActivationInstruction && <ActivationKeyInstruction />}
           </div>
         </motion.div>
       </div>

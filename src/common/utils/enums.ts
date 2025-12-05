@@ -5,8 +5,10 @@ export enum Role {
 }
 
 export enum ActivityType {
-  QUIZ = 'QUIZ',
-  ACTION = 'ACTION',
+  QUIZ = 'Trắc nghiệm',
+  INFO = 'Đọc thông tin',
+  INTERACTIVE = 'Tương tác',
+  GRAB = 'Cầm nắm vật thể',
 }
 
 export enum OrderStatus {

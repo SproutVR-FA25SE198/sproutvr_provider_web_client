@@ -14,7 +14,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Eye, EyeClosed, GraduationCap, TrendingUp, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { LoginFormData, loginSchema } from '../components/schema';
@@ -134,9 +134,9 @@ export default function LoginPage() {
                   <div>
                     <div className='flex items-center justify-between'>
                       <Label htmlFor='password'>Mật Khẩu</Label>
-                      <Link to='/forgot-password' className='text-sm text-secondary hover:underline'>
+                      {/* <Link to='/forgot-password' className='text-sm text-secondary hover:underline'>
                         Quên mật khẩu?
-                      </Link>
+                      </Link> */}
                     </div>
                     <div className='relative mt-1.5'>
                       <Input
