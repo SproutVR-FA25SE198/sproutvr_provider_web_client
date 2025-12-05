@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/common/components/ui/dia
 import { GetMapByIdResponse, MapDetails } from '@/common/types';
 import { ActivityType, cn } from '@/common/utils';
 
-import { Box, ChevronLeft, ChevronRight, MapPin, ZoomIn } from 'lucide-react';
+import { BookOpen, Box, ChevronLeft, ChevronRight, MapPin, ZoomIn } from 'lucide-react';
 import { useState } from 'react';
 
 interface MapResourcesProps {
@@ -47,13 +47,13 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
 
   return (
     <div className='border-t border-border pt-8 mb-16'>
-      <h2 className='text-2xl font-bold text-foreground mb-8'>Resources</h2>
+      <h2 className='text-2xl font-bold text-foreground mb-8'>Tài nguyên</h2>
 
       {/* Task Locations Carousel */}
       <div className='mb-12'>
         <h3 className='text-lg font-semibold text-foreground mb-4 flex items-center gap-2'>
           <MapPin className='w-5 h-5 text-primary' />
-          Task location
+          Vị trí nhiệm vụ
           <span className='text-muted-foreground'>({totalLocations})</span>
         </h3>
         <div className='relative'>
@@ -114,14 +114,7 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                 <DialogContent className='max-w-4xl'>
                   <div className='space-y-4'>
                     <div className='relative aspect-video w-full bg-accent rounded-lg overflow-hidden'>
-                      <img
-                        src={location.imageUrl}
-                        alt={location.name}
-                        className='w-full h-full object-contain'
-                        onError={(e) => {
-                          e.currentTarget.src = '/placeholder.svg';
-                        }}
-                      />
+                      <img src={location.imageUrl} alt={location.name} className='w-full h-full object-contain' />
                     </div>
                     <div className='text-center space-y-2'>
                       <h3 className='text-2xl font-bold text-foreground'>{location.name}</h3>
@@ -153,30 +146,23 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
 
       {/* Activity Types */}
       <div className='mb-12'>
-        <h3 className='text-lg font-semibold text-foreground mb-4'>Activity types</h3>
-        <div className='grid md:grid-cols-2 gap-3'>
+        <h3 className='text-lg font-semibold text-foreground mb-4 flex gap-2 items-center'>
+          <BookOpen className='w-5 h-5 text-blue-500' />
+          Loại hoạt động
+        </h3>
+        <div className='grid md:grid-cols-4 gap-3'>
           {Object.values(ActivityType).map((type, index) => {
-            const isQuiz = type === ActivityType.QUIZ;
             return (
               <div
                 key={index}
                 className={cn(
                   'flex items-center gap-3 p-4 rounded-xl transition-all duration-200',
                   'border-2 hover:shadow-md hover:scale-[1.02]',
-                  isQuiz
-                    ? 'bg-blue-50 border-blue-200 hover:border-blue-300 dark:bg-blue-950/30 dark:border-blue-800'
-                    : 'bg-green-50 border-green-200 hover:border-green-300 dark:bg-green-950/30 dark:border-green-800',
+                  'bg-blue-50 border-blue-200 hover:border-blue-300 dark:bg-blue-950/30 dark:border-blue-800',
                 )}
               >
-                <div className={cn('w-3 h-3 rounded-full flex-shrink-0', isQuiz ? 'bg-blue-500' : 'bg-green-500')} />
-                <span
-                  className={cn(
-                    'font-medium text-base',
-                    isQuiz ? 'text-blue-700 dark:text-blue-300' : 'text-green-700 dark:text-green-300',
-                  )}
-                >
-                  {type}
-                </span>
+                <div className={cn('w-3 h-3 rounded-full flex-shrink-0', 'bg-blue-500')} />
+                <span className={cn('font-medium text-base', 'text-blue-700 dark:text-blue-300')}>{type}</span>
               </div>
             );
           })}
