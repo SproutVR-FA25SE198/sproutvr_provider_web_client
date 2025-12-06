@@ -236,7 +236,7 @@ export default function OrderDetailsPage() {
                   <Building2 className='w-5 h-5 text-muted-foreground mt-0.5' />
                   <div className='flex-1'>
                     <p className='text-sm text-muted-foreground'>Tổ chức</p>
-                    <p className='font-medium break-all'>{organization.name}</p>
+                    <p className='font-medium break-all'>{organization && organization.name}</p>
                   </div>
                 </div>
               </CardContent>
