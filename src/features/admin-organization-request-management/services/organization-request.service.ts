@@ -6,7 +6,7 @@ import type {
   OrganizationRequestPaginationResponse,
 } from '../types/organization-request.type';
 
-const ACCOUNT_BASE_URL = import.meta.env.VITE_BASE_ACCOUNT_URL + "/api/v1";
+const ACCOUNT_BASE_URL = import.meta.env.VITE_BASE_ACCOUNT_URL;
 
 export const GET_ORGANIZATION_REQUESTS_QUERY_KEY = 'GET_ORGANIZATION_REQUESTS_QUERY_KEY';
 export const GET_ORGANIZATION_REQUEST_BY_ID_QUERY_KEY = 'GET_ORGANIZATION_REQUEST_BY_ID_QUERY_KEY';
@@ -71,5 +71,3 @@ export const checkOrganizationRequest = async (payload: CheckOrganizationRequest
   const { data } = await axios.post(`${baseUrl}/organization-register-requests/check`, payload);
   return data;
 };
-
-
