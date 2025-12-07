@@ -3,12 +3,7 @@ import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_STYLES, OrderStatus } from '@/common/constants/order-status';
 import configs from '@/core/configs';
-
 import { useAppSelector } from '@/core/store/hooks';
-
-import useGetAdminOrderById from '../hooks/useGetAdminOrderById';
-import useGetOrganizationById from '../hooks/useGetOrganizationById';
-import useUploadBundle from '../hooks/useUploadBundle';
 
 import { motion } from 'framer-motion';
 import {
@@ -26,6 +21,10 @@ import {
 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import useGetAdminOrderById from '../hooks/useGetAdminOrderById';
+import useGetOrganizationById from '../hooks/useGetOrganizationById';
+import useUploadBundle from '../hooks/useUploadBundle';
 
 export default function OrderDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -324,10 +323,10 @@ export default function OrderDetailsPage() {
                           <span className='text-muted-foreground'>Organization Name:</span>
                           <p className='font-medium text-xs'>{organization.name}</p>
                         </div>
-                        <div>
+                        {/* <div>
                           <span className='text-muted-foreground'>MAC Address:</span>
                           <p className='font-medium text-xs'>{organization.macAddress || 'Chưa có'}</p>
-                        </div>
+                        </div> */}
                         <div className='col-span-2'>
                           <span className='text-muted-foreground'>Bundle Drive ID:</span>
                           <p className='font-medium text-xs break-all'>
