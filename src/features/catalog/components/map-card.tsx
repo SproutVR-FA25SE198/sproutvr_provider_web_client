@@ -62,7 +62,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
         </CardHeader>
         <CardContent className='py-0 flex-1'>
           <div className='flex items-center h-15 justify-between'>
-            <Badge variant='default' className='px-2 md:max-w-25'>
+            <Badge variant='default' className='px-2 md:max-w-20'>
               {map.subject.name}
             </Badge>
             <span className='text-lg font-bold text-secondary'>{map.price.toLocaleString('vi-VN')} VND</span>
