@@ -4,8 +4,10 @@ import { Label } from '@/common/components/ui/label';
 import { Organization } from '@/common/types/user.type';
 
 import { motion } from 'framer-motion';
-import { Eye, HelpCircle } from 'lucide-react';
+import { Eye, HelpCircle, Lock } from 'lucide-react';
 import { useState } from 'react';
+
+import { ChangePasswordModal } from './change-password-modal';
 
 interface ProfileTabProps {
   organization: Organization;
@@ -13,6 +15,7 @@ interface ProfileTabProps {
 
 const ProfileTab = ({ organization }: ProfileTabProps) => {
   const [copiedBundleUrl, setCopiedBundleUrl] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   // Create Google Drive folder URL from bundleGoogleDriveId
   const bundleUrl = organization.bundleGoogleDriveId
@@ -35,8 +38,12 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
           className='max-w-4xl space-y-6'
         >
           {/* Organization Name */}
-          <div>
+          <div className='flex items-center justify-between'>
             <h1 className='text-2xl font-bold text-primary'>{organization.name}</h1>
+            <Button variant='outline' onClick={() => setShowChangePassword(true)} className='gap-2'>
+              <Lock className='w-4 h-4' />
+              Đổi mật khẩu
+            </Button>
           </div>
 
           {/* Contact Information */}
@@ -66,70 +73,6 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
 
           <hr className='my-12' />
           <div className='space-y-4'>
-            {/* <div className='space-y-2'>
-              <form onSubmit={(e) => e.preventDefault()}>
-                <Label htmlFor='mac-address' className='text-sm'>
-                  Địa chỉ MAC
-                </Label>
-                <div className='flex gap-2'>
-                  <div className='relative flex-1'>
-                    <Input
-                      id='mac-address'
-                      value={showMacAddress ? organization.macAddress : macAddress}
-                      placeholder={
-                        organization.macAddress
-                          ? showMacAddress
-                            ? ''
-                            : '••••••••••••••••'
-                          : 'Hãy thêm địa chỉ MAC, ví dụ: 00-1A-2B-3C-4D-5E'
-                      }
-                      required
-                      readOnly={organization.macAddress !== null}
-                      onChange={handleMacChange}
-                      className={`cursor-pointer ${!organization.macAddress && 'italic'}`}
-                      onClick={() => showMacAddress && copyToClipboard(macAddress, 'mac')}
-                    />
-                    {copiedMac && (
-                      <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>
-                        Đã sao chép!
-                      </span>
-                    )}
-                  </div>
-                  <Button
-                    variant='outline'
-                    onClick={() => setShowInstruction(!showInstruction)}
-                    size='icon'
-                    className='shrink-0 bg-transparent'
-                    title='Hướng dẫn'
-                  >
-                    <HelpCircle className='w-4 h-4' />
-                  </Button>
-                  {organization.macAddress !== null ? (
-                    <Button
-                      variant='outline'
-                      size='icon'
-                      className='shrink-0 bg-transparent'
-                      onClick={() => setShowMacAddress(!showMacAddress)}
-                      title={showMacAddress ? 'Ẩn' : 'Hiện'}
-                    >
-                      {showMacAddress ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
-                    </Button>
-                  ) : (
-                    <Button
-                      variant='default'
-                      size='icon'
-                      type='submit'
-                      className='shrink-0'
-                      onClick={handleSaveMacAddress}
-                      title={showMacAddress ? 'Ẩn' : 'Hiện'}
-                    >
-                      <Save className='w-4 h-4' />
-                    </Button>
-                  )}
-                </div>
-              </form>
-            </div> */}
-
             {/* Bundle Link */}
             <div className='space-y-2'>
               <Label htmlFor='bundle-url' className='text-sm'>
@@ -239,6 +182,9 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
           </div>
         </motion.div>
       </div>
+
+      {/* Change Password Modal */}
+      <ChangePasswordModal open={showChangePassword} onOpenChange={setShowChangePassword} />
     </div>
   );
 };
