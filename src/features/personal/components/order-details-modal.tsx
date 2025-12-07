@@ -18,8 +18,6 @@ interface OrderDetailsModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// const order = mockOrderDetails[0];
-
 export function OrderDetailsModal({ orderId, open, onOpenChange }: OrderDetailsModalProps) {
   const { data: order, isLoading } = useGetOrderById(orderId);
   // if (!orderId) return null;
