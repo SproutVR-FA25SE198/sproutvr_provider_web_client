@@ -1,4 +1,4 @@
-import { CreditCard, QrCode, Wallet } from 'lucide-react';
+import { /*CreditCard,*/ QrCode /*Wallet*/ } from 'lucide-react';
 
 import { OrderStatus } from './enums';
 
