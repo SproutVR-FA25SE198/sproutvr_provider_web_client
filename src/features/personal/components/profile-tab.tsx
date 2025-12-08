@@ -81,7 +81,7 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
               <div className='flex gap-2'>
                 <div className='relative flex-1'>
                   {bundleUrl ? (
-                    <a href={bundleUrl} target='_blank' rel='noopener noreferrer'>
+                    <a href={bundleUrl} target='_blank' rel=''>
                       <Input
                         id='bundle-url'
                         value={bundleUrl}

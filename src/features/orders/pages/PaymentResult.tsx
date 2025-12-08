@@ -60,9 +60,10 @@ function PaymentStatusContent() {
 
     // Check status from URL params first (if payment gateway already returned status)
     if (statusFromParams) {
+      clearBasket();
       if (statusFromParams === 'PAID' || statusFromParams === 'COMPLETED' || statusFromParams === 'SUCCESS') {
-        setPaymentStatus('success');
         clearBasket();
+        setPaymentStatus('success');
         setIsInitialized(true);
         return;
       } else if (statusFromParams === 'CANCELLED' || statusFromParams === 'CANCELED') {

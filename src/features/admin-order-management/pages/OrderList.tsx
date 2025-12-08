@@ -237,7 +237,7 @@ export default function OrderListPage() {
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Tổng tiền</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Số sản phẩm</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Trạng thái</th>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>Tổ chức</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Đại diện</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>SĐT</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Ngày tạo</th>
                           <th className='px-4 py-3 text-center text-sm font-semibold'>Thao tác</th>
