@@ -43,7 +43,7 @@ function PaymentStatusContent() {
     if (isInitialized) return;
 
     // Get orderId from URL params or cookie
-    const orderIdFromParams = searchParams.get('orderId') || searchParams.get('id');
+    const orderIdFromParams = searchParams.get('orderId') || paymentData.orderId;
     const orderCodeFromParams = searchParams.get('orderCode');
     const statusFromParams = searchParams.get('status')?.toUpperCase();
     const cancelFromParams = searchParams.get('cancel') === 'true';
