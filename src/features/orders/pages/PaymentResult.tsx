@@ -262,7 +262,7 @@ function PaymentStatusContent() {
                   <div className='space-y-3'>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Mã đơn hàng:</span>
-                      <span className='font-medium'>#{orderDetails.id}</span>
+                      <span className='font-medium'>#{orderDetails.orderCode}</span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Ngày:</span>
