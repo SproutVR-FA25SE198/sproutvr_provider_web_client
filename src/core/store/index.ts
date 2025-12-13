@@ -1,5 +1,6 @@
 import authReducer from '@/common/stores/authStore/authSlice';
 import basketReducer from '@/common/stores/basketStore/basketSlice';
+import notificationReducer from '@/common/stores/notificationStore/notificationSlice';
 import { hasValidTokens } from '@/common/utils/hasValidTokens';
 
 import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
@@ -10,6 +11,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 const rootReducer = combineReducers({
   auth: authReducer,
   basket: basketReducer,
+  notification: notificationReducer,
 });
 
 const persistConfig = {

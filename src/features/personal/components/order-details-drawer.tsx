@@ -3,14 +3,19 @@
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from '@/common/components/ui/drawer';
+import { Input } from '@/common/components/ui/input';
+import { Label } from '@/common/components/ui/label';
 import { Separator } from '@/common/components/ui/separator';
 import { ORDER_STATUS_BADGE, OrderStatus } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 
-import { Download, ExternalLink } from 'lucide-react';
+import { Check, Copy, Download, ExternalLink, HelpCircle } from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import useGetOrderById from '../hooks/useGetOrderById';
+
+import ActivationKeyInstruction from './activation-key-instruction';
 
 interface OrderDetailsModalProps {
   orderId: string;
@@ -20,7 +25,16 @@ interface OrderDetailsModalProps {
 
 export function OrderDetailsDrawer({ orderId, open, onOpenChange }: OrderDetailsModalProps) {
   const { data: order, isLoading } = useGetOrderById(orderId);
-  //   const statusInfo = statusConfig[order.status];
+  const [copiedKey, setCopiedKey] = useState(false);
+  const [showInstruction, setShowInstruction] = useState(false);
+
+  const copyActivationKey = () => {
+    if (order?.activationKey) {
+      navigator.clipboard.writeText(order.activationKey);
+      setCopiedKey(true);
+      setTimeout(() => setCopiedKey(false), 2000);
+    }
+  };
 
   if (!isLoading && order)
     return (
@@ -31,7 +45,7 @@ export function OrderDetailsDrawer({ orderId, open, onOpenChange }: OrderDetails
             <DrawerDescription>Mã đơn hàng: #ORD{order.orderCode}</DrawerDescription>
           </DrawerHeader>
 
-          <div className='space-y-6'>
+          <div className='space-y-6 px-4 pb-4'>
             {/* Order Info */}
             <div className='grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg'>
               <div>
@@ -59,14 +73,53 @@ export function OrderDetailsDrawer({ orderId, open, onOpenChange }: OrderDetails
 
             <Separator />
 
+            {/* Activation Key Section */}
+            <div className='space-y-3'>
+              <Label className='text-sm font-semibold'>Key kích hoạt</Label>
+              <div className='flex gap-2'>
+                <div className='relative flex-1'>
+                  <Input
+                    value={order.activationKey || 'Chưa có key kích hoạt'}
+                    readOnly
+                    className={`cursor-pointer pr-10 ${!order.activationKey && 'italic text-muted-foreground'}`}
+                    onClick={copyActivationKey}
+                    disabled={!order.activationKey}
+                  />
+                  {copiedKey ? (
+                    <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600 flex items-center gap-1'>
+                      <Check className='w-3 h-3' />
+                      Đã sao chép!
+                    </span>
+                  ) : (
+                    order.activationKey && (
+                      <Copy className='absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+                    )
+                  )}
+                </div>
+                <Button
+                  variant='outline'
+                  size='icon'
+                  className='shrink-0 bg-transparent'
+                  onClick={() => setShowInstruction(!showInstruction)}
+                  title='Hướng dẫn sử dụng'
+                >
+                  <HelpCircle className='w-4 h-4' />
+                </Button>
+              </div>
+
+              {/* Instruction */}
+              {showInstruction && <ActivationKeyInstruction />}
+            </div>
+
+            <Separator />
+
             {/* Order Items */}
             <div>
               <h3 className='font-semibold mb-4'>
-                Sản phẩm<span className='text-muted-foreground'>({order.orderItems.length})</span>
+                Sản phẩm <span className='text-muted-foreground'>({order.orderItems.length})</span>
               </h3>
-              <div className='space-y-3  max-h-[30vh] overflow-y-auto'>
+              <div className='space-y-3 max-h-[30vh] overflow-y-auto'>
                 {order.orderItems.map((item) => (
-                  //onclick: to map details page
                   <div key={item.mapId} className='flex gap-4 p-3 border rounded-lg'>
                     <img
                       src={item.imageUrl || '/placeholder.svg'}

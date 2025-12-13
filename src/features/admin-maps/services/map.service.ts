@@ -19,3 +19,27 @@ export const uploadMap = (data: UploadMapRequest) => {
     timeout: 300000,
   });
 };
+
+/**
+ * Get map metadata and upload to Drive
+ */
+export const getMapMetadata = (mapId: string) => {
+  return http.get(`/catalogs/maps/metadata/${mapId}`);
+};
+
+export interface UpdateMapRequest {
+  price?: number;
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  subjectId?: string;
+  status?: string;
+  mapCode?: string;
+}
+
+/**
+ * Update map information
+ */
+export const updateMap = (mapId: string, data: UpdateMapRequest) => {
+  return http.put(`/catalogs/maps/${mapId}`, data);
+};

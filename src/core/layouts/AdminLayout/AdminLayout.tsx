@@ -1,8 +1,13 @@
+import { useSignalRConnection } from '@/features/admin-notifications/hooks/useSignalRConnection';
+
 import { Outlet } from 'react-router-dom';
 
 import AdminHeader from './components/admin-header';
 
 const AdminLayout = () => {
+  // Initialize SignalR connection for notifications
+  useSignalRConnection();
+
   return (
     <>
       <AdminHeader />

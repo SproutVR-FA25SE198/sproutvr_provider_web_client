@@ -1,10 +1,6 @@
 import axios from 'axios';
 
-import type {
-  CreateOrganizationPayload,
-  Organization,
-  UpdateOrganizationPayload,
-} from '../types/organization.type';
+import type { CreateOrganizationPayload, Organization, UpdateOrganizationPayload } from '../types/organization.type';
 
 const ACCOUNT_BASE_URL = import.meta.env.VITE_BASE_ACCOUNT_URL;
 
@@ -64,5 +60,3 @@ export const deactivateOrganization = async (organizationId: string) => {
   const baseUrl = ensureBaseUrl();
   await axios.delete(`${baseUrl}/organizations/${organizationId}`);
 };
-
-

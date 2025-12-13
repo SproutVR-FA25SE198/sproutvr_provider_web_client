@@ -43,7 +43,7 @@ function PaymentStatusContent() {
     if (isInitialized) return;
 
     // Get orderId from URL params or cookie
-    const orderIdFromParams = searchParams.get('orderId') || searchParams.get('id');
+    const orderIdFromParams = searchParams.get('orderId') || paymentData.orderId;
     const orderCodeFromParams = searchParams.get('orderCode');
     const statusFromParams = searchParams.get('status')?.toUpperCase();
     const cancelFromParams = searchParams.get('cancel') === 'true';
@@ -60,9 +60,10 @@ function PaymentStatusContent() {
 
     // Check status from URL params first (if payment gateway already returned status)
     if (statusFromParams) {
+      clearBasket();
       if (statusFromParams === 'PAID' || statusFromParams === 'COMPLETED' || statusFromParams === 'SUCCESS') {
-        setPaymentStatus('success');
         clearBasket();
+        setPaymentStatus('success');
         setIsInitialized(true);
         return;
       } else if (statusFromParams === 'CANCELLED' || statusFromParams === 'CANCELED') {
@@ -261,7 +262,7 @@ function PaymentStatusContent() {
                   <div className='space-y-3'>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Mã đơn hàng:</span>
-                      <span className='font-medium'>#{orderDetails.id}</span>
+                      <span className='font-medium'>#{orderDetails.orderCode}</span>
                     </div>
                     <div className='flex justify-between'>
                       <span className='text-muted-foreground'>Ngày:</span>

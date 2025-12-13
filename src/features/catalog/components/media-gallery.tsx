@@ -29,7 +29,6 @@ export function MediaGallery({ images }: MediaGalleryProps) {
       {/* Thumbnails */}
       <div className='grid grid-cols-4 gap-3'>
         {images.map((image, index) => {
-          const labels = ['Main', 'Location 1', 'Location 2', 'Location 3'];
           return (
             <button
               key={index}
@@ -40,19 +39,7 @@ export function MediaGallery({ images }: MediaGalleryProps) {
                 selectedIndex === index ? 'ring-2 ring-primary scale-105 shadow-md' : 'opacity-70',
               )}
             >
-              <img src={image} alt={labels[index] || `Thumbnail ${index + 1}`} className='w-full h-full object-cover' />
-              {/* Thumbnail label */}
-              <div
-                className={cn(
-                  'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1',
-                  'transition-opacity duration-200',
-                  selectedIndex === index ? 'opacity-100' : 'opacity-0 group-hover:opacity-100',
-                )}
-              >
-                <span className='text-xs text-white font-medium drop-shadow'>
-                  {index === 0 ? 'Main' : `Location ${index}`}
-                </span>
-              </div>
+              <img src={image} alt={`Thumbnail ${index + 1}`} className='w-full h-full object-cover' />
             </button>
           );
         })}

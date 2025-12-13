@@ -8,6 +8,7 @@ export interface Order {
   createdAtUtc: string;
   updatedAtUtc: string;
   totalItems: number;
+  activationKey?: string;
   totalMoneyAmount: number;
   orderCode: number;
   paymentMethod: string;

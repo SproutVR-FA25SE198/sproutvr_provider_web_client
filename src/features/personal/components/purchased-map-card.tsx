@@ -12,7 +12,6 @@ interface PurchasedMapCardProps {
 }
 
 const PurchasedMapCard = ({ map, index }: PurchasedMapCardProps) => {
-  console.log('Purchased map:', map);
   return (
     <motion.div
       key={map.mapId}

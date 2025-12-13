@@ -71,5 +71,3 @@ export const checkOrganizationRequest = async (payload: CheckOrganizationRequest
   const { data } = await axios.post(`${baseUrl}/organization-register-requests/check`, payload);
   return data;
 };
-
-

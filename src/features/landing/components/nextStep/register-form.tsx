@@ -51,9 +51,8 @@ export function RegisterForm({ title, subtitle, submitText, disclaimer }: Regist
       reset();
     } catch (error) {
       if (isAxiosError(error)) {
-        const message =
-          (typeof error.response?.data === 'string' && error.response.data) ||
-          (error.response?.data as { message?: string })?.message;
+        const message = error.message;
+        console.log("Log from submit form", error);
         toast.error(message || 'Yêu cầu đăng ký thất bại. Vui lòng thử lại sau.');
         return;
       }

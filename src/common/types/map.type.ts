@@ -37,9 +37,9 @@ export interface MapSummary {
   subjectName: string;
 }
 
-export interface GetMapsResponse extends Pagination<MapWithSubject> {}
+export interface GetMapsResponse extends Pagination<MapWithSubject> { }
 
-export interface GetLibraryResponse extends Pagination<MapSummary> {}
+export interface GetLibraryResponse extends Pagination<MapSummary> { }
 
 export interface GetMapByIdResponse extends MapWithSubject {
   mapObjects: TaskObject[];

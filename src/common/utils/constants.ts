@@ -1,4 +1,4 @@
-import { CreditCard, QrCode, Wallet } from 'lucide-react';
+import { /*CreditCard,*/ QrCode /*Wallet*/ } from 'lucide-react';
 
 import { OrderStatus } from './enums';
 
@@ -7,8 +7,6 @@ export const HTTP_STATUS = {
 } as const;
 
 export const PASSWORD_REGEX = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/;
-
-export const PHONE_REGEX = /^(0|\+84)(3|5|7|8|9)\d{8}$/;
 
 export const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -19,18 +17,18 @@ export const PAYMENT_METHODS = {
     description: 'Thanh toán bằng chuyển khoản ngân hàng',
     icon: QrCode,
   },
-  VNPAY: {
-    code: 'VNPAY',
-    name: 'VNPay',
-    description: 'Thanh toán qua ví VNPay',
-    icon: Wallet,
-  },
-  ZALOPAY: {
-    code: 'ZALOPAY',
-    name: 'ZaloPay',
-    description: 'Thanh toán bằng ví ZaloPay',
-    icon: CreditCard,
-  },
+  // VNPAY: {
+  //   code: 'VNPAY',
+  //   name: 'VNPay',
+  //   description: 'Thanh toán qua ví VNPay',
+  //   icon: Wallet,
+  // },
+  // ZALOPAY: {
+  //   code: 'ZALOPAY',
+  //   name: 'ZaloPay',
+  //   description: 'Thanh toán bằng ví ZaloPay',
+  //   icon: CreditCard,
+  // },
 };
 
 export const ORDER_STATUS_BADGE = {

@@ -2,7 +2,7 @@ import { getAccessToken } from '@/common/utils';
 
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5001/api/v1/auth';
+const BASE_URL = import.meta.env.VITE_BASE_ACCOUNT_URL + '/auth';
 
 export const GET_PROFILE_QUERY_KEY = 'GET_PROFILE_QUERY_KEY';
 export const GET_PROFILE_STALE_TIME = 5 * 60 * 1000; // 5 minutes
