@@ -9,7 +9,7 @@ import configs from '@/core/configs';
 import useGetMapById from '../hooks/useGetMapById';
 
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, DollarSign, FileText, Map as MapIcon, Package, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, DollarSign, Edit, FileText, Map as MapIcon, Package, Tag } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function MapDetailsPage() {
@@ -85,6 +85,13 @@ export default function MapDetailsPage() {
                   {getStatusBadge(map.status)}
                 </div>
               </div>
+              <Button
+                onClick={() => navigate(configs.routes.adminMapUpdate.replace(':id', map.id))}
+                className='gap-2'
+              >
+                <Edit className='w-4 h-4' />
+                Chỉnh sửa
+              </Button>
             </div>
           </div>
 

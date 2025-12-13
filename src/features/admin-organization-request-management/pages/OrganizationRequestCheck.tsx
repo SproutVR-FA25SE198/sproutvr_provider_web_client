@@ -120,7 +120,6 @@ export default function OrganizationRequestCheckPage() {
           <div>
             <p className='text-xs uppercase tracking-wide text-muted-foreground'>Tên tổ chức</p>
             <p className='mt-2 text-xl font-semibold text-foreground'>{data.organizationName}</p>
-            <p className='mt-1 text-sm text-muted-foreground'>Mã yêu cầu: {data.id}</p>
           </div>
           <ApprovalStatusBadge status={data.approvalStatus} />
         </div>

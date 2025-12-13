@@ -328,10 +328,25 @@ export default function OrderDetailsPage() {
                           <p className='font-medium text-xs'>{organization.macAddress || 'Chưa có'}</p>
                         </div> */}
                         <div className='col-span-2'>
-                          <span className='text-muted-foreground'>Bundle Drive ID:</span>
-                          <p className='font-medium text-xs break-all'>
-                            {organization.bundleGoogleDriveId || 'Chưa có'}
-                          </p>
+                          <span className='text-muted-foreground'>Thư mục lưu trữ học liệu của khách hàng:</span>
+                          <div className="font-medium text-xs break-all">
+                            {organization.bundleGoogleDriveId ? (
+                              <a
+                                href={`https://drive.google.com/drive/folders/${organization.bundleGoogleDriveId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors duration-200"
+                              >
+                                Xem Folder
+                                {/* Icon mở tab mới (tùy chọn) */}
+                                <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </a>
+                            ) : (
+                              <span className="text-gray-500">Chưa có</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
