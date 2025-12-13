@@ -25,7 +25,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
       mapId: map.id,
       mapName: map.name,
       mapCode: map.mapCode,
-      imageUrl: map.imageUrl[0],
+      imageUrl: map.imageUrl,
       subjectName: map.subject.name,
       price: map.price,
     });
