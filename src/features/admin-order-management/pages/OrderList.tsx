@@ -17,7 +17,6 @@ import {
   Loader2,
   Package,
   RefreshCw,
-  ScrollText,
   Search,
   X,
 } from 'lucide-react';
