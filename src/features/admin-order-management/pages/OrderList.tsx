@@ -17,7 +17,6 @@ import {
   Loader2,
   Package,
   RefreshCw,
-  ScrollText,
   Search,
   X,
 } from 'lucide-react';
@@ -207,10 +206,10 @@ export default function OrderListPage() {
             <CardHeader>
               <CardTitle className='text-xl flex items-center justify-between'>
                 <span>Danh sách đơn hàng</span>
-                <Button variant={'secondary'}>
+                {/* <Button variant={'secondary'}>
                   <ScrollText className='w-4 h-4' />
                   Xuất báo cáo doanh thu
-                </Button>
+                </Button> */}
               </CardTitle>
             </CardHeader>
             <CardContent>
