@@ -26,7 +26,7 @@ export const useSignalRConnection = () => {
 
     // Create SignalR connection
     const connection = new HubConnectionBuilder()
-      .withUrl(`${BASE_URL}/notifications`, {
+      .withUrl(`${BASE_URL}/hub/notifications`, {
         accessTokenFactory: () => accessToken,
         skipNegotiation: true,
         transport: 1, // WebSockets
@@ -39,10 +39,10 @@ export const useSignalRConnection = () => {
     connection.on('OrderCreated', (notificationContent: string | object) => {
       try {
         // notificationContent might be a string (JSON) or already an object
-        const notification = typeof notificationContent === 'string' 
-          ? JSON.parse(notificationContent) 
+        const notification = typeof notificationContent === 'string'
+          ? JSON.parse(notificationContent)
           : notificationContent;
-        
+
         // Ensure the notification has the required structure
         if (notification && notification.id) {
           dispatch(addNotification(notification));
