@@ -11,6 +11,8 @@ const routes = {
   checkout: '/checkout',
   paymentResult: '/payment-result',
   logout: '/logout',
+  help: '/help',
+  contact: '/contact',
   // Admin routes
   adminOrders: '/admin/orders',
   adminOrderDetails: '/admin/orders/:id',

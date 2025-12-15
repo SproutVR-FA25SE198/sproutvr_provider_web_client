@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 
 import { LogOut, Menu, Settings, ShoppingBasket, User, X } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -48,7 +48,7 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className='md:hidden py-4 border-t border-border animate-fade-in-up'>
             <nav className='flex flex-col gap-4'>
-              <NavLinks /*mobile onClick={() => setMobileMenuOpen(false)}*/ />
+              <NavLinks onNavigate={() => setMobileMenuOpen(false)} />
 
               <div className='flex flex-col gap-2 pt-2'>
                 <ActionButtons mobile isAuthenticated={isAuthenticated} onClick={() => setMobileMenuOpen(false)} />
@@ -61,27 +61,62 @@ export default function Header() {
   );
 }
 
-function NavLinks(/*{ mobile = false, onClick }: { mobile?: boolean; onClick?: () => void }*/) {
+function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const links = [
-    { href: '', label: 'Về SproutVR' },
+    { href: '/', label: 'Về SproutVR' },
     { href: configs.routes.catalog, label: 'Catalog' },
-    { href: '', label: 'Đăng ký tổ chức' },
-    { href: '', label: 'Trợ giúp' },
-    { href: '', label: 'Liên hệ' },
+    { href: '/#register', label: 'Đăng ký tổ chức', isHash: true },
+    { href: configs.routes.help, label: 'Trợ giúp' },
+    { href: configs.routes.contact, label: 'Liên hệ' },
   ];
+
+  const handleHashNavigation = (hash: string) => {
+    onNavigate?.();
+
+    // If already on home page, just scroll to the element
+    if (location.pathname === '/') {
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Navigate to home page first, then scroll
+      navigate('/');
+      // Wait for navigation to complete, then scroll
+      setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+  };
 
   return (
     <>
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          to={link.href}
-          // onClick={onClick}
-          className={`text-sm font-medium text-foreground hover:text-secondary transition-colors`}
-        >
-          {link.label}
-        </Link>
-      ))}
+      {links.map((link) =>
+        link.isHash ? (
+          <button
+            key={link.label}
+            onClick={() => handleHashNavigation('register')}
+            className='text-sm font-medium text-foreground hover:text-secondary hover:cursor-pointer transition-colors'
+          >
+            {link.label}
+          </button>
+        ) : (
+          <Link
+            key={link.label}
+            to={link.href}
+            onClick={onNavigate}
+            className='text-sm font-medium text-foreground hover:text-secondary transition-colors'
+          >
+            {link.label}
+          </Link>
+        ),
+      )}
     </>
   );
 }
