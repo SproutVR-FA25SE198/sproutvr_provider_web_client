@@ -51,6 +51,18 @@ const router = createBrowserRouter([
           Component: (await import('@/features/auth/pages/VerifyEmail')).default,
         }),
       },
+      {
+        path: configs.routes.help,
+        lazy: async () => ({
+          Component: (await import('@/features/landing/pages/Help')).default,
+        }),
+      },
+      {
+        path: configs.routes.contact,
+        lazy: async () => ({
+          Component: (await import('@/features/landing/pages/Contact')).default,
+        }),
+      },
     ],
   },
 
@@ -124,19 +136,24 @@ const router = createBrowserRouter([
           {
             path: configs.routes.adminOrganizationRequests,
             lazy: async () => ({
-              Component: (await import('@/features/admin-organization-request-management/pages/OrganizationRequestList')).default,
+              Component: (
+                await import('@/features/admin-organization-request-management/pages/OrganizationRequestList')
+              ).default,
             }),
           },
           {
             path: configs.routes.adminOrganizationRequestCheck,
             lazy: async () => ({
-              Component: (await import('@/features/admin-organization-request-management/pages/OrganizationRequestCheck')).default,
+              Component: (
+                await import('@/features/admin-organization-request-management/pages/OrganizationRequestCheck')
+              ).default,
             }),
           },
           {
             path: configs.routes.adminOrganizationManagement,
             lazy: async () => ({
-              Component: (await import('@/features/admin-organization-management/pages/OrganizationManagement')).default,
+              Component: (await import('@/features/admin-organization-management/pages/OrganizationManagement'))
+                .default,
             }),
           },
           {
