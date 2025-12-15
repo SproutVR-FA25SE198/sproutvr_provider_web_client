@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/core/store/hooks';
 
 import { LogOut, Menu, Settings, ShoppingBasket, User, X } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -131,14 +131,16 @@ function ActionButtons({
   onClick: () => void;
 }) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const userRole = useAppSelector((state) => state.root.auth.user?.role);
 
   const { basketCount } = useBaskets();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     onClick();
-    dispatch(logoutThunk());
+    await dispatch(logoutThunk());
+    navigate('/'); // Redirect to home after logout
   };
 
   return (
