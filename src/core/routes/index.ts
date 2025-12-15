@@ -14,6 +14,10 @@ const guestGuardLazy = async () => ({
   Component: (await import('@/core/guards/GuestGuard')).default,
 });
 
+const clientGuardLazy = async () => ({
+  Component: (await import('@/core/guards/ClientGuard')).default,
+});
+
 const clientLayoutLazy = async () => ({
   Component: (await import('@/core/layouts/ClientLayout')).default,
 });
@@ -23,66 +27,47 @@ const adminLayoutLazy = async () => ({
 });
 
 const router = createBrowserRouter([
-  // Common routes
+  // Common routes (protected from admin)
   {
-    lazy: clientLayoutLazy,
-    children: [
-      {
-        path: configs.routes.home,
-        lazy: async () => ({
-          Component: (await import('@/features/landing/pages/Home')).default,
-        }),
-      },
-      {
-        path: configs.routes.catalog,
-        lazy: async () => ({
-          Component: (await import('@/features/catalog/pages/Catalog')).default,
-        }),
-      },
-      {
-        path: configs.routes.mapDetails,
-        lazy: async () => ({
-          Component: (await import('@/features/catalog/pages/MapDetails')).default,
-        }),
-      },
-      {
-        path: configs.routes.verifyEmail,
-        lazy: async () => ({
-          Component: (await import('@/features/auth/pages/VerifyEmail')).default,
-        }),
-      },
-      {
-        path: configs.routes.help,
-        lazy: async () => ({
-          Component: (await import('@/features/landing/pages/Help')).default,
-        }),
-      },
-      {
-        path: configs.routes.contact,
-        lazy: async () => ({
-          Component: (await import('@/features/landing/pages/Contact')).default,
-        }),
-      },
-    ],
-  },
-
-  // Guest routes
-  {
-    lazy: guestGuardLazy,
+    lazy: clientGuardLazy,
     children: [
       {
         lazy: clientLayoutLazy,
         children: [
           {
-            path: configs.routes.login,
+            path: configs.routes.home,
             lazy: async () => ({
-              Component: (await import('@/features/auth/pages/Login')).default,
+              Component: (await import('@/features/landing/pages/Home')).default,
             }),
           },
           {
-            path: configs.routes.forgotPassword,
+            path: configs.routes.catalog,
             lazy: async () => ({
-              Component: (await import('@/features/auth/pages/ForgotPassword')).default,
+              Component: (await import('@/features/catalog/pages/Catalog')).default,
+            }),
+          },
+          {
+            path: configs.routes.mapDetails,
+            lazy: async () => ({
+              Component: (await import('@/features/catalog/pages/MapDetails')).default,
+            }),
+          },
+          {
+            path: configs.routes.verifyEmail,
+            lazy: async () => ({
+              Component: (await import('@/features/auth/pages/VerifyEmail')).default,
+            }),
+          },
+          {
+            path: configs.routes.help,
+            lazy: async () => ({
+              Component: (await import('@/features/landing/pages/Help')).default,
+            }),
+          },
+          {
+            path: configs.routes.contact,
+            lazy: async () => ({
+              Component: (await import('@/features/landing/pages/Contact')).default,
             }),
           },
         ],
@@ -90,7 +75,36 @@ const router = createBrowserRouter([
     ],
   },
 
-  // Auth routes
+  // Guest routes (protected from admin via ClientGuard + must not be authenticated)
+  {
+    lazy: clientGuardLazy,
+    children: [
+      {
+        lazy: guestGuardLazy,
+        children: [
+          {
+            lazy: clientLayoutLazy,
+            children: [
+              {
+                path: configs.routes.login,
+                lazy: async () => ({
+                  Component: (await import('@/features/auth/pages/Login')).default,
+                }),
+              },
+              {
+                path: configs.routes.forgotPassword,
+                lazy: async () => ({
+                  Component: (await import('@/features/auth/pages/ForgotPassword')).default,
+                }),
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  // Auth routes (already protected from admin in AuthGuard)
   {
     lazy: authGuardLazy,
     children: [
