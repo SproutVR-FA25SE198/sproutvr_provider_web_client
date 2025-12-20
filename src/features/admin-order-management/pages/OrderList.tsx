@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui
 import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
 import { ORDER_STATUS_LABELS, ORDER_STATUS_STYLES, OrderStatus } from '@/common/constants/order-status';
+import { convertDateToUtcIso } from '@/common/utils/formatters';
 import configs from '@/core/configs';
 
 import useGetAdminOrders from '../hooks/useGetAdminOrders';
+import useGetOrganizationsByIds from '../hooks/useGetOrganizationsByIds';
 
 import { motion } from 'framer-motion';
 import {
@@ -17,75 +19,96 @@ import {
   Loader2,
   Package,
   RefreshCw,
-  Search,
   X,
+  Building2,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function OrderListPage() {
   const navigate = useNavigate();
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize] = useState(10);
-  const [status, setStatus] = useState<string>('');
-  const [searchTerm, setSearchTerm] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
 
-  // Fetch all orders without search term (we'll filter client-side)
+  // Filter states
+  const [organizationName, setOrganizationName] = useState<string>('');
+  const [organizationId, setOrganizationId] = useState<string>('');
+  const [minAmount, setMinAmount] = useState<string>('');
+  const [maxAmount, setMaxAmount] = useState<string>('');
+  const [orderCode, setOrderCode] = useState<string>('');
+  const [paymentMethod, setPaymentMethod] = useState<string>('');
+  const [bank, setBank] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
+  const [fromDate, setFromDate] = useState<string>('');
+  const [toDate, setToDate] = useState<string>('');
+
+  // Fetch orders with backend search and pagination
   const { data, isLoading, isError, refetch } = useGetAdminOrders({
-    pageIndex: 1,
-    pageSize: 1000, // Fetch all orders for client-side filtering
+    pageIndex,
+    pageSize,
+    isPaginated: true,
+    organizationName: organizationName.trim() || undefined,
+    organizationId: organizationId.trim() || undefined,
+    minAmount: minAmount ? parseFloat(minAmount) : undefined,
+    maxAmount: maxAmount ? parseFloat(maxAmount) : undefined,
+    orderCode: orderCode ? parseInt(orderCode) : undefined,
+    paymentMethod: paymentMethod.trim() || undefined,
+    bank: bank.trim() || undefined,
     status: status || undefined,
+    fromDate: fromDate ? convertDateToUtcIso(fromDate, false) : undefined,
+    toDate: toDate ? convertDateToUtcIso(toDate, true) : undefined,
   });
 
-  // Filter and paginate on client side
+  // Extract orders and pagination info from backend response
   const { orders, totalCount, totalPages } = useMemo(() => {
     if (!data?.data) return { orders: [], totalCount: 0, totalPages: 0 };
 
-    let filtered = [...data.data];
-
-    // Client-side search filtering
-    if (searchTerm.trim()) {
-      const query = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(
-        (order) =>
-          order.id.toLowerCase().includes(query) ||
-          order.orderCode?.toString().includes(query) ||
-          order.representativeName?.toLowerCase().includes(query) ||
-          order.organizationName?.toLowerCase().includes(query) ||
-          order.representativePhone?.includes(query),
-      );
-    }
-
-    const totalCount = filtered.length;
+    const orders = data.data;
+    const totalCount = data.count || 0;
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    // Paginate
-    const startIndex = (pageIndex - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const paginatedOrders = filtered.slice(startIndex, endIndex);
+    return { orders, totalCount, totalPages };
+  }, [data, pageSize]);
 
-    return { orders: paginatedOrders, totalCount, totalPages };
-  }, [data?.data, searchTerm, pageIndex, pageSize]);
+  // Get unique organization IDs from current page orders for optimized fetching
+  const organizationIds = useMemo(() => {
+    return orders.map((order) => order.organizationId).filter(Boolean);
+  }, [orders]);
+
+  // Fetch organizations in parallel (only unique IDs, cached by React Query)
+  const { getOrganization, isLoading: isLoadingOrg } = useGetOrganizationsByIds(organizationIds);
 
   // Reset to page 1 when filters change
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    setPageIndex(1);
-  };
-
-  const handleStatusChange = (value: string) => {
-    setStatus(value);
+  const handleFilterChange = () => {
     setPageIndex(1);
   };
 
   const handleClearFilters = () => {
+    setOrganizationName('');
+    setOrganizationId('');
+    setMinAmount('');
+    setMaxAmount('');
+    setOrderCode('');
+    setPaymentMethod('');
+    setBank('');
     setStatus('');
-    setSearchTerm('');
+    setFromDate('');
+    setToDate('');
     setPageIndex(1);
   };
 
-  const hasActiveFilters = status || searchTerm;
+  const hasActiveFilters =
+    organizationName ||
+    organizationId ||
+    minAmount ||
+    maxAmount ||
+    orderCode ||
+    paymentMethod ||
+    bank ||
+    status ||
+    fromDate ||
+    toDate;
 
   const handleViewDetails = (orderId: string) => {
     navigate(configs.routes.adminOrderDetails.replace(':id', orderId));
@@ -110,6 +133,35 @@ export default function OrderListPage() {
     const className = ORDER_STATUS_STYLES[status] || 'bg-gray-100 text-gray-800';
 
     return <span className={`px-2 py-1 text-xs font-medium rounded-full ${className}`}>{label}</span>;
+  };
+
+  // Component to render organization name with link
+  const OrganizationCell = ({ organizationId }: { organizationId: string }) => {
+    const organization = getOrganization(organizationId);
+    const loading = isLoadingOrg(organizationId);
+
+    if (loading) {
+      return (
+        <div className='flex items-center gap-2'>
+          <Loader2 className='w-3 h-3 animate-spin text-muted-foreground' />
+          <span className='text-sm text-muted-foreground'>Đang tải...</span>
+        </div>
+      );
+    }
+
+    if (!organization) {
+      return <span className='text-sm text-muted-foreground'>—</span>;
+    }
+
+    return (
+      <Link
+        to={configs.routes.adminOrganizationDetails.replace(':id', organizationId)}
+        className='text-sm text-primary hover:underline flex items-center gap-1.5 transition-colors'
+      >
+        <Building2 className='w-3.5 h-3.5' />
+        {organization.name || '—'}
+      </Link>
+    );
   };
 
   if (isError) {
@@ -158,26 +210,97 @@ export default function OrderListPage() {
             >
               <Card className='mb-6'>
                 <CardContent className='pt-6'>
-                  <div className='grid md:grid-cols-2 gap-4'>
+                  <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     <div>
-                      <Label htmlFor='search'>Tìm kiếm</Label>
-                      <div className='relative mt-1.5'>
-                        <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-                        <Input
-                          id='search'
-                          placeholder='Tìm theo mã đơn, tên người đại diện, tên tổ chức, SĐT...'
-                          value={searchTerm}
-                          onChange={(e) => handleSearchChange(e.target.value)}
-                          className='pl-10'
-                        />
-                      </div>
+                      <Label htmlFor='organizationName'>Tên tổ chức</Label>
+                      <Input
+                        id='organizationName'
+                        placeholder='Tìm theo tên tổ chức...'
+                        value={organizationName}
+                        onChange={(e) => {
+                          setOrganizationName(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='organizationId'>ID Tổ chức</Label>
+                      <Input
+                        id='organizationId'
+                        placeholder='Nhập ID tổ chức...'
+                        value={organizationId}
+                        onChange={(e) => {
+                          setOrganizationId(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='orderCode'>Mã đơn hàng</Label>
+                      <Input
+                        id='orderCode'
+                        type='number'
+                        placeholder='Nhập mã đơn hàng...'
+                        value={orderCode}
+                        onChange={(e) => {
+                          setOrderCode(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='minAmount'>Số tiền tối thiểu (VND)</Label>
+                      <Input
+                        id='minAmount'
+                        type='number'
+                        placeholder='0'
+                        value={minAmount}
+                        onChange={(e) => {
+                          setMinAmount(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='maxAmount'>Số tiền tối đa (VND)</Label>
+                      <Input
+                        id='maxAmount'
+                        type='number'
+                        placeholder='0'
+                        value={maxAmount}
+                        onChange={(e) => {
+                          setMaxAmount(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='paymentMethod'>Phương thức thanh toán</Label>
+                      <Input
+                        id='paymentMethod'
+                        placeholder='Tìm theo phương thức...'
+                        value={paymentMethod}
+                        onChange={(e) => {
+                          setPaymentMethod(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
                     </div>
                     <div>
                       <Label htmlFor='status'>Trạng thái</Label>
                       <select
                         id='status'
                         value={status}
-                        onChange={(e) => handleStatusChange(e.target.value)}
+                        onChange={(e) => {
+                          setStatus(e.target.value);
+                          handleFilterChange();
+                        }}
                         className='mt-1.5 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
                       >
                         <option value=''>Tất cả</option>
@@ -187,6 +310,32 @@ export default function OrderListPage() {
                         <option value={OrderStatus.Cancelled}>Đã hủy</option>
                         <option value={OrderStatus.PaymentFailed}>Thất bại</option>
                       </select>
+                    </div>
+                    <div>
+                      <Label htmlFor='fromDate'>Từ ngày</Label>
+                      <Input
+                        id='fromDate'
+                        type='date'
+                        value={fromDate}
+                        onChange={(e) => {
+                          setFromDate(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='toDate'>Đến ngày</Label>
+                      <Input
+                        id='toDate'
+                        type='date'
+                        value={toDate}
+                        onChange={(e) => {
+                          setToDate(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
                     </div>
                   </div>
                   {hasActiveFilters && (
@@ -236,6 +385,7 @@ export default function OrderListPage() {
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Tổng tiền</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Số sản phẩm</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Trạng thái</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Tổ chức</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Đại diện</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>SĐT</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Ngày tạo</th>
@@ -257,7 +407,10 @@ export default function OrderListPage() {
                             </td>
                             <td className='px-4 py-3 text-sm text-center'>{order.totalItems}</td>
                             <td className='px-4 py-3'>{getStatusBadge(order.status)}</td>
-                            <td className='px-4 py-3 text-sm'>{order.organizationName || order.representativeName}</td>
+                            <td className='px-4 py-3'>
+                              <OrganizationCell organizationId={order.organizationId} />
+                            </td>
+                            <td className='px-4 py-3 text-sm'>{order.representativeName}</td>
                             <td className='px-4 py-3 text-sm'>{order.representativePhone}</td>
                             <td className='px-4 py-3 text-sm text-muted-foreground'>
                               {formatDate(order.createdAtUtc)}

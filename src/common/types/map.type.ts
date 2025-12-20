@@ -44,8 +44,8 @@ export interface GetLibraryResponse extends Pagination<MapSummary> { }
 export interface GetMapByIdResponse extends MapWithSubject {
   mapObjects: TaskObject[];
   taskLocations: TaskLocation[];
-  createdAt: string;
-  updatedAt: string;
+  createdAtUtc: string;
+  updatedAtUtc: string;
 }
 
 export interface MapDetails extends Omit<GetMapByIdResponse, 'imageUrl'> {

@@ -16,9 +16,11 @@ const routes = {
   // Admin routes
   adminOrders: '/admin/orders',
   adminOrderDetails: '/admin/orders/:id',
+  adminPayments: '/admin/payments',
   adminOrganizationRequests: '/admin/organization-requests',
   adminOrganizationRequestCheck: '/admin/organization-requests/:id/check',
   adminOrganizationManagement: '/admin/organizations',
+  adminOrganizationDetails: '/admin/organizations/:id',
   adminMaps: '/admin/maps',
   adminMapDetails: '/admin/maps/:id',
   adminMapUpdate: '/admin/maps/:id/update',

@@ -148,6 +148,12 @@ const router = createBrowserRouter([
             }),
           },
           {
+            path: configs.routes.adminPayments,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-order-management/pages/PaymentList')).default,
+            }),
+          },
+          {
             path: configs.routes.adminOrganizationRequests,
             lazy: async () => ({
               Component: (
@@ -168,6 +174,12 @@ const router = createBrowserRouter([
             lazy: async () => ({
               Component: (await import('@/features/admin-organization-management/pages/OrganizationManagement'))
                 .default,
+            }),
+          },
+          {
+            path: configs.routes.adminOrganizationDetails,
+            lazy: async () => ({
+              Component: (await import('@/features/admin-organization-management/pages/OrganizationDetails')).default,
             }),
           },
           {

@@ -3,10 +3,11 @@ import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
+import { convertDateToUtcIso } from '@/common/utils/formatters';
 import configs from '@/core/configs';
 
 import useGetPayments from '../hooks/useGetPayments';
-import { PaymentStatus } from '../../../common/types/payment.type';
+import { PaymentStatus, PaymentType } from '../../../common/types/payment.type';
 
 import { motion } from 'framer-motion';
 import {
@@ -20,7 +21,6 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { convertUtcDate } from '@/common/utils/convertUtcDate';
 
 export default function PaymentListPage() {
   const [pageIndex, setPageIndex] = useState(1);
@@ -44,8 +44,8 @@ export default function PaymentListPage() {
     maxAmount: maxAmount ? parseFloat(maxAmount) : undefined,
     orderId: orderId.trim() || undefined,
     status: status || undefined,
-    fromDate: fromDate || undefined,
-    toDate: toDate || undefined,
+    fromDate: fromDate ? convertDateToUtcIso(fromDate, false) : undefined,
+    toDate: toDate ? convertDateToUtcIso(toDate, true) : undefined,
   });
 
   // Extract payments and pagination info from backend response
@@ -106,6 +106,21 @@ export default function PaymentListPage() {
     if (!method) return '—';
     const label = method === 'PAYOS' ? 'PayOS' : method === 'MANUAL' ? 'Thủ công' : method;
     return <span className='px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800'>{label}</span>;
+  };
+
+  const getPaymentTypeLabel = (paymentType?: string) => {
+    if (!paymentType) return '—';
+    
+    switch (paymentType) {
+      case PaymentType.MapOrder:
+        return 'Mua hàng';
+      case PaymentType.Refund:
+        return 'Hoàn tiền';
+      case PaymentType.SetupFee:
+        return 'Phí cài đặt';
+      default:
+        return paymentType;
+    }
   };
 
   if (isError) {
@@ -316,7 +331,7 @@ export default function PaymentListPage() {
                               <td className='px-4 py-3 text-sm'>
                                 {payment.bankName || payment.bankCode || '—'}
                               </td>
-                              <td className='px-4 py-3 text-sm'>{payment.paymentType || '—'}</td>
+                              <td className='px-4 py-3 text-sm'>{getPaymentTypeLabel(payment.paymentType)}</td>
                               <td className='px-4 py-3'>{getStatusBadge(payment.status)}</td>
                               <td className='px-4 py-3 text-sm text-muted-foreground'>
                                 {formatDate(payment.createdAtUtc)}

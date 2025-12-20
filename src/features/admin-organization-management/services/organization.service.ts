@@ -28,15 +28,78 @@ const normalizeOrganization = (org: any): Organization => ({
   bundleGoogleDriveId: org.bundleGoogleDriveId ?? org.BundleGoogleDriveId ?? null,
 });
 
-export const getOrganizations = async (): Promise<Organization[]> => {
-  const baseUrl = ensureBaseUrl();
-  const { data } = await axios.get(`${baseUrl}/organizations`);
+export interface GetOrganizationsParams {
+  pageIndex?: number;
+  pageSize?: number;
+  isPaginated?: boolean;
+  email?: string;
+  phoneNumber?: string;
+  status?: string;
+  macAddress?: string;
+  name?: string;
+  address?: string;
+}
 
-  if (!Array.isArray(data.data)) {
-    return [];
+export const getOrganizations = async (params: GetOrganizationsParams = {}): Promise<{
+  data: Organization[];
+  pageIndex: number;
+  pageSize: number;
+  count: number;
+}> => {
+  const baseUrl = ensureBaseUrl();
+  const {
+    pageIndex = 1,
+    pageSize = 100,
+    isPaginated = false,
+    email,
+    phoneNumber,
+    status,
+    macAddress,
+    name,
+    address,
+  } = params;
+
+  const queryParams = new URLSearchParams();
+  queryParams.append('pageIndex', pageIndex.toString());
+  queryParams.append('pageSize', pageSize.toString());
+  queryParams.append('isPaginated', isPaginated.toString());
+
+  if (email) {
+    queryParams.append('email', email);
+  }
+  if (phoneNumber) {
+    queryParams.append('phoneNumber', phoneNumber);
+  }
+  if (status) {
+    queryParams.append('status', status);
+  }
+  if (macAddress) {
+    queryParams.append('macAddress', macAddress);
+  }
+  if (name) {
+    queryParams.append('name', name);
+  }
+  if (address) {
+    queryParams.append('address', address);
   }
 
-  return data.data.map((org: Organization) => normalizeOrganization(org));
+  const { data } = await axios.get(`${baseUrl}/organizations?${queryParams.toString()}`);
+
+  if (!Array.isArray(data.data)) {
+    return {
+      data: [],
+      pageIndex: data.pageIndex || 1,
+      pageSize: data.pageSize || pageSize,
+      count: data.count || 0,
+    };
+  }
+
+  return {
+    data: data.data.map((org: any) => normalizeOrganization(org)),
+    pageIndex: data.pageIndex || 1,
+    pageSize: data.pageSize || pageSize,
+    count: data.count || 0,
+  };
 };
 
 export const createOrganization = async (payload: CreateOrganizationPayload): Promise<Organization> => {

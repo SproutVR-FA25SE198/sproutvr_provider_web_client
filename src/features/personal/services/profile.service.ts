@@ -13,5 +13,5 @@ export interface ChangePasswordRequest {
 }
 
 export function changePassword(data: ChangePasswordRequest) {
-  return http.put(`${BASE_ACCOUNT_URL}/auth/change-password`, data);
+  return http.post(`${BASE_ACCOUNT_URL}/auth/change-password`, data);
 }

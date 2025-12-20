@@ -42,39 +42,49 @@ export default function AdminHeader() {
             <Button
               asChild
               variant={location.pathname.includes('/admin/orders') ? 'secondary' : 'ghost'}
-              className={`gap-2 ${
-                location.pathname.includes('/admin/orders')
-                  ? 'bg-white text-primary hover:bg-white/90'
-                  : 'text-white hover:bg-white/20'
-              }`}
+              className={`gap-2 ${location.pathname.includes('/admin/orders')
+                ? 'bg-white text-primary hover:bg-white/90'
+                : 'text-white hover:bg-white/20'
+                }`}
             >
               <Link to={configs.routes.adminOrders}>
                 <Package className='w-4 h-4' />
-                Quản lý đơn hàng
+                Đơn Hàng
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant={location.pathname.includes('/admin/payments') ? 'secondary' : 'ghost'}
+              className={`gap-2 ${location.pathname.includes('/admin/payments')
+                ? 'bg-white text-primary hover:bg-white/90'
+                : 'text-white hover:bg-white/20'
+                }`}
+            >
+              <Link to={configs.routes.adminPayments}>
+                <Package className='w-4 h-4' />
+                Giao Dịch
               </Link>
             </Button>
             <Button
               asChild
               variant={location.pathname.includes('/admin/maps') ? 'secondary' : 'ghost'}
-              className={`gap-2 ${
-                location.pathname.includes('/admin/maps')
-                  ? 'bg-white text-primary hover:bg-white/90'
-                  : 'text-white hover:bg-white/20'
-              }`}
+              className={`gap-2 ${location.pathname.includes('/admin/maps')
+                ? 'bg-white text-primary hover:bg-white/90'
+                : 'text-white hover:bg-white/20'
+                }`}
             >
               <Link to={configs.routes.adminMaps}>
                 <Map className='w-4 h-4' />
-                Quản lý Map
+                Bộ Học Liệu (Map)
               </Link>
             </Button>
             <Button
               asChild
               variant={location.pathname.includes('/admin/organization-requests') ? 'secondary' : 'ghost'}
-              className={`gap-2 ${
-                location.pathname.includes('/admin/organization-requests')
-                  ? 'bg-white text-primary hover:bg-white/90'
-                  : 'text-white hover:bg-white/20'
-              }`}
+              className={`gap-2 ${location.pathname.includes('/admin/organization-requests')
+                ? 'bg-white text-primary hover:bg-white/90'
+                : 'text-white hover:bg-white/20'
+                }`}
             >
               <Link to={configs.routes.adminOrganizationRequests}>
                 <ClipboardList className='w-4 h-4' />
@@ -84,15 +94,14 @@ export default function AdminHeader() {
             <Button
               asChild
               variant={location.pathname.includes('/admin/organizations') ? 'secondary' : 'ghost'}
-              className={`gap-2 ${
-                location.pathname.includes('/admin/organizations')
-                  ? 'bg-white text-primary hover:bg-white/90'
-                  : 'text-white hover:bg-white/20'
-              }`}
+              className={`gap-2 ${location.pathname.includes('/admin/organizations')
+                ? 'bg-white text-primary hover:bg-white/90'
+                : 'text-white hover:bg-white/20'
+                }`}
             >
               <Link to={configs.routes.adminOrganizationManagement}>
                 <Building2 className='w-4 h-4' />
-                Quản lý tổ chức
+                Tổ chức
               </Link>
             </Button>
           </nav>

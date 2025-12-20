@@ -27,14 +27,16 @@ import { motion } from 'framer-motion';
 import {
   Building2,
   Edit3,
+  Eye,
+  Filter,
   Loader2,
   PlusCircle,
   Power,
   RefreshCw,
-  Search,
   ShieldAlert,
+  X,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -62,12 +64,32 @@ const INITIAL_UPDATE_VALUES: UpdateOrganizationFormData = {
 };
 
 export default function OrganizationManagementPage() {
-  const { data: organizations, isLoading, isError, refetch } = useGetOrganizations();
+  const [showFilters, setShowFilters] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [deactivateTarget, setDeactivateTarget] = useState<Organization | null>(null);
   const [editingOrganization, setEditingOrganization] = useState<Organization | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filter states
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [macAddress, setMacAddress] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
+
+  // Fetch organizations with backend search
+  const { data: organizations, count, isLoading, isError, refetch } = useGetOrganizations({
+    pageIndex: 1,
+    pageSize: 1000, // Fetch all for now, can add pagination later
+    isPaginated: false,
+    name: name.trim() || undefined,
+    email: email.trim() || undefined,
+    phoneNumber: phoneNumber.trim() || undefined,
+    address: address.trim() || undefined,
+    macAddress: macAddress.trim() || undefined,
+    status: status || undefined,
+  });
 
   const {
     mutateAsync: createOrganization,
@@ -116,21 +138,8 @@ export default function OrganizationManagementPage() {
     }
   }, [editingOrganization, updateForm]);
 
-  const filteredOrganizations = useMemo(() => {
-    if (!searchTerm.trim()) {
-      return organizations;
-    }
-
-    const term = searchTerm.toLowerCase();
-
-    return organizations.filter((org) => {
-      return (
-        org.name.toLowerCase().includes(term) ||
-        (org.email ?? '').toLowerCase().includes(term) ||
-        (org.phoneNumber ?? '').toLowerCase().includes(term)
-      );
-    });
-  }, [organizations, searchTerm]);
+  // Use organizations directly from backend (already filtered by name param)
+  const filteredOrganizations = organizations;
 
   const handleOpenCreate = () => {
     createForm.reset();
@@ -215,7 +224,17 @@ export default function OrganizationManagementPage() {
               </div>
             </div>
             <div className='flex flex-wrap items-center gap-2'>
-
+              <Button
+                variant='outline'
+                onClick={() => setShowFilters(!showFilters)}
+                className='gap-2'
+              >
+                <Filter className='h-4 w-4' />
+                Bộ lọc
+                {(name || email || phoneNumber || address || macAddress || status) && (
+                  <span className='w-2 h-2 bg-primary rounded-full' />
+                )}
+              </Button>
               <Button onClick={handleOpenCreate} className='gap-2'>
                 <PlusCircle className='h-4 w-4' />
                 Thêm tổ chức
@@ -229,18 +248,96 @@ export default function OrganizationManagementPage() {
               <CardDescription>Quản lý các tổ chức đã được phê duyệt trong hệ thống.</CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
+              {/* Filters */}
+              {showFilters && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className='mb-4 rounded-lg border border-border/60 bg-muted/30 p-4'
+                >
+                  <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                    <div>
+                      <Label htmlFor='name'>Tên tổ chức</Label>
+                      <Input
+                        id='name'
+                        placeholder='Tìm theo tên...'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='email'>Email</Label>
+                      <Input
+                        id='email'
+                        type='email'
+                        placeholder='Tìm theo email...'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='phoneNumber'>Số điện thoại</Label>
+                      <Input
+                        id='phoneNumber'
+                        placeholder='Tìm theo SĐT...'
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='address'>Địa chỉ</Label>
+                      <Input
+                        id='address'
+                        placeholder='Tìm theo địa chỉ...'
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='status'>Trạng thái</Label>
+                      <select
+                        id='status'
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        className='mt-1.5 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+                      >
+                        <option value=''>Tất cả</option>
+                        <option value='Active'>Hoạt động</option>
+                        <option value='Inactive'>Không hoạt động</option>
+                      </select>
+                    </div>
+                  </div>
+                  {(name || email || phoneNumber || address || macAddress || status) && (
+                    <div className='mt-4 flex justify-end'>
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => {
+                          setName('');
+                          setEmail('');
+                          setPhoneNumber('');
+                          setAddress('');
+                          setMacAddress('');
+                          setStatus('');
+                        }}
+                        className='gap-2'
+                      >
+                        <X className='h-4 w-4' />
+                        Xóa bộ lọc
+                      </Button>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
               <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-                <div className='relative w-full sm:w-72'>
-                  <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-                  <Input
-                    placeholder='Tìm theo tên, email hoặc SĐT...'
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                    className='pl-9'
-                  />
-                </div>
                 <p className='text-sm text-muted-foreground'>
-                  Tổng số tổ chức: <span className='font-semibold text-foreground'>{organizations.length}</span>
+                  Tổng số tổ chức: <span className='font-semibold text-foreground'>{count || filteredOrganizations.length}</span>
                 </p>
               </div>
 
@@ -282,10 +379,15 @@ export default function OrganizationManagementPage() {
                       filteredOrganizations.map((organization) => (
                         <tr key={organization.id} className='hover:bg-muted/30'>
                           <td className='px-4 py-3'>
-                            <div className='flex flex-col'>
-                              <span className='font-semibold text-foreground'>{organization.name}</span>
+                            <Link
+                              to={configs.routes.adminOrganizationDetails.replace(':id', organization.id)}
+                              className='flex flex-col hover:text-primary transition-colors'
+                            >
+                              <span className='font-semibold text-foreground hover:underline'>
+                                {organization.name}
+                              </span>
                               <span className='text-xs text-muted-foreground'>{organization.address}</span>
-                            </div>
+                            </Link>
                           </td>
                           <td className='px-4 py-3 text-sm'>{organization.email ?? '—'}</td>
                           <td className='px-4 py-3 text-sm'>{organization.phoneNumber ?? '—'}</td>
@@ -301,6 +403,17 @@ export default function OrganizationManagementPage() {
                           </td>
                           <td className='px-4 py-3'>
                             <div className='flex flex-wrap items-center gap-2'>
+                              <Button
+                                size='sm'
+                                variant='outline'
+                                className='gap-2'
+                                asChild
+                              >
+                                <Link to={configs.routes.adminOrganizationDetails.replace(':id', organization.id)}>
+                                  <Eye className='h-4 w-4' />
+                                  Chi tiết
+                                </Link>
+                              </Button>
                               <Button
                                 size='sm'
                                 variant='outline'

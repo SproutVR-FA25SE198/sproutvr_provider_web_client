@@ -14,6 +14,12 @@ export const GET_ORGANIZATION_REQUEST_BY_ID_QUERY_KEY = 'GET_ORGANIZATION_REQUES
 export interface GetOrganizationRequestsParams {
   pageIndex?: number;
   pageSize?: number;
+  isPaginated?: boolean;
+  organizationName?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: string;
+  approvalStatus?: string;
 }
 
 const ensureBaseUrl = () => {
@@ -46,9 +52,39 @@ export const getOrganizationRequests = async (
   params: GetOrganizationRequestsParams,
 ): Promise<OrganizationRequestPaginationResponse> => {
   const baseUrl = ensureBaseUrl();
-  const { data } = await axios.get(`${baseUrl}/organization-register-requests`, {
-    params,
-  });
+  const {
+    pageIndex = 1,
+    pageSize = 10,
+    isPaginated = true,
+    organizationName,
+    contactEmail,
+    contactPhone,
+    address,
+    approvalStatus,
+  } = params;
+
+  const queryParams = new URLSearchParams();
+  queryParams.append('pageIndex', pageIndex.toString());
+  queryParams.append('pageSize', pageSize.toString());
+  queryParams.append('isPaginated', isPaginated.toString());
+
+  if (organizationName) {
+    queryParams.append('organizationName', organizationName);
+  }
+  if (contactEmail) {
+    queryParams.append('contactEmail', contactEmail);
+  }
+  if (contactPhone) {
+    queryParams.append('contactPhone', contactPhone);
+  }
+  if (address) {
+    queryParams.append('address', address);
+  }
+  if (approvalStatus) {
+    queryParams.append('approvalStatus', approvalStatus);
+  }
+
+  const { data } = await axios.get(`${baseUrl}/organization-register-requests?${queryParams.toString()}`);
 
   return normalizePaginationResponse(data);
 };

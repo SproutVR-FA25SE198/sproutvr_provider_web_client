@@ -257,11 +257,11 @@ export default function MapDetailsPage() {
                 <CardContent className='space-y-3'>
                   <div>
                     <p className='text-sm text-muted-foreground'>Ngày tạo</p>
-                    <p className='font-medium'>{formatDate(map.createdAt)}</p>
+                    <p className='font-medium'>{formatDate(map.createdAtUtc)}</p>
                   </div>
                   <div>
                     <p className='text-sm text-muted-foreground'>Cập nhật lần cuối</p>
-                    <p className='font-medium'>{formatDate(map.updatedAt)}</p>
+                    <p className='font-medium'>{formatDate(map.updatedAtUtc)}</p>
                   </div>
                 </CardContent>
               </Card>
