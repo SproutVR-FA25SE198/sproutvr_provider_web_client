@@ -1,4 +1,4 @@
-import { basketService } from '@/common/services/basket-local.service';
+import { basketService } from '@/common/services/basket.service';
 import { UpdateBasketRequest } from '@/common/types/basket.type';
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
