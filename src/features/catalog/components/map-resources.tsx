@@ -61,13 +61,17 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                       </div>
                     </DialogTrigger>
                     <DialogContent className='max-w-4xl'>
-                      <div className='space-y-4'>
+                      <div className='space-y-3'>
                         <div className='relative aspect-video w-full bg-accent rounded-lg overflow-hidden'>
-                          <img src={location.imageUrl} alt={location.name} className='w-full h-full object-contain' />
+                          <img
+                            src={location.imageUrl}
+                            alt={location.name}
+                            className='w-full h-full object-contain p-2'
+                          />
                         </div>
-                        <div className='text-center space-y-2'>
-                          <h3 className='text-2xl font-bold text-foreground'>{location.name}</h3>
-                          {location.description && <p className='text-muted-foreground mt-4'>{location.description}</p>}
+                        <div className='text-center space-y-1'>
+                          <h3 className='text-xl font-bold text-foreground'>{location.name}</h3>
+                          {location.description && <p className='text-muted-foreground mt-2'>{location.description}</p>}
                         </div>
                       </div>
                     </DialogContent>
@@ -146,14 +150,14 @@ export function MapResources({ mapMetadata }: MapResourcesProps) {
                         </div>
                       </div>
                     </DialogTrigger>
-                    <DialogContent className='max-w-4xl'>
-                      <div className='space-y-4'>
+                    <DialogContent className='max-w-md p-2'>
+                      <div className='space-y-3'>
                         <div className='relative aspect-square w-full bg-accent rounded-lg overflow-hidden'>
-                          <img src={object.imageUrl} alt={object.name} className='w-full h-full object-contain p-8' />
+                          <img src={object.imageUrl} alt={object.name} className='w-full h-full object-contain p-2' />
                         </div>
-                        <div className='text-center space-y-2'>
-                          <h3 className='text-2xl font-bold text-foreground'>{object.name}</h3>
-                          {object.description && <p className='text-muted-foreground mt-4'>{object.description}</p>}
+                        <div className='text-center space-y-1'>
+                          <h3 className='text-xl font-bold text-foreground'>{object.name}</h3>
+                          {object.description && <p className='text-muted-foreground mt-2'>{object.description}</p>}
                         </div>
                       </div>
                     </DialogContent>
