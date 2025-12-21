@@ -1,8 +1,10 @@
 'use client';
 
+import { useAppSelector } from '@/core/store/hooks';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
-import { heroData } from '../../data/hero';
+import { getHeroData } from '../../data/hero';
 import { FloatingCard } from '../common/floating-card';
 import { LandingBadge } from '../common/landing-badge';
 import { LandingButton } from '../common/landing-button';
@@ -12,6 +14,9 @@ import { Title } from '../common/title';
 import { HeroStat } from './hero-stat';
 
 export function Hero() {
+  const { isAuthenticated } = useAppSelector((state) => state.root.auth);
+  const heroData = useMemo(() => getHeroData(isAuthenticated), [isAuthenticated]);
+
   return (
     <section className='relative pb-24 overflow-hidden bg-gradient-to-br from-primary via-primary to-[#0f2c5b]'>
       <div className='absolute inset-0 opacity-10'>
