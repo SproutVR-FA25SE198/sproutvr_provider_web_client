@@ -13,7 +13,7 @@ import MapBreadcrumb from '../components/map-breadcrumb';
 import { MapExplore } from '../components/map-explore';
 import { MapInfo } from '../components/map-info';
 import { MapResources } from '../components/map-resources';
-import { MediaGallery } from '../components/media-gallery';
+import CurvedMediaSlider from '../components/CurvedMediaSlider';
 import useGetMapDetails from '../hooks/useGetMapDetails';
 import { GetAllMapsRequest } from '@/common/services/map.service';
 import useGetLibrary from '@/features/personal/hooks/useGetLibrary';
@@ -72,17 +72,20 @@ export default function MapDetails() {
     return <Loading isLoading message='Đang tải...' />;
   }
 
+  const images = Array.isArray(map.imageUrl) ? map.imageUrl : [map.imageUrl];
+
   return (
     <>
       <div className='container mx-auto px-4 py-4 max-w-7xl'>
-        <MapBreadcrumb
-          masterSubject={map.subject.masterSubject.name}
-          subject={map.subject.name}
-          mapName={map.name}
-        />
+        <MapBreadcrumb masterSubject={map.subject.masterSubject.name} subject={map.subject.name} mapName={map.name} />
+      </div>
 
-        <div className='grid lg:grid-cols-2 gap-12 mt-4 mb-12'>
-          <MediaGallery images={Array.isArray(map.imageUrl) ? map.imageUrl : [map.imageUrl]} />
+      <div className='container mx-auto px-4 max-w-7xl'>
+        <CurvedMediaSlider title='' images={images} />
+      </div>
+
+      <div className='container mx-auto px-4 py-6 max-w-7xl'>
+        <div className='mt-6 mb-10'>
           <MapInfo map={map} inBasket={isInBasket} isPurchased={isPurchased} updateBasket={addItem} />
         </div>
 
