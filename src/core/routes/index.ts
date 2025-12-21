@@ -219,19 +219,24 @@ const router = createBrowserRouter([
 
   // Checkout routes
   {
-    lazy: clientLayoutLazy, // checkoutLazy,
+    lazy: authGuardLazy,
     children: [
       {
-        path: configs.routes.checkout,
-        lazy: async () => ({
-          Component: (await import('@/features/orders/pages/Checkout')).default,
-        }),
-      },
-      {
-        path: configs.routes.paymentResult,
-        lazy: async () => ({
-          Component: (await import('@/features/orders/pages/PaymentResult')).default,
-        }),
+        lazy: clientLayoutLazy,
+        children: [
+          {
+            path: configs.routes.checkout,
+            lazy: async () => ({
+              Component: (await import('@/features/orders/pages/Checkout')).default,
+            }),
+          },
+          {
+            path: configs.routes.paymentResult,
+            lazy: async () => ({
+              Component: (await import('@/features/orders/pages/PaymentResult')).default,
+            }),
+          },
+        ],
       },
     ],
   },
