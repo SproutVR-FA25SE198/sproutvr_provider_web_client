@@ -9,9 +9,10 @@ import MapList from './map-list';
 interface MapExploreProps {
   masterSubject: string;
   maps: MapWithSubject[];
+  purchasedMapIds?: Set<string>;
 }
 
-export function MapExplore({ masterSubject, maps }: MapExploreProps) {
+export function MapExplore({ masterSubject, maps, purchasedMapIds }: MapExploreProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -25,7 +26,14 @@ export function MapExplore({ masterSubject, maps }: MapExploreProps) {
         className='flex gap-24 overflow-x-auto h-100 mx-auto scrollbar-hide scroll-smooth pb-4'
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        <MapList mapList={maps.slice(0, 4)} currentPage={1} setCurrentPage={() => {}} totalPages={1} itemsPerRow={4} />
+        <MapList
+          mapList={maps.slice(0, 4)}
+          currentPage={1}
+          setCurrentPage={() => {}}
+          totalPages={1}
+          itemsPerRow={4}
+          purchasedMapIds={purchasedMapIds}
+        />
       </div>
     </div>
   );

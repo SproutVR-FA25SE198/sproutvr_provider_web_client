@@ -9,10 +9,11 @@ import { ShoppingCart } from 'lucide-react';
 interface MapInfoProps {
   map: MapDetails;
   inBasket?: boolean;
+  isPurchased?: boolean;
   updateBasket?: (item: BasketItem) => void;
 }
 
-export function MapInfo({ map, inBasket, updateBasket }: MapInfoProps) {
+export function MapInfo({ map, inBasket, isPurchased = false, updateBasket }: MapInfoProps) {
   return (
     <div className='flex flex-col justify-center space-y-6'>
       {/* Title */}
@@ -29,8 +30,21 @@ export function MapInfo({ map, inBasket, updateBasket }: MapInfoProps) {
       {/* Price */}
       <div className='text-3xl font-bold text-secondary mb-6'>{map.price.toLocaleString('vi-VN')} VND</div>
 
+      {/* Purchased Badge */}
+      {isPurchased && (
+        <div className='mb-4'>
+          <span className='inline-flex items-center px-4 py-2 rounded-full bg-green-600 text-white text-sm font-medium'>
+            Đã mua
+          </span>
+        </div>
+      )}
+
       {/* Add to Cart Button */}
-      {inBasket ? (
+      {isPurchased ? (
+        <Button disabled className='bg-secondary/60 text-secondary-foreground cursor-not-allowed'>
+          Đã Mua
+        </Button>
+      ) : inBasket ? (
         <Button disabled className='bg-secondary/60 text-secondary-foreground cursor-not-allowed'>
           Đã Thêm Vào Giỏ Hàng
         </Button>
