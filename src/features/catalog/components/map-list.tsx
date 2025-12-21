@@ -9,15 +9,16 @@ interface MapListProps {
   setCurrentPage: (page: number) => void;
   totalPages: number;
   itemsPerRow?: number;
+  purchasedMapIds?: Set<string>;
 }
 
-const MapList = ({ mapList, currentPage, setCurrentPage, totalPages, itemsPerRow = 3 }: MapListProps) => {
+const MapList = ({ mapList, currentPage, setCurrentPage, totalPages, itemsPerRow = 3, purchasedMapIds }: MapListProps) => {
   return (
     <>
       {/* Product Grid */}
       <div className={`grid grid-cols-1 md:grid-cols-${itemsPerRow} gap-6 mb-8`}>
         {mapList.map((map, index) => (
-          <MapCard key={map.id} map={map} index={index} />
+          <MapCard key={map.id} map={map} index={index} isPurchased={purchasedMapIds?.has(map.id) ?? false} />
         ))}
       </div>
 

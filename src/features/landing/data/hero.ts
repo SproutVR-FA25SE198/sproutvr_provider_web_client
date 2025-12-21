@@ -37,7 +37,7 @@ export interface HeroData {
   };
 }
 
-export const heroData: HeroData = {
+export const getHeroData = (isAuthenticated: boolean): HeroData => ({
   badge: {
     text: 'Đổi mới giáo dục cùng công nghệ VR',
   },
@@ -48,15 +48,19 @@ export const heroData: HeroData = {
   subtitle:
     'SproutVR mang công nghệ thực tế ảo tiên tiến vào lớp học, giúp những khái niệm phức tạp trở nên sống động và mỗi bài học trở thành một hành trình đáng nhớ.',
   buttons: [
-    {
-      text: 'Đăng kí hợp tác ngay',
-      variant: 'primary',
-      href: '#register',
-      icon: ArrowRight,
-    },
+    ...(!isAuthenticated
+      ? [
+          {
+            text: 'Đăng kí hợp tác ngay',
+            variant: 'primary' as const,
+            href: '#register',
+            icon: ArrowRight,
+          },
+        ]
+      : []),
     {
       text: 'Xem catalog sản phẩm',
-      variant: 'secondary',
+      variant: isAuthenticated ? 'primary' : 'secondary',
       href: `${configs.routes.catalog}`,
       icon: Play,
     },
@@ -75,4 +79,4 @@ export const heroData: HeroData = {
     label: 'Mức độ tương tác',
     value: '+85%',
   },
-};
+});

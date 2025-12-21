@@ -30,7 +30,7 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className='hidden md:flex items-center gap-8'>
-            <NavLinks />
+            <NavLinks isAuthenticated={isAuthenticated} />
           </nav>
 
           {/* CTA Buttons */}
@@ -48,7 +48,7 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className='md:hidden py-4 border-t border-border animate-fade-in-up'>
             <nav className='flex flex-col gap-4'>
-              <NavLinks onNavigate={() => setMobileMenuOpen(false)} />
+              <NavLinks isAuthenticated={isAuthenticated} onNavigate={() => setMobileMenuOpen(false)} />
 
               <div className='flex flex-col gap-2 pt-2'>
                 <ActionButtons mobile isAuthenticated={isAuthenticated} onClick={() => setMobileMenuOpen(false)} />
@@ -61,17 +61,19 @@ export default function Header() {
   );
 }
 
-function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
+function NavLinks({ onNavigate, isAuthenticated = false }: { onNavigate?: () => void; isAuthenticated?: boolean }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const links = [
+  const allLinks = [
     { href: '/', label: 'Về SproutVR' },
     { href: configs.routes.catalog, label: 'Catalog' },
-    { href: '/#register', label: 'Đăng ký tổ chức', isHash: true },
+    { href: '/#register', label: 'Đăng ký tổ chức', isHash: true, hideWhenAuth: true },
     { href: configs.routes.help, label: 'Trợ giúp' },
     { href: configs.routes.contact, label: 'Liên hệ' },
   ];
+
+  const links = allLinks.filter((link) => !(link.hideWhenAuth && isAuthenticated));
 
   const handleHashNavigation = (hash: string) => {
     onNavigate?.();

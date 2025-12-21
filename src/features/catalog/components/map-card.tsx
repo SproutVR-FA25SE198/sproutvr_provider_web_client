@@ -13,14 +13,16 @@ import { Link } from 'react-router-dom';
 interface MapCardProps {
   map: MapWithSubject;
   index: number;
+  isPurchased?: boolean;
 }
 
-const MapCard = ({ map, index }: MapCardProps) => {
+const MapCard = ({ map, index, isPurchased = false }: MapCardProps) => {
   const { basket, addItem } = useBaskets();
 
   const isInBasket = basket?.basketItems?.some((item) => item.mapId === map.id) || false;
 
   const addToBasket = () => {
+    if (isPurchased) return; // Prevent adding purchased maps to cart
     addItem({
       mapId: map.id,
       mapName: map.name,
@@ -48,6 +50,11 @@ const MapCard = ({ map, index }: MapCardProps) => {
             <Badge variant='outline' className='absolute bg-white shadow-sm top-4 right-4'>
               <span>{map.subject.masterSubject.name}</span>
             </Badge>
+            {isPurchased && (
+              <Badge variant='default' className='absolute bg-green-600 hover:bg-green-700 text-white shadow-sm top-4 left-4'>
+                <span>Đã mua</span>
+              </Badge>
+            )}
           </div>
         </Link>
         <CardHeader className='flex-1 -mb-5 h-25 py-4'>
@@ -72,7 +79,7 @@ const MapCard = ({ map, index }: MapCardProps) => {
           <Button className='flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground' asChild>
             <Link to={`/catalog/${map.id}`}>Xem Chi Tiết</Link>
           </Button>
-          {!isInBasket && (
+          {!isPurchased && !isInBasket && (
             <Button variant='outline' size='icon' onClick={addToBasket}>
               <ShoppingCart className='w-4 h-4' />
             </Button>
