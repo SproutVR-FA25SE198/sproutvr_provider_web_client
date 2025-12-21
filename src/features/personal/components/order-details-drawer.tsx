@@ -9,7 +9,7 @@ import { Separator } from '@/common/components/ui/separator';
 import { ORDER_STATUS_BADGE, OrderStatus } from '@/common/utils';
 import { convertUtcDate } from '@/common/utils/convertUtcDate';
 
-import { Check, Copy, Download, ExternalLink, HelpCircle } from 'lucide-react';
+import { Check, Copy, ExternalLink, HelpCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -144,10 +144,10 @@ export function OrderDetailsDrawer({ orderId, open, onOpenChange }: OrderDetails
 
             {/* Actions */}
             <div className='flex flex-col sm:flex-row gap-3'>
-              <Button variant='outline' className='flex-1 bg-transparent'>
+              {/* <Button variant='outline' className='flex-1 bg-transparent'>
                 <Download className='w-4 h-4 mr-2' />
                 Tải Hóa Đơn
-              </Button>
+              </Button> */}
               <Button asChild className='flex-1 bg-secondary hover:bg-secondary/90 text-secondary-foreground'>
                 <Link to='/personal?tab=library'>
                   <ExternalLink className='w-4 h-4 mr-2' />

@@ -16,6 +16,7 @@ import { MapResources } from '../components/map-resources';
 import { MediaGallery } from '../components/media-gallery';
 import useGetMapDetails from '../hooks/useGetMapDetails';
 import { GetAllMapsRequest } from '@/common/services/map.service';
+import useGetLibrary from '@/features/personal/hooks/useGetLibrary';
 
 export default function MapDetails() {
   useScrollTop();
@@ -27,6 +28,13 @@ export default function MapDetails() {
   const isInBasket = basketItems.some((item) => item.mapId === id);
 
   const { data: map, isLoading, isError } = useGetMapDetails({ mapId: id as string });
+  const { data: purchasedMapsData } = useGetLibrary();
+
+  // Check if current map is purchased
+  const isPurchased = useMemo(() => {
+    if (!purchasedMapsData?.data || !id) return false;
+    return purchasedMapsData.data.some((map: { mapId: string }) => map.mapId === id);
+  }, [purchasedMapsData, id]);
 
   // Get related maps from the same subject, excluding current map
   const relatedMapsParams = useMemo<GetAllMapsRequest>(
@@ -75,13 +83,21 @@ export default function MapDetails() {
 
         <div className='grid lg:grid-cols-2 gap-12 mt-4 mb-12'>
           <MediaGallery images={Array.isArray(map.imageUrl) ? map.imageUrl : [map.imageUrl]} />
-          <MapInfo map={map} inBasket={isInBasket} updateBasket={addItem} />
+          <MapInfo map={map} inBasket={isInBasket} isPurchased={isPurchased} updateBasket={addItem} />
         </div>
 
         <MapResources mapMetadata={map} />
         <hr className='my-0 border-border' />
         {relatedMaps.length > 0 && (
-          <MapExplore masterSubject={map.subject.masterSubject.name} maps={relatedMaps} />
+          <MapExplore
+            masterSubject={map.subject.masterSubject.name}
+            maps={relatedMaps}
+            purchasedMapIds={
+              purchasedMapsData?.data
+                ? new Set<string>(purchasedMapsData.data.map((m: { mapId: string }) => m.mapId))
+                : undefined
+            }
+          />
         )}
       </div>
     </>

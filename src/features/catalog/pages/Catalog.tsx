@@ -20,12 +20,14 @@ import { toast } from 'react-toastify';
 
 import MapList from '../components/map-list';
 import useGetSubjects from '../hooks/useGetSubjects';
+import useGetLibrary from '@/features/personal/hooks/useGetLibrary';
 
 export default function CatalogPage() {
   useScrollTop();
 
   // ------------------ API Calls ------------------
   const { data: subjectsData, isLoading: isLoadingSubjects } = useGetSubjects();
+  const { data: purchasedMapsData } = useGetLibrary();
   const subjects = useMemo(() => {
     if (!subjectsData?.data) return [{ id: 'all', name: 'Tất cả' }];
     return [
@@ -33,6 +35,12 @@ export default function CatalogPage() {
       ...subjectsData.data.map((subject) => ({ id: subject.id, name: subject.name })),
     ];
   }, [subjectsData]);
+
+  // Create Set of purchased map IDs for quick lookup
+  const purchasedMapIds = useMemo(() => {
+    if (!purchasedMapsData?.data) return new Set<string>();
+    return new Set<string>(purchasedMapsData.data.map((map: { mapId: string }) => map.mapId));
+  }, [purchasedMapsData]);
 
   // ------------------ Local UI States ------------------
   const [searchQuery, setSearchQuery] = useState('');
@@ -241,6 +249,7 @@ export default function CatalogPage() {
               setCurrentPage={setPageIndex}
               itemsPerRow={3}
               totalPages={processedMaps.totalPages}
+              purchasedMapIds={purchasedMapIds}
             />
           </div>
         </div>
