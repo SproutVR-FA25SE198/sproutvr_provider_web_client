@@ -3,120 +3,61 @@ import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Input } from '@/common/components/ui/input';
 import { Label } from '@/common/components/ui/label';
-import { ORDER_STATUS_LABELS, ORDER_STATUS_STYLES, OrderStatus } from '@/common/constants/order-status';
 import { convertDateToUtcIso } from '@/common/utils/formatters';
 import configs from '@/core/configs';
 
-import useGetAdminOrders from '../hooks/useGetAdminOrders';
-import useGetOrganizationsByIds from '../hooks/useGetOrganizationsByIds';
+import useGetPayments from '../hooks/useGetPayments';
+import { PaymentStatus, PaymentType } from '../../../common/types/payment.type';
 
 import { motion } from 'framer-motion';
 import {
   ChevronLeft,
   ChevronRight,
-  Eye,
+  CreditCard,
   Filter,
   Loader2,
-  Package,
   RefreshCw,
   X,
-  Building2,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-export default function OrderListPage() {
-  const navigate = useNavigate();
+export default function PaymentListPage() {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize] = useState(10);
   const [showFilters, setShowFilters] = useState(false);
 
   // Filter states
-  const [organizationName, setOrganizationName] = useState<string>('');
-  const [organizationId, setOrganizationId] = useState<string>('');
   const [minAmount, setMinAmount] = useState<string>('');
   const [maxAmount, setMaxAmount] = useState<string>('');
-  const [orderCode, setOrderCode] = useState<string>('');
-  const [paymentMethod, setPaymentMethod] = useState<string>('');
-  const [bank, setBank] = useState<string>('');
+  const [orderId, setOrderId] = useState<string>('');
   const [status, setStatus] = useState<string>('');
   const [fromDate, setFromDate] = useState<string>('');
   const [toDate, setToDate] = useState<string>('');
 
-  // Fetch orders with backend search and pagination
-  const { data, isLoading, isError, refetch } = useGetAdminOrders({
+  // Fetch payments with backend search and pagination
+  const { data, isLoading, isError, refetch } = useGetPayments({
     pageIndex,
     pageSize,
     isPaginated: true,
-    organizationName: organizationName.trim() || undefined,
-    organizationId: organizationId.trim() || undefined,
     minAmount: minAmount ? parseFloat(minAmount) : undefined,
     maxAmount: maxAmount ? parseFloat(maxAmount) : undefined,
-    orderCode: orderCode ? parseInt(orderCode) : undefined,
-    paymentMethod: paymentMethod.trim() || undefined,
-    bank: bank.trim() || undefined,
+    orderId: orderId.trim() || undefined,
     status: status || undefined,
     fromDate: fromDate ? convertDateToUtcIso(fromDate, false) : undefined,
     toDate: toDate ? convertDateToUtcIso(toDate, true) : undefined,
   });
 
-  // Extract orders and pagination info from backend response
-  const { orders, totalCount, totalPages } = useMemo(() => {
-    if (!data?.data) return { orders: [], totalCount: 0, totalPages: 0 };
+  // Extract payments and pagination info from backend response
+  const { payments, totalCount, totalPages } = useMemo(() => {
+    if (!data?.data) return { payments: [], totalCount: 0, totalPages: 0 };
 
-    const orders = data.data;
+    const payments = data.data;
     const totalCount = data.count || 0;
     const totalPages = Math.ceil(totalCount / pageSize);
 
-    return { orders, totalCount, totalPages };
+    return { payments, totalCount, totalPages };
   }, [data, pageSize]);
-
-  // Get unique organization IDs from current page orders for optimized fetching
-  const organizationIds = useMemo(() => {
-    return orders.map((order) => order.organizationId).filter(Boolean);
-  }, [orders]);
-
-  // Fetch organizations in parallel (only unique IDs, cached by React Query)
-  const { getOrganization, isLoading: isLoadingOrg } = useGetOrganizationsByIds(organizationIds);
-
-  // Reset to page 1 when filters change
-  const handleFilterChange = () => {
-    setPageIndex(1);
-  };
-
-  const handleClearFilters = () => {
-    setOrganizationName('');
-    setOrganizationId('');
-    setMinAmount('');
-    setMaxAmount('');
-    setOrderCode('');
-    setPaymentMethod('');
-    setBank('');
-    setStatus('');
-    setFromDate('');
-    setToDate('');
-    setPageIndex(1);
-  };
-
-  const hasActiveFilters =
-    organizationName ||
-    organizationId ||
-    minAmount ||
-    maxAmount ||
-    orderCode ||
-    paymentMethod ||
-    bank ||
-    status ||
-    fromDate ||
-    toDate;
-
-  const handleViewDetails = (orderId: string) => {
-    navigate(configs.routes.adminOrderDetails.replace(':id', orderId));
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('vi-VN', {
@@ -128,40 +69,58 @@ export default function OrderListPage() {
     });
   };
 
+  // Reset to page 1 when filters change
+  const handleFilterChange = () => {
+    setPageIndex(1);
+  };
+
+  const handleClearFilters = () => {
+    setMinAmount('');
+    setMaxAmount('');
+    setOrderId('');
+    setStatus('');
+    setFromDate('');
+    setToDate('');
+    setPageIndex(1);
+  };
+
+  const hasActiveFilters = minAmount || maxAmount || orderId || status || fromDate || toDate;
+
+  const formatCurrency = (amount: number, currency: string = 'VND') => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency }).format(amount);
+  };
+
   const getStatusBadge = (status: string) => {
-    const label = ORDER_STATUS_LABELS[status] || status;
-    const className = ORDER_STATUS_STYLES[status] || 'bg-gray-100 text-gray-800';
+    const isSuccess = status === PaymentStatus.Succeeded;
+    const label = isSuccess ? 'Thành công' : status === PaymentStatus.Failed ? 'Thất bại' : status;
+    const className = isSuccess
+      ? 'bg-green-100 text-green-800'
+      : status === PaymentStatus.Failed
+        ? 'bg-red-100 text-red-800'
+        : 'bg-gray-100 text-gray-800';
 
     return <span className={`px-2 py-1 text-xs font-medium rounded-full ${className}`}>{label}</span>;
   };
 
-  // Component to render organization name with link
-  const OrganizationCell = ({ organizationId }: { organizationId: string }) => {
-    const organization = getOrganization(organizationId);
-    const loading = isLoadingOrg(organizationId);
+  const getPaymentMethodBadge = (method?: string) => {
+    if (!method) return '—';
+    const label = method === 'PAYOS' ? 'PayOS' : method === 'MANUAL' ? 'Thủ công' : method;
+    return <span className='px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800'>{label}</span>;
+  };
 
-    if (loading) {
-      return (
-        <div className='flex items-center gap-2'>
-          <Loader2 className='w-3 h-3 animate-spin text-muted-foreground' />
-          <span className='text-sm text-muted-foreground'>Đang tải...</span>
-        </div>
-      );
+  const getPaymentTypeLabel = (paymentType?: string) => {
+    if (!paymentType) return '—';
+    
+    switch (paymentType) {
+      case PaymentType.MapOrder:
+        return 'Mua hàng';
+      case PaymentType.Refund:
+        return 'Hoàn tiền';
+      case PaymentType.SetupFee:
+        return 'Phí cài đặt';
+      default:
+        return paymentType;
     }
-
-    if (!organization) {
-      return <span className='text-sm text-muted-foreground'>—</span>;
-    }
-
-    return (
-      <Link
-        to={configs.routes.adminOrganizationDetails.replace(':id', organizationId)}
-        className='text-sm text-primary hover:underline flex items-center gap-1.5 transition-colors'
-      >
-        <Building2 className='w-3.5 h-3.5' />
-        {organization.name || '—'}
-      </Link>
-    );
   };
 
   if (isError) {
@@ -169,7 +128,7 @@ export default function OrderListPage() {
       <div className='container mx-auto px-4 py-8'>
         <Card>
           <CardContent className='pt-6'>
-            <p className='text-center text-red-500'>Có lỗi xảy ra khi tải danh sách đơn hàng</p>
+            <p className='text-center text-red-500'>Có lỗi xảy ra khi tải danh sách giao dịch</p>
           </CardContent>
         </Card>
       </div>
@@ -182,10 +141,10 @@ export default function OrderListPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div className='flex items-center justify-between mb-6'>
             <div className='flex items-center gap-3'>
-              <Package className='w-8 h-8 text-primary' />
+              <CreditCard className='w-8 h-8 text-primary' />
               <div>
-                <h1 className='text-3xl font-bold text-foreground'>Quản lý đơn hàng</h1>
-                <p className='text-sm text-muted-foreground mt-1'>Tổng số: {totalCount} đơn hàng</p>
+                <h1 className='text-3xl font-bold text-foreground'>Quản lý giao dịch</h1>
+                <p className='text-sm text-muted-foreground mt-1'>Tổng số: {totalCount} giao dịch</p>
               </div>
             </div>
             <div className='flex gap-2'>
@@ -212,40 +171,13 @@ export default function OrderListPage() {
                 <CardContent className='pt-6'>
                   <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
                     <div>
-                      <Label htmlFor='organizationName'>Tên tổ chức</Label>
+                      <Label htmlFor='orderId'>ID Đơn hàng</Label>
                       <Input
-                        id='organizationName'
-                        placeholder='Tìm theo tên tổ chức...'
-                        value={organizationName}
+                        id='orderId'
+                        placeholder='Nhập ID đơn hàng...'
+                        value={orderId}
                         onChange={(e) => {
-                          setOrganizationName(e.target.value);
-                          handleFilterChange();
-                        }}
-                        className='mt-1.5'
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor='organizationId'>ID Tổ chức</Label>
-                      <Input
-                        id='organizationId'
-                        placeholder='Nhập ID tổ chức...'
-                        value={organizationId}
-                        onChange={(e) => {
-                          setOrganizationId(e.target.value);
-                          handleFilterChange();
-                        }}
-                        className='mt-1.5'
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor='orderCode'>Mã đơn hàng</Label>
-                      <Input
-                        id='orderCode'
-                        type='number'
-                        placeholder='Nhập mã đơn hàng...'
-                        value={orderCode}
-                        onChange={(e) => {
-                          setOrderCode(e.target.value);
+                          setOrderId(e.target.value);
                           handleFilterChange();
                         }}
                         className='mt-1.5'
@@ -280,19 +212,6 @@ export default function OrderListPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor='paymentMethod'>Phương thức thanh toán</Label>
-                      <Input
-                        id='paymentMethod'
-                        placeholder='Tìm theo phương thức...'
-                        value={paymentMethod}
-                        onChange={(e) => {
-                          setPaymentMethod(e.target.value);
-                          handleFilterChange();
-                        }}
-                        className='mt-1.5'
-                      />
-                    </div>
-                    <div>
                       <Label htmlFor='status'>Trạng thái</Label>
                       <select
                         id='status'
@@ -304,11 +223,8 @@ export default function OrderListPage() {
                         className='mt-1.5 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
                       >
                         <option value=''>Tất cả</option>
-                        <option value={OrderStatus.PaymentPending}>Chờ thanh toán</option>
-                        <option value={OrderStatus.BundlePending}>Chờ gói cài đặt</option>
-                        <option value={OrderStatus.Finished}>Hoàn thành</option>
-                        <option value={OrderStatus.Cancelled}>Đã hủy</option>
-                        <option value={OrderStatus.PaymentFailed}>Thất bại</option>
+                        <option value={PaymentStatus.Succeeded}>Thành công</option>
+                        <option value={PaymentStatus.Failed}>Thất bại</option>
                       </select>
                     </div>
                     <div>
@@ -354,11 +270,7 @@ export default function OrderListPage() {
           <Card>
             <CardHeader>
               <CardTitle className='text-xl flex items-center justify-between'>
-                <span>Danh sách đơn hàng</span>
-                {/* <Button variant={'secondary'}>
-                  <ScrollText className='w-4 h-4' />
-                  Xuất báo cáo doanh thu
-                </Button> */}
+                <span>Danh sách giao dịch</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -367,12 +279,12 @@ export default function OrderListPage() {
                   <Loader2 className='w-8 h-8 animate-spin text-primary' />
                   <span className='ml-2 text-muted-foreground'>Đang tải...</span>
                 </div>
-              ) : orders.length === 0 ? (
+              ) : payments.length === 0 ? (
                 <div className='text-center py-12'>
-                  <Package className='w-16 h-16 mx-auto text-muted-foreground mb-4' />
-                  <p className='text-muted-foreground'>Chưa có đơn hàng nào</p>
+                  <CreditCard className='w-16 h-16 mx-auto text-muted-foreground mb-4' />
+                  <p className='text-muted-foreground'>Chưa có giao dịch nào</p>
                   {hasActiveFilters && (
-                    <p className='text-sm text-muted-foreground mt-2'>Thử xóa bộ lọc để xem tất cả đơn hàng</p>
+                    <p className='text-sm text-muted-foreground mt-2'>Thử xóa bộ lọc để xem tất cả giao dịch</p>
                   )}
                 </div>
               ) : (
@@ -381,53 +293,52 @@ export default function OrderListPage() {
                     <table className='w-full'>
                       <thead>
                         <tr className='border-b bg-muted/50'>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>Mã đơn hàng</th>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>Tổng tiền</th>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>Số sản phẩm</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>ID Đơn hàng</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Số tiền</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Phương thức</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Mã giao dịch</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Ngân hàng</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Loại thanh toán</th>
                           <th className='px-4 py-3 text-left text-sm font-semibold'>Trạng thái</th>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>Tổ chức</th>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>Đại diện</th>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>SĐT</th>
-                          <th className='px-4 py-3 text-left text-sm font-semibold'>Ngày tạo</th>
-                          <th className='px-4 py-3 text-center text-sm font-semibold'>Thao tác</th>
+                          <th className='px-4 py-3 text-left text-sm font-semibold'>Thời gian</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {orders.map((order, index) => (
-                          <motion.tr
-                            key={order.id}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: index * 0.05 }}
-                            className='border-b hover:bg-muted/30 transition-colors'
-                          >
-                            <td className='px-4 py-3 font-medium text-sm'>{order.orderCode || order.id.slice(0, 8)}</td>
-                            <td className='px-4 py-3 text-sm font-semibold text-secondary'>
-                              {formatCurrency(order.totalMoneyAmount)}
-                            </td>
-                            <td className='px-4 py-3 text-sm text-center'>{order.totalItems}</td>
-                            <td className='px-4 py-3'>{getStatusBadge(order.status)}</td>
-                            <td className='px-4 py-3'>
-                              <OrganizationCell organizationId={order.organizationId} />
-                            </td>
-                            <td className='px-4 py-3 text-sm'>{order.representativeName}</td>
-                            <td className='px-4 py-3 text-sm'>{order.representativePhone}</td>
-                            <td className='px-4 py-3 text-sm text-muted-foreground'>
-                              {formatDate(order.createdAtUtc)}
-                            </td>
-                            <td className='px-4 py-3 text-center'>
-                              <Button
-                                size='sm'
-                                variant='outline'
-                                onClick={() => handleViewDetails(order.id)}
-                                className='gap-2'
-                              >
-                                <Eye className='w-4 h-4' />
-                                Xem chi tiết
-                              </Button>
-                            </td>
-                          </motion.tr>
-                        ))}
+                        {payments.map((payment, index) => {
+                          // Create unique key from orderId, transactionCode, and index
+                          const uniqueKey = `${payment.orderId}-${payment.transactionCode || 'no-code'}-${payment.createdAtUtc}-${index}`;
+                          return (
+                            <motion.tr
+                              key={uniqueKey}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3, delay: index * 0.05 }}
+                              className='border-b hover:bg-muted/30 transition-colors'
+                            >
+                              <td className='px-4 py-3 font-medium text-sm'>
+                                <Link
+                                  to={configs.routes.adminOrderDetails.replace(':id', payment.orderId)}
+                                  className='text-primary hover:underline'
+                                >
+                                  {payment.orderId.slice(0, 8)}...
+                                </Link>
+                              </td>
+                              <td className='px-4 py-3 text-sm font-semibold text-secondary'>
+                                {formatCurrency(payment.amount, payment.currency)}
+                              </td>
+                              <td className='px-4 py-3'>{getPaymentMethodBadge(payment.paymentMethod)}</td>
+                              <td className='px-4 py-3 text-sm font-mono'>{payment.transactionCode || '—'}</td>
+                              <td className='px-4 py-3 text-sm'>
+                                {payment.bankName || payment.bankCode || '—'}
+                              </td>
+                              <td className='px-4 py-3 text-sm'>{getPaymentTypeLabel(payment.paymentType)}</td>
+                              <td className='px-4 py-3'>{getStatusBadge(payment.status)}</td>
+                              <td className='px-4 py-3 text-sm text-muted-foreground'>
+                                {formatDate(payment.createdAtUtc)}
+                              </td>
+                            </motion.tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -437,7 +348,7 @@ export default function OrderListPage() {
                     <div className='flex flex-col sm:flex-row items-center justify-between gap-4 mt-6'>
                       <p className='text-sm text-muted-foreground'>
                         Hiển thị {(pageIndex - 1) * pageSize + 1} - {Math.min(pageIndex * pageSize, totalCount)} trong
-                        tổng số {totalCount} đơn hàng
+                        tổng số {totalCount} giao dịch
                       </p>
                       <div className='flex items-center gap-2'>
                         <Button
@@ -499,3 +410,4 @@ export default function OrderListPage() {
     </div>
   );
 }
+

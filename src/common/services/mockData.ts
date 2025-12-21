@@ -223,8 +223,8 @@ export const mockMapMetadata: GetMapByIdResponse = {
       description: ""
     },
   ],
-  createdAt: '2025-03-12T10:45:00Z',
-  updatedAt: '2025-09-28T14:22:00Z',
+  createdAtUtc: '2025-03-12T10:45:00Z',
+  updatedAtUtc: '2025-09-28T14:22:00Z',
 };
 
 // export const mockOrganizations: Organization[] = [

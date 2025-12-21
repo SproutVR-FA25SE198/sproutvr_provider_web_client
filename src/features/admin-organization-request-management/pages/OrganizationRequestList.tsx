@@ -2,10 +2,12 @@
 
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
+import { Input } from '@/common/components/ui/input';
+import { Label } from '@/common/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/common/components/ui/select';
 import configs from '@/core/configs';
 import { motion } from 'framer-motion';
-import { Loader2, ShieldPlus } from 'lucide-react';
+import { Filter, Loader2, RefreshCw, ShieldPlus, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,10 +20,24 @@ export default function OrganizationRequestListPage() {
   const navigate = useNavigate();
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [showFilters, setShowFilters] = useState(false);
 
-  const { data, isLoading, isError } = useGetOrganizationRequests({
+  // Filter states
+  const [organizationName, setOrganizationName] = useState<string>('');
+  const [contactEmail, setContactEmail] = useState<string>('');
+  const [contactPhone, setContactPhone] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [approvalStatus, setApprovalStatus] = useState<string>('');
+
+  const { data, isLoading, isError, refetch } = useGetOrganizationRequests({
     pageIndex,
     pageSize,
+    isPaginated: true,
+    organizationName: organizationName.trim() || undefined,
+    contactEmail: contactEmail.trim() || undefined,
+    contactPhone: contactPhone.trim() || undefined,
+    address: address.trim() || undefined,
+    approvalStatus: approvalStatus || undefined,
   });
 
   const totalPages = useMemo(() => {
@@ -46,6 +62,22 @@ export default function OrganizationRequestListPage() {
     setPageIndex(1);
   };
 
+  // Reset to page 1 when filters change
+  const handleFilterChange = () => {
+    setPageIndex(1);
+  };
+
+  const handleClearFilters = () => {
+    setOrganizationName('');
+    setContactEmail('');
+    setContactPhone('');
+    setAddress('');
+    setApprovalStatus('');
+    setPageIndex(1);
+  };
+
+  const hasActiveFilters = organizationName || contactEmail || contactPhone || address || approvalStatus;
+
   return (
     <div className='min-h-screen'>
       <div className='container mx-auto px-4 py-8'>
@@ -64,8 +96,113 @@ export default function OrganizationRequestListPage() {
                 </p>
               </div>
             </div>
-
+            <div className='flex gap-2'>
+              <Button variant='outline' size='sm' onClick={() => setShowFilters(!showFilters)} className='gap-2'>
+                <Filter className='w-4 h-4' />
+                Bộ lọc
+                {hasActiveFilters && <span className='w-2 h-2 bg-primary rounded-full' />}
+              </Button>
+              <Button variant='outline' size='sm' onClick={() => refetch()} className='gap-2'>
+                <RefreshCw className='w-4 h-4' />
+                Làm mới
+              </Button>
+            </div>
           </div>
+
+          {/* Filters */}
+          {showFilters && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+            >
+              <Card className='mb-6'>
+                <CardContent className='pt-6'>
+                  <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                    <div>
+                      <Label htmlFor='organizationName'>Tên tổ chức</Label>
+                      <Input
+                        id='organizationName'
+                        placeholder='Tìm theo tên tổ chức...'
+                        value={organizationName}
+                        onChange={(e) => {
+                          setOrganizationName(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='contactEmail'>Email liên hệ</Label>
+                      <Input
+                        id='contactEmail'
+                        type='email'
+                        placeholder='Tìm theo email...'
+                        value={contactEmail}
+                        onChange={(e) => {
+                          setContactEmail(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='contactPhone'>Số điện thoại</Label>
+                      <Input
+                        id='contactPhone'
+                        placeholder='Tìm theo số điện thoại...'
+                        value={contactPhone}
+                        onChange={(e) => {
+                          setContactPhone(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='address'>Địa chỉ</Label>
+                      <Input
+                        id='address'
+                        placeholder='Tìm theo địa chỉ...'
+                        value={address}
+                        onChange={(e) => {
+                          setAddress(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5'
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor='approvalStatus'>Trạng thái</Label>
+                      <select
+                        id='approvalStatus'
+                        value={approvalStatus}
+                        onChange={(e) => {
+                          setApprovalStatus(e.target.value);
+                          handleFilterChange();
+                        }}
+                        className='mt-1.5 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+                      >
+                        <option value=''>Tất cả</option>
+                        <option value='Unverified'>Chờ xác minh</option>
+                        <option value='Approval_Pending'>Chờ duyệt</option>
+                        <option value='Approved'>Đã duyệt</option>
+                        <option value='Rejected'>Đã từ chối</option>
+                      </select>
+                    </div>
+                  </div>
+                  {hasActiveFilters && (
+                    <div className='mt-4 flex justify-end'>
+                      <Button variant='ghost' size='sm' onClick={handleClearFilters} className='gap-2'>
+                        <X className='w-4 h-4' />
+                        Xóa bộ lọc
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
 
           <Card>
             <CardHeader className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
@@ -95,7 +232,12 @@ export default function OrganizationRequestListPage() {
                   Đang tải...
                 </div>
               ) : !data || data.data.length === 0 ? (
-                <div className='text-center py-12 text-muted-foreground'>Chưa có yêu cầu nào.</div>
+                <div className='text-center py-12 text-muted-foreground'>
+                  Chưa có yêu cầu nào.
+                  {hasActiveFilters && (
+                    <p className='text-sm mt-2'>Thử xóa bộ lọc để xem tất cả yêu cầu</p>
+                  )}
+                </div>
               ) : (
                 <div className='space-y-4'>
                   <div className='hidden md:grid md:grid-cols-12 text-sm font-medium text-muted-foreground border-b pb-2'>
