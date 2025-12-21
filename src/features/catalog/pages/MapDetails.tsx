@@ -3,20 +3,20 @@ import useBaskets from '@/common/hooks/useBasket';
 import { useExternalCheck } from '@/common/hooks/useExternalCheck';
 import useGetMaps from '@/common/hooks/useGetMaps';
 import useScrollTop from '@/common/hooks/useScrollTop';
+import { GetAllMapsRequest } from '@/common/services/map.service';
 import configs from '@/core/configs';
+import useGetLibrary from '@/features/personal/hooks/useGetLibrary';
 
-import { useMemo, useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+import CurvedMediaSlider from '../components/curved-media-slider.tsx';
 import MapBreadcrumb from '../components/map-breadcrumb';
 import { MapExplore } from '../components/map-explore';
 import { MapInfo } from '../components/map-info';
 import { MapResources } from '../components/map-resources';
-import CurvedMediaSlider from '../components/CurvedMediaSlider';
 import useGetMapDetails from '../hooks/useGetMapDetails';
-import { GetAllMapsRequest } from '@/common/services/map.service';
-import useGetLibrary from '@/features/personal/hooks/useGetLibrary';
 
 export default function MapDetails() {
   useScrollTop();
@@ -49,7 +49,7 @@ export default function MapDetails() {
   const { data: relatedMapsData } = useGetMaps(relatedMapsParams);
   const relatedMaps = useMemo(() => {
     if (!relatedMapsData?.data) return [];
-    return relatedMapsData.data.filter((m: { id: string | undefined; }) => m.id !== id).slice(0, 4);
+    return relatedMapsData.data.filter((m: { id: string | undefined }) => m.id !== id).slice(0, 4);
   }, [relatedMapsData, id]);
 
   useEffect(() => {
@@ -80,27 +80,33 @@ export default function MapDetails() {
         <MapBreadcrumb masterSubject={map.subject.masterSubject.name} subject={map.subject.name} mapName={map.name} />
       </div>
 
-      <div className='container mx-auto px-4 max-w-7xl'>
-        <CurvedMediaSlider title='' images={images} />
+      {/* Slider + MapInfo overlay container */}
+      <div className='relative'>
+        <div className='container mx-auto px-4 max-w-7xl'>
+          <CurvedMediaSlider title='' images={images} />
+        </div>
+
+        {/* MapInfo overlays at the bottom of the slider */}
+        <div className='container mx-auto px-4 max-w-7xl relative z-20 -mt-24 md:-mt-32'>
+          <MapInfo map={map} inBasket={isInBasket} isPurchased={isPurchased} updateBasket={addItem} />
+        </div>
       </div>
 
       <div className='container mx-auto px-4 py-6 max-w-7xl'>
-        <div className='mt-6 mb-10'>
-          <MapInfo map={map} inBasket={isInBasket} isPurchased={isPurchased} updateBasket={addItem} />
-        </div>
-
         <MapResources mapMetadata={map} />
-        <hr className='my-0 border-border' />
         {relatedMaps.length > 0 && (
-          <MapExplore
-            masterSubject={map.subject.masterSubject.name}
-            maps={relatedMaps}
-            purchasedMapIds={
-              purchasedMapsData?.data
-                ? new Set<string>(purchasedMapsData.data.map((m: { mapId: string }) => m.mapId))
-                : undefined
-            }
-          />
+          <>
+            <hr className='my-0 border-border' />
+            <MapExplore
+              masterSubject={map.subject.masterSubject.name}
+              maps={relatedMaps}
+              purchasedMapIds={
+                purchasedMapsData?.data
+                  ? new Set<string>(purchasedMapsData.data.map((m: { mapId: string }) => m.mapId))
+                  : undefined
+              }
+            />
+          </>
         )}
       </div>
     </>
