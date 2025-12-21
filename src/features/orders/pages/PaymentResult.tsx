@@ -9,7 +9,7 @@ import { convertUtcDate } from '@/common/utils/convertUtcDate';
 import useGetOrderById from '@/features/personal/hooks/useGetOrderById';
 
 import { motion } from 'framer-motion';
-import { AlertCircle, ArrowRight, CheckCircle2, Download, XCircle } from 'lucide-react';
+import { AlertCircle, ArrowRight, CheckCircle2, XCircle } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 
@@ -157,10 +157,7 @@ function PaymentStatusContent() {
     bgColor: 'bg-secondary/10',
     title: 'Thanh Toán Thành Công!',
     description: 'Đơn hàng của bạn đã được xác nhận. Các bản đồ VR đã được thêm thư viện của bạn.',
-    actions: [
-      { label: 'Xem Thư Viện', href: '/personal/library', icon: ArrowRight },
-      { label: 'Tải Hóa Đơn', href: '#', icon: Download, variant: 'outline' as const },
-    ],
+    actions: [{ label: 'Xem Thư Viện', href: '/personal/library', variant: 'secondary', icon: ArrowRight }],
   };
 
   const failedConfig = {
@@ -303,7 +300,7 @@ function PaymentStatusContent() {
                   <Button
                     key={index}
                     asChild
-                    variant={action.variant || 'default'}
+                    variant={'outline'}
                     size='lg'
                     className={!action.variant ? 'bg-secondary hover:bg-secondary/90 text-secondary-foreground' : ''}
                   >
