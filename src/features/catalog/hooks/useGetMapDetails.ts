@@ -18,26 +18,26 @@ const useGetMapDetails = (params: GetMapByIdRequest) => {
   // Memoize images array to prevent re-renders
   const images = useMemo(() => {
     if (!data) return [];
-    
+
     // Get up to 4 images from task locations for gallery
     const locationImages = (data.taskLocations || [])
-      .slice(0, 3) // Take first 3 locations
-      .map(loc => loc.imageUrl)
+      .slice(0, 5) // Take first 5 locations
+      .map((loc) => loc.imageUrl)
       .filter(Boolean); // Remove any null/undefined
-    
-    const allImages = [data.imageUrl, ...locationImages].filter(Boolean);
-    
+
+    const allImages = [data.imageUrl, data.previewUrl, ...locationImages].filter(Boolean);
+
     // Fill with main image if not enough locations
     while (allImages.length < 4 && data.imageUrl) {
       allImages.push(data.imageUrl);
     }
-    
+
     return allImages.slice(0, 4);
   }, [data]);
 
-  const returnData: MapDetails = useMemo(() => 
-    data ? { ...data, imageUrl: images as string[] } : ({} as MapDetails),
-    [data, images]
+  const returnData: MapDetails = useMemo(
+    () => (data ? { ...data, imageUrl: images as string[] } : ({} as MapDetails)),
+    [data, images],
   );
 
   return { data: returnData, isLoading, isError };
