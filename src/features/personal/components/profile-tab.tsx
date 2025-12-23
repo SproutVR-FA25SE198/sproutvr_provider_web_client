@@ -14,7 +14,7 @@ interface ProfileTabProps {
 }
 
 const ProfileTab = ({ organization }: ProfileTabProps) => {
-  const [copiedBundleUrl, setCopiedBundleUrl] = useState(false);
+  // const [copiedBundleUrl, setCopiedBundleUrl] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
 
   // Create Google Drive folder URL from bundleGoogleDriveId
@@ -22,11 +22,11 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
     ? `https://drive.google.com/drive/folders/${organization.bundleGoogleDriveId}`
     : null;
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedBundleUrl(true);
-    setTimeout(() => setCopiedBundleUrl(false), 2000);
-  };
+  // const copyToClipboard = (text: string) => {
+  //   navigator.clipboard.writeText(text);
+  //   setCopiedBundleUrl(true);
+  //   setTimeout(() => setCopiedBundleUrl(false), 2000);
+  // };
 
   return (
     <div className='h-full flex flex-col'>
@@ -96,11 +96,11 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
                       className='cursor-not-allowed italic'
                     />
                   )}
-                  {copiedBundleUrl && (
+                  {/* {copiedBundleUrl && (
                     <span className='absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-600'>
                       Đã sao chép!
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <Button
                   variant='outline'
