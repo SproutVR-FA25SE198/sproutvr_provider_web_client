@@ -32,7 +32,7 @@ const useGetMapDetails = (params: GetMapByIdRequest) => {
       allImages.push(data.imageUrl);
     }
 
-    return allImages.slice(0, 4);
+    return allImages.slice(0, 6);
   }, [data]);
 
   const returnData: MapDetails = useMemo(

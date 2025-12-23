@@ -81,18 +81,13 @@ const ProfileTab = ({ organization }: ProfileTabProps) => {
               <div className='flex gap-2'>
                 <div className='relative flex-1'>
                   {bundleUrl ? (
-                    <a href={bundleUrl} target='_blank' rel=''>
-                      <Input
-                        id='bundle-url'
-                        value={bundleUrl}
-                        readOnly
-                        className='cursor-pointer hover:bg-muted/50 transition-colors'
-                        onClick={(e) => {
-                          e.preventDefault();
-                          copyToClipboard(bundleUrl);
-                        }}
-                      />
-                    </a>
+                    <Input
+                      id='bundle-url'
+                      value={bundleUrl}
+                      readOnly
+                      className='cursor-pointer hover:bg-muted/50 transition-colors'
+                      onClick={() => window.open(bundleUrl, '_blank')}
+                    />
                   ) : (
                     <Input
                       id='bundle-url'

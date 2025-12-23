@@ -51,7 +51,10 @@ const MapCard = ({ map, index, isPurchased = false }: MapCardProps) => {
               <span>{map.subject.masterSubject.name}</span>
             </Badge>
             {isPurchased && (
-              <Badge variant='default' className='absolute bg-green-600 hover:bg-green-700 text-white shadow-sm top-4 left-4'>
+              <Badge
+                variant='default'
+                className='absolute bg-green-600 hover:bg-green-700 text-white shadow-sm top-4 left-4'
+              >
                 <span>Đã mua</span>
               </Badge>
             )}
@@ -61,7 +64,7 @@ const MapCard = ({ map, index, isPurchased = false }: MapCardProps) => {
           <div className='flex items-start justify-between gap-2 mb-2'>
             <CardTitle className='text-xl'>
               <Link to={`/catalog/${map.id}`} className='hover:text-secondary transition-colors'>
-                {truncateText(map.name, 22)}
+                {truncateText(map.name, 30)}
               </Link>
             </CardTitle>
           </div>
