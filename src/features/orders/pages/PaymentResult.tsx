@@ -11,16 +11,13 @@ import useGetOrderById from '@/features/personal/hooks/useGetOrderById';
 import { motion } from 'framer-motion';
 import { AlertCircle, ArrowRight, CheckCircle2, XCircle } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 import { cancelPayment, checkPaymentStatus } from '../services/payment.service';
 
 import { useMutation } from '@tanstack/react-query';
 
 function PaymentStatusContent() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed' | 'cancelled'>('pending');
   const [orderId, setOrderId] = useState<string>('');
@@ -40,13 +37,6 @@ function PaymentStatusContent() {
 
   // Get order details only after we have orderId and successful payment
   const { data: orderDetails, isLoading: isLoadingOrder } = useGetOrderById(orderId);
-  // If payment is success but cannot get order details, show error and redirect
-  useEffect(() => {
-    if (!isLoadingOrder && !orderDetails) {
-      toast.error('Không thể lấy thông tin đơn hàng.');
-      navigate('/', { replace: true });
-    }
-  }, [isLoadingOrder, orderDetails, navigate]);
 
   useEffect(() => {
     // Prevent multiple calls
